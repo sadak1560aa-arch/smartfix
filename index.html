@@ -83,6 +83,12 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 .modal-card .buttons{display:flex;gap:8px;margin-top:14px}
 .modal-card .buttons button{flex:1}
 .warn-box{background:#fff7e6;border:1px solid #ffe0a3;color:#7a4a00;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.7;margin:10px 0}
+  /* إخفاء المساعد الذكي نهائياً */
+button[data-tab="assistant"],
+div[data-goto="assistant"],
+#assistant {
+    display: none !important;
+}
 </style>
 </head>
 <body>
