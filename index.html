@@ -157,7 +157,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 4.1 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 4.2 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
  <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، وتابع الأجهزة وقطع الغيار والبضاعة من مكان واحد.</p></div>
@@ -386,7 +386,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 4.1 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 4.2 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
@@ -423,7 +423,7 @@ function startTrialIfNeeded(){
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '4.1');
+  localStorage.setItem(CFG_VERSION_KEY, '4.2');
 }
 
 const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -1904,4 +1904,4 @@ else tryStart();
 })();
 </script>
 </body>
-                                              </html>
+  </html>
