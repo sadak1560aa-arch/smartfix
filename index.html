@@ -71,8 +71,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 .photo-viewer img{max-width:100%;max-height:100%;border-radius:10px}
 @media(min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.stats{grid-template-columns:repeat(3,1fr)}}
 @media(max-width:420px){.stats{gap:7px}.stat{padding:10px}.stat b{font-size:19px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.actions select,.actions input{width:100%}}
-
-/* Setup Wizard / License Gate */
 .modal-bg{position:fixed;inset:0;background:linear-gradient(125deg,var(--navy),var(--navy2));display:grid;place-items:center;z-index:9999;padding:20px;overflow-y:auto}
 .modal-card{background:white;border-radius:18px;padding:26px 22px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.4)}
 .modal-card h2{margin:0 0 6px;font-size:21px;color:var(--navy)}
@@ -83,12 +81,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 .modal-card .buttons{display:flex;gap:8px;margin-top:14px}
 .modal-card .buttons button{flex:1}
 .warn-box{background:#fff7e6;border:1px solid #ffe0a3;color:#7a4a00;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.7;margin:10px 0}
-  /* إخفاء المساعد الذكي نهائياً */
-button[data-tab="assistant"],
-div[data-goto="assistant"],
-#assistant {
-    display: none !important;
-}
 </style>
 </head>
 <body>
@@ -96,12 +88,12 @@ div[data-goto="assistant"],
   (function() {
     const allowedDomains = ["sadak1560aa-arch.github.io", "localhost", "127.0.0.1"];
     if (!allowedDomains.includes(window.location.hostname)) {
-      document.body.innerHTML = '<div style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#101d35; color:white; font-family:Tahoma; text-align:center; padding:20px;"><h1 style="color:#e6b84a; font-size:2rem; margin-bottom:10px;">⚠️ نسخة غير مرخصة</h1><p style="font-size:1.2rem;">هذا البرنامج مرخص للعمل على موقع محدد فقط.</p></div>';
+      document.documentElement.innerHTML = '<body style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#101d35; color:white; font-family:Tahoma; text-align:center; padding:20px; margin:0;"><h1 style="color:#e6b84a; font-size:2rem; margin-bottom:10px;">⚠️ نسخة غير مرخصة</h1><p style="font-size:1.2rem;">هذا البرنامج مرخص للعمل على موقع محدد فقط.</p></body>';
       throw new Error("Unauthorized Domain");
     }
   })();
 </script>
-<!-- Setup Wizard -->
+
 <div id="setupWizard" class="modal-bg hidden">
   <div class="modal-card">
     <h2>👋 مرحباً بك في Smart Fix AI</h2>
@@ -124,7 +116,6 @@ div[data-goto="assistant"],
   </div>
 </div>
 
-<!-- License Gate -->
 <div id="licenseGate" class="modal-bg hidden">
   <div class="modal-card">
     <h2>🔑 تفعيل البرنامج</h2>
@@ -143,7 +134,6 @@ div[data-goto="assistant"],
   </div>
 </div>
 
-<!-- Lock Screen (PIN) -->
 <div id="lockScreen" class="lock-screen hidden">
   <div class="lock-box">
     <div class="logo" style="margin:0 auto 14px">🔒</div>
@@ -157,7 +147,7 @@ div[data-goto="assistant"],
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 3.2 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 3.3 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
  <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، وتابع الأجهزة وقطع الغيار من مكان واحد.</p></div>
@@ -325,7 +315,7 @@ div[data-goto="assistant"],
    <div class="actions">
      <button class="primary" id="exportBtn">تنزيل نسخة احتياطية (JSON)</button>
      <label class="secondary" style="display:inline-block;margin:0;cursor:pointer;padding:10px 13px;border-radius:10px">استيراد نسخة JSON<input type="file" id="importFile" accept=".json,application/json" hidden></label>
-     <button class="secondary" id="exportWithPhotosBtn">تنزيل مع الصور (ZIP)</button>
+     <button class="secondary" id="exportWithPhotosBtn">تنزيل نسخة كاملة مع الصور</button>
    </div>
    <p class="muted" id="storageInfo"></p>
   </div>
@@ -381,20 +371,20 @@ div[data-goto="assistant"],
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 3.2 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 3.3 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
 'use strict';
 
 /* ============================================================
-   0) إعدادات المنصة (من localStorage بعد معالج الإعداد)
+   0) إعدادات المنصة
    ============================================================ */
 const CFG_URL_KEY = 'smartfix_sb_url';
 const CFG_KEY_KEY = 'smartfix_sb_key';
-const CFG_MODE_KEY = 'smartfix_mode';      // 'cloud' | 'local'
-const CFG_TRIAL_KEY = 'smartfix_trial';    // timestamp
-const CFG_LICENSE_KEY = 'smartfix_license'; // license string
+const CFG_MODE_KEY = 'smartfix_mode';
+const CFG_TRIAL_KEY = 'smartfix_trial';
+const CFG_LICENSE_KEY = 'smartfix_license';
 const CFG_VERSION_KEY = 'smartfix_version';
 const TRIAL_DAYS = 14;
 
@@ -407,7 +397,6 @@ function getConfig(){
     license: localStorage.getItem(CFG_LICENSE_KEY) || ''
   };
 }
-
 function isConfigured(){ const c = getConfig(); return c.mode === 'local' || (c.url && c.key); }
 function isLicensed(){ return !!getConfig().license; }
 function trialRemainingDays(){
@@ -422,43 +411,74 @@ function startTrialIfNeeded(){
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '3.2');
+  localStorage.setItem(CFG_VERSION_KEY, '3.3');
 }
 
-// license format: SF-XXXXX-XXXXX-XXXXX (uppercase alphanumeric)
+/* الترخيص: SF-XXXXX-XXXXX-CCCCC مع checksum */
+const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+function computeLicenseChecksum(payload){
+  let sum = 0;
+  for(let i=0;i<payload.length;i++){
+    sum = ((sum * 31) + payload.charCodeAt(i)) >>> 0;
+  }
+  let out = '';
+  let n = sum;
+  for(let i=0;i<5;i++){ out += LIC_CHARSET[n % 36]; n = Math.floor(n / 36); }
+  return out;
+}
 function isValidLicenseKey(k){
-  return /^SF-[A-Z0-9]{5}-[A-Z0-9]{5}-[A-Z0-9]{5}$/.test(k.toUpperCase().trim());
+  const key = String(k||'').toUpperCase().trim();
+  const m = key.match(/^SF-([A-Z0-9]{5})-([A-Z0-9]{5})-([A-Z0-9]{5})$/);
+  if(!m) return false;
+  const payload = 'SF-'+m[1]+'-'+m[2];
+  return computeLicenseChecksum(payload) === m[3];
 }
 
 /* ============================================================
-   1) قاعدة البيانات + IndexedDB للصور
+   1) قاعدة البيانات + IndexedDB
    ============================================================ */
 const KEY='smartfixai_v4';
 const OLD_KEYS=['smartfixai_v3','smartfixai_v2','smartfixai_v1'];
+const VALID_STATUSES=['تم الاستلام','قيد الفحص','قيد الإصلاح','جاهز للتسليم','تم التسليم'];
 
 const genId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
+const validId=s=>/^[A-Za-z0-9_-]{1,64}$/.test(String(s||''));
 const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const num=(v,d=0)=>{const n=Number(v);return Number.isFinite(n)&&n>=0?n:d;};
+const validPhotoData=s=>typeof s==='string' && /^data:image\/(jpeg|png|webp);base64,/.test(s);
 
 function defaultDB(){return{version:4,jobs:[],parts:[],settings:{pinEnabled:false,pinHash:null,shop:{name:'',phone:'',address:'',logo:null}}};}
 
 function normalizeJob(j){
+  const st = VALID_STATUSES.includes(String(j.status)) ? String(j.status) : 'تم الاستلام';
   return{
-    id:String(j.id||genId()),
-    customer:String(j.customer??''),
-    phone:String(j.phone??''),
-    brand:String(j.brand??''),
-    model:String(j.model??''),
-    fault:String(j.fault??''),
+    id: validId(j.id) ? String(j.id) : genId(),
+    customer:String(j.customer??'').slice(0,100),
+    phone:String(j.phone??'').slice(0,30),
+    brand:String(j.brand??'').slice(0,50),
+    model:String(j.model??'').slice(0,80),
+    fault:String(j.fault??'').slice(0,1000),
     price:num(j.price),
-    status:typeof j.status==='string'&&j.status?j.status:'تم الاستلام',
-    date:String(j.date??new Date().toLocaleDateString('ar-IQ')),
+    status:st,
+    date:String(j.date??new Date().toLocaleDateString('en-GB')),
     dateISO:String(j.dateISO??''),
-    photoId:String(j.photoId??''),
-    partsUsed:Array.isArray(j.partsUsed)?j.partsUsed.map(p=>({id:String(p.id||genId()),name:String(p.name??''),qty:num(p.qty),price:num(p.price)})):[]
+    photoId: validId(j.photoId) ? String(j.photoId) : '',
+    partsUsed:Array.isArray(j.partsUsed)?j.partsUsed.map(p=>({
+      id: validId(p.id) ? String(p.id) : genId(),
+      name:String(p.name??'').slice(0,100),
+      qty:num(p.qty),
+      price:num(p.price)
+    })):[]
   };
 }
-function normalizePart(p){return{id:String(p.id||genId()),name:String(p.name??''),qty:num(p.qty),price:num(p.price)};}
+function normalizePart(p){
+  return{
+    id: validId(p.id) ? String(p.id) : genId(),
+    name:String(p.name??'').slice(0,100),
+    qty:num(p.qty),
+    price:num(p.price)
+  };
+}
 
 function loadDB(){
   let raw=null;
@@ -476,7 +496,12 @@ function loadDB(){
       settings:{
         pinEnabled:!!(d.settings&&d.settings.pinEnabled),
         pinHash:(d.settings&&d.settings.pinHash)||null,
-        shop:{name:String(shopSrc.name||''),phone:String(shopSrc.phone||''),address:String(shopSrc.address||''),logo:shopSrc.logo||null}
+        shop:{
+          name:String(shopSrc.name||'').slice(0,100),
+          phone:String(shopSrc.phone||'').slice(0,30),
+          address:String(shopSrc.address||'').slice(0,200),
+          logo: validPhotoData(shopSrc.logo)?shopSrc.logo:null
+        }
       }
     };
   }catch(e){console.warn('DB load failed:',e);return defaultDB();}
@@ -485,6 +510,7 @@ function loadDB(){
 let db=loadDB();
 let editingJobId=null;
 let editingPhotoData=null;
+let _pendingPhotoRemove = false;
 
 function saveDB(){
   try{localStorage.setItem(KEY,JSON.stringify(db));}
@@ -493,7 +519,7 @@ function saveDB(){
   updateStorageInfo();
 }
 
-/* --- IndexedDB للصور --- */
+/* IndexedDB للصور */
 const IDB_NAME='smartfix_photos_v1';
 let idb=null;
 function openIDB(){
@@ -506,6 +532,7 @@ function openIDB(){
   });
 }
 async function savePhotoData(id,dataUrl){
+  if(!validId(id) || !validPhotoData(dataUrl)) return;
   const d=await openIDB();
   return new Promise((res,rej)=>{
     const tx=d.transaction('photos','readwrite');
@@ -514,7 +541,7 @@ async function savePhotoData(id,dataUrl){
   });
 }
 async function getPhotoData(id){
-  if(!id)return null;
+  if(!id || !validId(id)) return null;
   const d=await openIDB();
   return new Promise((res,rej)=>{
     const tx=d.transaction('photos','readonly');
@@ -524,7 +551,7 @@ async function getPhotoData(id){
   });
 }
 async function deletePhotoData(id){
-  if(!id)return;
+  if(!id || !validId(id)) return;
   const d=await openIDB();
   return new Promise((res,rej)=>{
     const tx=d.transaction('photos','readwrite');
@@ -533,7 +560,6 @@ async function deletePhotoData(id){
   });
 }
 
-/* --- ضغط الصور --- */
 function compressImage(file,maxSize=900,quality=0.72){
   return new Promise((resolve,reject)=>{
     const reader=new FileReader();
@@ -601,11 +627,21 @@ async function requestNotif(){
 }
 async function showNotif(title,body,tag){
   if(!('Notification' in window)||Notification.permission!=='granted')return;
-  const opts={body,tag:tag||'smartfix',icon:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="42" fill="#101d35"/><text x="96" y="128" font-size="82" text-anchor="middle" fill="#e6b84a" font-family="Arial" font-weight="bold">SF</text></svg>'),badge:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" fill="#101d35"/></svg>')};
+  const opts={
+    body,
+    tag:tag||'smartfix',
+    icon:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" rx="42" fill="#101d35"/><text x="96" y="128" font-size="82" text-anchor="middle" fill="#e6b84a" font-family="Arial" font-weight="bold">SF</text></svg>'),
+    badge:'data:image/svg+xml,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 192"><rect width="192" height="192" fill="#101d35"/></svg>')
+  };
   try{
-    if('serviceWorker' in navigator&&navigator.serviceWorker.controller){const reg=await navigator.serviceWorker.ready;reg.showNotification(title,opts);}
-    else{new Notification(title,opts);}
-  }catch(_){try{new Notification(title,opts);}catch(__){}}
+    if('serviceWorker' in navigator){
+      const reg = await navigator.serviceWorker.getRegistration();
+      if(reg && reg.showNotification){ reg.showNotification(title, opts); return; }
+    }
+    new Notification(title, opts);
+  }catch(_){
+    try{ new Notification(title, opts); }catch(__){}
+  }
 }
 function notifyJobReady(j){showNotif('✅ جهاز جاهز للتسليم','الزبون: '+j.customer+'\nالجهاز: '+j.brand+' '+j.model,'job-'+j.id);}
 function updateNotifStatus(){
@@ -650,6 +686,19 @@ function diagnose(){
    ============================================================ */
 const validatePhone=v=>/^[0-9+\-\s]{7,20}$/.test(v);
 
+let _renderJobsToken = 0;
+const photoCache = new Map();
+
+async function loadPhoto(job){
+  if(!job.photoId) return '';
+  if(photoCache.has(job.photoId)) return photoCache.get(job.photoId);
+  try{
+    const d = await getPhotoData(job.photoId);
+    if(validPhotoData(d)){ photoCache.set(job.photoId, d); return d; }
+  }catch(_){}
+  return '';
+}
+
 async function saveJobHandler(){
   const customer=document.getElementById('customer').value.trim();
   const phone=document.getElementById('phone').value.trim();
@@ -662,17 +711,29 @@ async function saveJobHandler(){
     fault:document.getElementById('jobFault').value.trim(),
     price:num(document.getElementById('price').value),
     status:document.getElementById('jobStatus').value,
-    date:new Date().toLocaleDateString('ar-IQ'),
+    date:new Date().toLocaleDateString('en-GB'),
     dateISO:new Date().toISOString()
   };
   let photoId=null;
-  if(editingPhotoData){photoId='ph_'+genId();await savePhotoData(photoId,editingPhotoData);}
+  if(editingPhotoData){
+    photoId='ph_'+genId();
+    await savePhotoData(photoId,editingPhotoData);
+    photoCache.set(photoId, editingPhotoData);
+  }
   if(editingJobId){
     const j=db.jobs.find(x=>x.id===editingJobId);
     if(j){
-      if(!photoId&&j.photoId)photoId=j.photoId;
-      if(photoId&&j.photoId&&photoId!==j.photoId)deletePhotoData(j.photoId);
-      Object.assign(j,data,{photoId});
+      if(_pendingPhotoRemove && j.photoId){
+        deletePhotoData(j.photoId);
+        photoCache.delete(j.photoId);
+        j.photoId = '';
+      }
+      if(!photoId && j.photoId) photoId = j.photoId;
+      if(photoId && j.photoId && photoId!==j.photoId){
+        deletePhotoData(j.photoId);
+        photoCache.delete(j.photoId);
+      }
+      Object.assign(j, data, {photoId});
       alert('تم تحديث الطلب.');
     }
     cancelEdit();
@@ -691,7 +752,7 @@ async function saveJobHandler(){
 
 function editJob(id){
   const j=db.jobs.find(x=>x.id===id);if(!j)return;
-  editingJobId=id;editingPhotoData=null;
+  editingJobId=id;editingPhotoData=null;_pendingPhotoRemove=false;
   document.getElementById('customer').value=j.customer;
   document.getElementById('phone').value=j.phone;
   document.getElementById('jobBrand').value=j.brand;
@@ -702,14 +763,28 @@ function editJob(id){
   document.getElementById('saveJobBtn').textContent='تحديث الطلب';
   document.getElementById('cancelEditBtn').style.display='inline-block';
   const wrap=document.getElementById('photoPreviewWrap');
-  if(j.photoId){getPhotoData(j.photoId).then(d=>{if(d){wrap.innerHTML='<img src="'+d+'" class="photo-preview" alt="صورة الطلب">';document.getElementById('removePhotoBtn').style.display='inline-block';}});}
-  else{wrap.innerHTML='';document.getElementById('removePhotoBtn').style.display='none';}
+  const btn=document.getElementById('removePhotoBtn');
+  if(j.photoId){
+    const cached=photoCache.get(j.photoId);
+    if(validPhotoData(cached)){
+      wrap.innerHTML='<img src="'+cached+'" class="photo-preview" alt="صورة الطلب">';
+      btn.style.display='inline-block';
+    } else {
+      getPhotoData(j.photoId).then(d=>{
+        if(validPhotoData(d)){
+          photoCache.set(j.photoId,d);
+          wrap.innerHTML='<img src="'+d+'" class="photo-preview" alt="صورة الطلب">';
+          btn.style.display='inline-block';
+        }
+      });
+    }
+  } else {wrap.innerHTML='';btn.style.display='none';}
   showTab('jobs');
   document.getElementById('customer').focus();
 }
 
 function cancelEdit(){
-  editingJobId=null;editingPhotoData=null;
+  editingJobId=null;editingPhotoData=null;_pendingPhotoRemove=false;
   ['customer','phone','model','jobFault','price'].forEach(id=>document.getElementById(id).value='');
   document.getElementById('jobStatus').selectedIndex=0;
   document.getElementById('saveJobBtn').textContent='حفظ طلب الصيانة';
@@ -720,6 +795,7 @@ function cancelEdit(){
 }
 
 function changeStatus(id,s){
+  if(!VALID_STATUSES.includes(s)) return;
   const j=db.jobs.find(x=>x.id===id);if(!j)return;
   const old=j.status;j.status=s;
   if(s==='جاهز للتسليم'&&old!=='جاهز للتسليم')notifyJobReady(j);
@@ -729,7 +805,10 @@ function changeStatus(id,s){
 function deleteJob(id){
   if(!confirm('هل تريد حذف طلب الصيانة؟'))return;
   const j=db.jobs.find(x=>x.id===id);
-  if(j&&j.photoId)deletePhotoData(j.photoId);
+  if(j&&j.photoId){
+    deletePhotoData(j.photoId);
+    photoCache.delete(j.photoId);
+  }
   db.jobs=db.jobs.filter(x=>x.id!==id);
   if(editingJobId===id)cancelEdit();
   saveDB();
@@ -737,8 +816,8 @@ function deleteJob(id){
 
 function addPartToJob(jobId){
   const job=db.jobs.find(j=>j.id===jobId);if(!job)return;
-  const sel=document.getElementById('partSel_'+jobId);
-  const qtyEl=document.getElementById('partQty_'+jobId);
+  const sel=document.querySelector('[data-role="part-sel"][data-job="'+jobId+'"]');
+  const qtyEl=document.querySelector('[data-role="part-qty"][data-job="'+jobId+'"]');
   if(!sel||!qtyEl)return;
   const part=db.parts.find(p=>p.id===sel.value);
   if(!part){alert('اختر قطعة.');return;}
@@ -763,45 +842,58 @@ function removePartFromJob(jobId,partId){
 }
 
 async function renderJobs(){
-  const el=document.getElementById('jobsList');
-  const search=(document.getElementById('jobSearch').value||'').trim().toLowerCase();
-  const filter=document.getElementById('jobStatusFilter').value;
-  let jobs=db.jobs.slice();
-  if(filter)jobs=jobs.filter(j=>j.status===filter);
-  if(search)jobs=jobs.filter(j=>(j.customer+' '+j.phone+' '+j.model+' '+j.brand+' '+j.fault).toLowerCase().includes(search));
-  if(!jobs.length){el.innerHTML='<div class="empty">'+(db.jobs.length?'لا نتائج مطابقة.':'لا توجد طلبات بعد.')+'</div>';return;}
-  const statusClass=s=>(s==='تم التسليم'||s==='جاهز للتسليم')?'ok':(s==='قيد الإصلاح'||s==='قيد الفحص')?'warn':'';
-  const rows=await Promise.all(jobs.map(async j=>{
-    const partsTotal=j.partsUsed.reduce((s,p)=>s+p.price*p.qty,0);
-    const total=j.price+partsTotal;
-    const photoThumb=j.photoId?'<img class="photo-thumb" data-photo="'+esc(j.photoId)+'" alt="صورة" src="'+await getPhotoData(j.photoId)+'">':'';
-    const partsHtml=j.partsUsed.length?'<div class="parts-used"><b>القطع:</b> '+j.partsUsed.map(p=>'<span class="tag">'+esc(p.name)+' ×'+p.qty+' — <a href="#" onclick="removePartFromJob(\''+j.id+'\',\''+p.id+'\');return false;" style="color:var(--red)">إرجاع</a></span>').join(' ')+'</div>':'';
-    const partsSelector=db.parts.length?
-      '<select id="partSel_'+j.id+'" aria-label="اختر قطعة">'+db.parts.map(p=>'<option value="'+p.id+'">'+esc(p.name)+' ('+p.qty+')</option>').join('')+'</select>'+
-      '<input id="partQty_'+j.id+'" type="number" min="1" value="1" style="width:70px" aria-label="الكمية">'+
-      '<button class="secondary" onclick="addPartToJob(\''+j.id+'\')">إضافة قطعة</button>'
-      :'<span class="muted">لا قطع.</span>';
-    return '<div class="item">'+
+  const token = ++_renderJobsToken;
+  const el = document.getElementById('jobsList');
+  const search = (document.getElementById('jobSearch').value||'').trim().toLowerCase();
+  const filter = document.getElementById('jobStatusFilter').value;
+  let jobs = db.jobs.slice();
+  if(filter) jobs = jobs.filter(j=>j.status===filter);
+  if(search) jobs = jobs.filter(j=>(j.customer+' '+j.phone+' '+j.model+' '+j.brand+' '+j.fault).toLowerCase().includes(search));
+  if(!jobs.length){
+    if(token===_renderJobsToken) el.innerHTML='<div class="empty">'+(db.jobs.length?'لا نتائج مطابقة.':'لا توجد طلبات بعد.')+'</div>';
+    return;
+  }
+  const statusClass = s => (s==='تم التسليم'||s==='جاهز للتسليم')?'ok':(s==='قيد الإصلاح'||s==='قيد الفحص')?'warn':'';
+  const rows = await Promise.all(jobs.map(async j=>{
+    const partsTotal = j.partsUsed.reduce((s,p)=>s+p.price*p.qty,0);
+    const total = j.price+partsTotal;
+    const photo = await loadPhoto(j);
+    const photoThumb = photo ? '<img class="photo-thumb" data-photo="'+esc(j.photoId)+'" alt="صورة" src="'+photo+'">' : '';
+    const partsHtml = j.partsUsed.length
+      ? '<div class="parts-used"><b>القطع:</b> '+j.partsUsed.map(p=>
+          '<span class="tag">'+esc(p.name)+' ×'+p.qty+' — <a href="#" data-act="remove-part" data-job="'+esc(j.id)+'" data-part="'+esc(p.id)+'" style="color:var(--red)">إرجاع</a></span>'
+        ).join(' ')+'</div>' : '';
+    const partsSelector = db.parts.length
+      ? '<select data-role="part-sel" data-job="'+esc(j.id)+'" aria-label="اختر قطعة">'+
+          db.parts.map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+' ('+p.qty+')</option>').join('')+
+        '</select>'+
+        '<input data-role="part-qty" data-job="'+esc(j.id)+'" type="number" min="1" value="1" style="width:70px" aria-label="الكمية">'+
+        '<button class="secondary" data-act="add-part" data-job="'+esc(j.id)+'">إضافة قطعة</button>'
+      : '<span class="muted">لا قطع.</span>';
+    return '<div class="item" data-job-item="'+esc(j.id)+'">'+
       '<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap">'+
         '<strong style="margin:0">'+esc(j.customer)+' · '+esc(j.brand)+' '+esc(j.model)+'</strong>'+photoThumb+
       '</div>'+
       '<span class="tag '+statusClass(j.status)+'">'+esc(j.status)+'</span>'+
       '<p class="muted">📞 '+esc(j.phone)+' · 📅 '+esc(j.date)+'<br>🔧 '+esc(j.fault||'غير محدد')+'<br>💰 '+j.price.toLocaleString('en-US')+' د.ع'+(partsTotal?' + قطع '+partsTotal.toLocaleString('en-US')+' = <b>'+total.toLocaleString('en-US')+' د.ع</b>':'')+'</p>'+
       partsHtml+
-      '<div class="actions"><select aria-label="تغيير الحالة" onchange="changeStatus(\''+j.id+'\',this.value)">'+
-        ['تم الاستلام','قيد الفحص','قيد الإصلاح','جاهز للتسليم','تم التسليم'].map(s=>'<option '+(s===j.status?'selected':'')+'>'+s+'</option>').join('')+
-      '</select>'+partsSelector+'</div>'+
       '<div class="actions">'+
-        '<button class="secondary" onclick="editJob(\''+j.id+'\')">تعديل</button>'+
-        '<button class="secondary" onclick="printJob(\''+j.id+'\')">📄 الفاتورة</button>'+
-        '<button class="danger" onclick="deleteJob(\''+j.id+'\')">حذف</button>'+
+        '<select data-act="change-status" data-job="'+esc(j.id)+'" aria-label="تغيير الحالة">'+
+          VALID_STATUSES.map(s=>'<option '+(s===j.status?'selected':'')+'>'+s+'</option>').join('')+
+        '</select>'+partsSelector+
+      '</div>'+
+      '<div class="actions">'+
+        '<button class="secondary" data-act="edit" data-job="'+esc(j.id)+'">تعديل</button>'+
+        '<button class="secondary" data-act="print" data-job="'+esc(j.id)+'">📄 الفاتورة</button>'+
+        '<button class="danger" data-act="delete" data-job="'+esc(j.id)+'">حذف</button>'+
       '</div></div>';
   }));
-  el.innerHTML=rows.join('');
-  el.querySelectorAll('.photo-thumb').forEach(img=>{img.addEventListener('click',()=>openPhotoViewer(img.src));});
+  if(token !== _renderJobsToken) return;
+  el.innerHTML = rows.join('');
 }
 
 function openPhotoViewer(src){
+  if(!validPhotoData(src)) return;
   const v=document.createElement('div');
   v.className='photo-viewer';
   v.innerHTML='<img src="'+src+'" alt="صورة كاملة">';
@@ -819,8 +911,8 @@ async function printJob(id){
   const total=j.price+partsTotal;
   const photo=await getPhotoData(j.photoId);
   const partsRows=j.partsUsed.length?j.partsUsed.map(p=>'<tr><td>'+esc(p.name)+'</td><td>'+p.qty+'</td><td>'+(p.price*p.qty).toLocaleString('en-US')+' د.ع</td></tr>').join(''):'<tr><td colspan="3" style="text-align:center;color:#999">لا قطع</td></tr>';
-  const logoHtml=shop.logo?'<img src="'+shop.logo+'" class="brand-logo" alt="logo">':'';
-  const photoHtml=photo?'<div class="photo-section"><h4>صورة الجهاز عند الاستلام</h4><img src="'+photo+'" alt="صورة الجهاز"></div>':'';
+  const logoHtml=(shop.logo && validPhotoData(shop.logo))?'<img src="'+shop.logo+'" class="brand-logo" alt="logo">':'';
+  const photoHtml=(photo && validPhotoData(photo))?'<div class="photo-section"><h4>صورة الجهاز عند الاستلام</h4><img src="'+photo+'" alt="صورة الجهاز"></div>':'';
   const w=window.open('','_blank');
   if(!w){alert('اسمح بالنوافذ المنبثقة.');return;}
   w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة - '+esc(j.customer)+'</title>'+
@@ -906,9 +998,9 @@ function renderStock(){
       '<span class="tag '+tagCls+'">'+tagTxt+' — '+p.qty+'</span>'+
       '<p class="muted">'+p.price.toLocaleString('en-US')+' د.ع</p>'+
       '<div class="actions">'+
-        '<button class="secondary" onclick="adjustStock(\''+p.id+'\',1)">+</button>'+
-        '<button class="secondary" onclick="adjustStock(\''+p.id+'\',-1)">−</button>'+
-        '<button class="danger" onclick="deletePart(\''+p.id+'\')">حذف</button>'+
+        '<button class="secondary" data-act="stock-inc" data-id="'+esc(p.id)+'">+</button>'+
+        '<button class="secondary" data-act="stock-dec" data-id="'+esc(p.id)+'">−</button>'+
+        '<button class="danger" data-act="stock-del" data-id="'+esc(p.id)+'">حذف</button>'+
       '</div></div>';
   }).join('');
 }
@@ -935,11 +1027,18 @@ async function checkAIStatus(){
   const el=document.getElementById('aiStatus');
   if(!navigator.onLine){el.textContent='⚠️ أنت أوفلاين. سيُستخدم البديل المحلي.';return;}
   try{
-    const r=await fetch('/api/health',{cache:'no-store'});
+    const ctrl = new AbortController();
+    const t = setTimeout(()=>ctrl.abort(), 3000);
+    const r=await fetch('/api/health',{cache:'no-store', signal: ctrl.signal});
+    clearTimeout(t);
     if(!r.ok)throw new Error();
     const d=await r.json();
     el.textContent=d.aiConfigured?'✅ المساعد متصل.':'⚠️ الخادم يعمل، مفتاح API غير مضبوط.';
-  }catch(_){el.textContent='⚠️ المساعد غير متصل. سيُستخدم البديل المحلي.';}
+    el.style.color='';
+  }catch(_){
+    el.textContent='ℹ️ المساعد يعمل بالوضع المحلي (بدون AI سحابي).';
+    el.style.color='var(--muted)';
+  }
 }
 async function askAssistant(){
   const q=document.getElementById('ask').value.trim();
@@ -957,7 +1056,7 @@ async function askAssistant(){
     answer.textContent=data.answer||'لم تصل إجابة.';
   }catch(error){
     const local=localFaultAnswer(q);
-    if(local)answer.textContent='⚠️ المساعد غير متاح ('+error.message+').\n\n'+local;
+    if(local)answer.textContent='ℹ️ المساعد السحابي غير متاح.\n\n'+local;
     else answer.textContent='تعذر الحصول على الإجابة: '+error.message;
   }finally{button.disabled=false;button.textContent='اسأل المساعد الفني AI';}
 }
@@ -987,9 +1086,12 @@ function ohm(){
    10) التقارير + CSV
    ============================================================ */
 function getJobDate(j){
-  if(j.dateISO){const d=new Date(j.dateISO);if(!isNaN(d))return d;}
-  const m=(j.date||'').match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
-  if(m)return new Date(+m[3],+m[2]-1,+m[1]);
+  if(j.dateISO){ const d=new Date(j.dateISO); if(!isNaN(d)) return d; }
+  const s = String(j.date||'')
+    .replace(/[٠-٩]/g, c=>String('٠١٢٣٤٥٦٧٨٩'.indexOf(c)))
+    .replace(/[۰-۹]/g, c=>String('۰۱۲۳۴۵۶۷۸۹'.indexOf(c)));
+  const m = s.match(/(\d{1,2})[\/\-](\d{1,2})[\/\-](\d{4})/);
+  if(m) return new Date(+m[3], +m[2]-1, +m[1]);
   return null;
 }
 function generateReport(){
@@ -997,9 +1099,10 @@ function generateReport(){
   const toVal=document.getElementById('reportTo').value;
   const from=fromVal?new Date(fromVal+'T00:00:00'):null;
   const to=toVal?new Date(toVal+'T23:59:59'):null;
+  const out=document.getElementById('reportOutput');
+  if(from&&to&&from>to){out.innerHTML='<div class="empty">تاريخ البداية بعد تاريخ النهاية.</div>';return;}
   let jobs=db.jobs.slice();
   if(from||to)jobs=jobs.filter(j=>{const d=getJobDate(j);if(!d)return false;if(from&&d<from)return false;if(to&&d>to)return false;return true;});
-  const out=document.getElementById('reportOutput');
   if(!jobs.length){out.innerHTML='<div class="empty">لا توجد طلبات في هذه الفترة.</div>';return;}
   const total=jobs.length;
   const byStatus={};jobs.forEach(j=>byStatus[j.status]=(byStatus[j.status]||0)+1);
@@ -1089,8 +1192,8 @@ async function pullFromSheets(){
   const statusEl=document.getElementById('syncStatus');
   try{
     const data=await syncCall('pull');
-    const jobs=(data.jobs||[]).map(j=>({id:String(j.id||genId()),customer:String(j.customer||''),phone:String(j.phone||''),brand:String(j.brand||''),model:String(j.model||''),fault:String(j.fault||''),price:Number(j.price)||0,status:String(j.status||'تم الاستلام'),date:String(j.date||''),dateISO:'',photoId:'',partsUsed:[]}));
-    const parts=(data.parts||[]).map(p=>({id:String(p.id||genId()),name:String(p.name||''),qty:Number(p.qty)||0,price:Number(p.price)||0}));
+    const jobs=(data.jobs||[]).map(j=>normalizeJob({id:String(j.id||genId()),customer:String(j.customer||''),phone:String(j.phone||''),brand:String(j.brand||''),model:String(j.model||''),fault:String(j.fault||''),price:Number(j.price)||0,status:String(j.status||'تم الاستلام'),date:String(j.date||''),dateISO:'',photoId:'',partsUsed:[]}));
+    const parts=(data.parts||[]).map(p=>normalizePart({id:String(p.id||genId()),name:String(p.name||''),qty:Number(p.qty)||0,price:Number(p.price)||0}));
     db.jobs=jobs;db.parts=parts;saveDB();
     statusEl.textContent='✅ تم جلب '+jobs.length+' طلب و '+parts.length+' قطعة.';
   }catch(_){}
@@ -1107,7 +1210,14 @@ function exportData(){
 }
 async function exportWithPhotos(){
   const photos={};
-  for(const j of db.jobs){if(j.photoId){const d=await getPhotoData(j.photoId);if(d)photos[j.photoId]=d;}}
+  for(const j of db.jobs){
+    if(j.photoId){
+      try{
+        const d = await getPhotoData(j.photoId);
+        if(validPhotoData(d)) photos[j.photoId]=d;
+      }catch(_){}
+    }
+  }
   const full={version:4,exportedAt:new Date().toISOString(),db:db,photos:photos};
   const blob=new Blob([JSON.stringify(full,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
@@ -1126,8 +1236,32 @@ async function importData(e){
       if(parsed.db&&typeof parsed.db==='object'){dbData=parsed.db;photos=parsed.photos;}
       if(!dbData||!Array.isArray(dbData.jobs)||!Array.isArray(dbData.parts))throw new Error('bad');
       if(!confirm('سيتم استبدال البيانات. متابعة؟'))return;
-      if(photos&&typeof photos==='object'){for(const [id,dataUrl] of Object.entries(photos)){try{await savePhotoData(id,dataUrl);}catch(_){}}}
-      db={version:4,jobs:dbData.jobs.map(normalizeJob),parts:dbData.parts.map(normalizePart),settings:{pinEnabled:!!(dbData.settings&&dbData.settings.pinEnabled),pinHash:(dbData.settings&&dbData.settings.pinHash)||null,shop:(()=>{const s=(dbData.settings&&dbData.settings.shop)||{};return{name:String(s.name||''),phone:String(s.phone||''),address:String(s.address||''),logo:s.logo||null};})()}};
+      if(photos&&typeof photos==='object'){
+        photoCache.clear();
+        for(const [id,dataUrl] of Object.entries(photos)){
+          try{
+            if(validId(id) && validPhotoData(dataUrl)) await savePhotoData(id,dataUrl);
+          }catch(_){}
+        }
+      }
+      db={
+        version:4,
+        jobs:dbData.jobs.map(normalizeJob),
+        parts:dbData.parts.map(normalizePart),
+        settings:{
+          pinEnabled:!!(dbData.settings&&dbData.settings.pinEnabled),
+          pinHash:(dbData.settings&&dbData.settings.pinHash)||null,
+          shop:(()=>{
+            const s=(dbData.settings&&dbData.settings.shop)||{};
+            return{
+              name:String(s.name||'').slice(0,100),
+              phone:String(s.phone||'').slice(0,30),
+              address:String(s.address||'').slice(0,200),
+              logo: validPhotoData(s.logo)?s.logo:null
+            };
+          })()
+        }
+      };
       saveDB();updatePinStatus();loadShopInfoToForm();
       alert('تم استيراد البيانات بنجاح.');
     }catch(_){alert('ملف غير صالح.');}
@@ -1138,6 +1272,7 @@ async function clearAll(){
   if(!confirm('سيتم حذف كل الطلبات والقطع والصور. متأكد؟'))return;
   if(!confirm('تأكيد أخير: لا يمكن التراجع.'))return;
   try{for(const j of db.jobs){if(j.photoId)await deletePhotoData(j.photoId);}}catch(_){}
+  photoCache.clear();
   db=defaultDB();saveDB();sessionStorage.removeItem('sf_unlocked');updatePinStatus();loadShopInfoToForm();
   alert('تم مسح كل البيانات.');
 }
@@ -1159,18 +1294,22 @@ function loadShopInfoToForm(){
   document.getElementById('shopPhone').value=s.phone||'';
   document.getElementById('shopAddress').value=s.address||'';
   const preview=document.getElementById('logoPreview');
-  if(s.logo){preview.innerHTML='<img src="'+s.logo+'" alt="شعار">';document.getElementById('removeLogoBtn').style.display='inline-block';}
+  if(s.logo&&validPhotoData(s.logo)){preview.innerHTML='<img src="'+s.logo+'" alt="شعار">';document.getElementById('removeLogoBtn').style.display='inline-block';}
   else{preview.innerHTML='';document.getElementById('removeLogoBtn').style.display='none';}
   pendingLogoData=null;
 }
 function saveShopInfo(){
-  db.settings.shop={name:document.getElementById('shopName').value.trim(),phone:document.getElementById('shopPhone').value.trim(),address:document.getElementById('shopAddress').value.trim(),logo:pendingLogoData!==null?pendingLogoData:(db.settings.shop.logo||null)};
-  if(pendingLogoData===null&&!db.settings.shop.logo)db.settings.shop.logo=null;
+  db.settings.shop={
+    name:document.getElementById('shopName').value.trim().slice(0,100),
+    phone:document.getElementById('shopPhone').value.trim().slice(0,30),
+    address:document.getElementById('shopAddress').value.trim().slice(0,200),
+    logo: pendingLogoData!==null?pendingLogoData:(db.settings.shop.logo||null)
+  };
   saveDB();loadShopInfoToForm();alert('تم حفظ معلومات المتجر.');
 }
 
 /* ============================================================
-   14) PIN - SHA-256 (v5)
+   14) PIN
    ============================================================ */
 async function hashPin(pin){
   const s = String(pin) + '|smartfix|v5';
@@ -1185,17 +1324,34 @@ function checkLock(){
   }
 }
 
+let _pinAttempts = 0, _pinLockUntil = 0;
 async function unlock(){
   const input=document.getElementById('pinInput');
   const err=document.getElementById('pinError');
+  if(Date.now() < _pinLockUntil){
+    const secs = Math.ceil((_pinLockUntil - Date.now())/1000);
+    err.textContent = '🔒 مقفل. حاول بعد '+secs+' ثانية.';
+    err.classList.remove('hidden');
+    input.value = '';
+    return;
+  }
   const h = await hashPin(input.value);
   if(h === db.settings.pinHash){
     sessionStorage.setItem('sf_unlocked','1');
     document.getElementById('lockScreen').classList.add('hidden');
-    input.value='';err.classList.add('hidden');
+    input.value=''; err.classList.add('hidden');
+    _pinAttempts = 0;
   } else {
+    _pinAttempts++;
+    if(_pinAttempts >= 5){
+      _pinLockUntil = Date.now() + 60000;
+      _pinAttempts = 0;
+      err.textContent = '🔒 5 محاولات خاطئة. انتظر دقيقة.';
+    } else {
+      err.textContent = 'رمز PIN غير صحيح ('+_pinAttempts+'/5)';
+    }
     err.classList.remove('hidden');
-    input.value='';input.focus();
+    input.value=''; input.focus();
   }
 }
 
@@ -1235,7 +1391,7 @@ function setupPWA(){
   const a=document.createElement('link');a.rel='apple-touch-icon';a.href=iconSvg;document.head.appendChild(a);
   if(location.protocol==='http:'||location.protocol==='https:'){
     try{
-      const manifest={name:'Smart Fix AI',short_name:'Smart Fix',start_url:location.pathname,scope:'./',display:'standalone',orientation:'portrait',background_color:'#101d35',theme_color:'#101d35',lang:'ar',dir:'rtl',icons:[{src:iconSvg,sizes:'any',type:'image/svg+xml',purpose:'any maskable'}]};
+      const manifest={name:'Smart Fix AI',short_name:'Smart Fix',start_url:location.pathname,scope:'./',display:'standalone',orientation:'portrait',background_color:'#101d35',theme_color:'#101d35',lang:'ar',dir:'rtl',icons:[{src:iconSvg,sizes:'any',type:'image/svg+xml',purpose:'any'},{src:iconSvg,sizes:'any',type:'image/svg+xml',purpose:'maskable'}]};
       const blob=new Blob([JSON.stringify(manifest)],{type:'application/manifest+json'});
       const link=document.createElement('link');link.rel='manifest';link.href=URL.createObjectURL(blob);document.head.appendChild(link);
     }catch(_){}
@@ -1286,18 +1442,10 @@ function updateLicenseStatus(){
   }
 }
 
-function showSetupWizard(){
-  document.getElementById('setupWizard').classList.remove('hidden');
-}
-function hideSetupWizard(){
-  document.getElementById('setupWizard').classList.add('hidden');
-}
-function showLicenseGate(){
-  document.getElementById('licenseGate').classList.remove('hidden');
-}
-function hideLicenseGate(){
-  document.getElementById('licenseGate').classList.add('hidden');
-}
+function showSetupWizard(){document.getElementById('setupWizard').classList.remove('hidden');}
+function hideSetupWizard(){document.getElementById('setupWizard').classList.add('hidden');}
+function showLicenseGate(){document.getElementById('licenseGate').classList.remove('hidden');}
+function hideLicenseGate(){document.getElementById('licenseGate').classList.add('hidden');}
 
 function saveSetup(){
   const url = document.getElementById('setupUrl').value.trim();
@@ -1330,7 +1478,7 @@ function activateLicense(){
   const err = document.getElementById('licenseErr');
   const key = input.value.trim().toUpperCase();
   if (!isValidLicenseKey(key)){
-    err.textContent = 'الصيغة غير صحيحة. مثال: SF-ABCD1-EFGH2-IJKL3';
+    err.textContent = 'المفتاح غير صحيح. تحقق من الصيغة أو تواصل مع البائع.';
     err.classList.remove('hidden');
     return;
   }
@@ -1338,6 +1486,7 @@ function activateLicense(){
   hideLicenseGate();
   alert('✅ تم تفعيل النسخة الكاملة. شكراً لك!');
   updateLicenseStatus();
+  setTimeout(()=>location.reload(), 800);
 }
 
 function resetConfig(){
@@ -1358,7 +1507,6 @@ function clearLicense(){
    18) التشغيل
    ============================================================ */
 function init(){
-  // ربط الأزرار
   document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
   document.querySelectorAll('[data-goto]').forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.goto)));
 
@@ -1372,17 +1520,50 @@ function init(){
   document.getElementById('jobSearch').addEventListener('input',renderJobs);
   document.getElementById('jobStatusFilter').addEventListener('change',renderJobs);
 
+  // Event delegation - jobs list
+  const jobsListEl = document.getElementById('jobsList');
+  jobsListEl.addEventListener('click',(e)=>{
+    const img = e.target.closest('.photo-thumb');
+    if(img){ openPhotoViewer(img.src); return; }
+    const a = e.target.closest('[data-act]');
+    if(!a) return;
+    const jobId = a.dataset.job;
+    const act = a.dataset.act;
+    if(act==='edit') editJob(jobId);
+    else if(act==='print') printJob(jobId);
+    else if(act==='delete') deleteJob(jobId);
+    else if(act==='add-part') addPartToJob(jobId);
+    else if(act==='remove-part'){ e.preventDefault(); removePartFromJob(jobId, a.dataset.part); }
+  });
+  jobsListEl.addEventListener('change',(e)=>{
+    const sel = e.target.closest('[data-act="change-status"]');
+    if(sel) changeStatus(sel.dataset.job, sel.value);
+  });
+
+  // Event delegation - stock list
+  const stockListEl = document.getElementById('stockList');
+  stockListEl.addEventListener('click',(e)=>{
+    const b = e.target.closest('[data-act]');
+    if(!b) return;
+    if(b.dataset.act==='stock-inc') adjustStock(b.dataset.id, 1);
+    else if(b.dataset.act==='stock-dec') adjustStock(b.dataset.id, -1);
+    else if(b.dataset.act==='stock-del') deletePart(b.dataset.id);
+  });
+
   document.getElementById('jobPhoto').addEventListener('change',async e=>{
     const f=e.target.files&&e.target.files[0];if(!f)return;
-    try{const dataUrl=await compressImage(f);editingPhotoData=dataUrl;document.getElementById('photoPreviewWrap').innerHTML='<img src="'+dataUrl+'" class="photo-preview" alt="معاينة">';document.getElementById('removePhotoBtn').style.display='inline-block';}
-    catch(_){alert('تعذر معالجة الصورة.');}
+    try{
+      const dataUrl=await compressImage(f);
+      if(!validPhotoData(dataUrl)){alert('صورة غير صالحة.');return;}
+      editingPhotoData=dataUrl;
+      _pendingPhotoRemove=false;
+      document.getElementById('photoPreviewWrap').innerHTML='<img src="'+dataUrl+'" class="photo-preview" alt="معاينة">';
+      document.getElementById('removePhotoBtn').style.display='inline-block';
+    }catch(_){alert('تعذر معالجة الصورة.');}
   });
-  document.getElementById('removePhotoBtn').addEventListener('click',async()=>{
-    if(editingJobId&&!editingPhotoData){
-      const j=db.jobs.find(x=>x.id===editingJobId);
-      if(j&&j.photoId){await deletePhotoData(j.photoId);j.photoId='';saveDB();}
-    }
-    editingPhotoData=null;
+  document.getElementById('removePhotoBtn').addEventListener('click',()=>{
+    _pendingPhotoRemove = true;
+    editingPhotoData = null;
     document.getElementById('photoPreviewWrap').innerHTML='';
     document.getElementById('removePhotoBtn').style.display='none';
     document.getElementById('jobPhoto').value='';
@@ -1409,14 +1590,21 @@ function init(){
 
   document.getElementById('shopLogo').addEventListener('change',async e=>{
     const f=e.target.files&&e.target.files[0];if(!f)return;
-    try{const dataUrl=await compressLogo(f);pendingLogoData=dataUrl;document.getElementById('logoPreview').innerHTML='<img src="'+dataUrl+'" alt="شعار">';}
-    catch(_){alert('تعذر معالجة الشعار.');}
+    try{
+      const dataUrl=await compressLogo(f);
+      if(!validPhotoData(dataUrl)){alert('شعار غير صالح.');return;}
+      pendingLogoData=dataUrl;
+      document.getElementById('logoPreview').innerHTML='<img src="'+dataUrl+'" alt="شعار">';
+    }catch(_){alert('تعذر معالجة الشعار.');}
   });
   document.getElementById('saveShopBtn').addEventListener('click',saveShopInfo);
   document.getElementById('removeLogoBtn').addEventListener('click',()=>{db.settings.shop.logo=null;pendingLogoData=null;saveDB();loadShopInfoToForm();});
 
   document.getElementById('enableNotifBtn').addEventListener('click',requestNotif);
-  document.getElementById('testNotifBtn').addEventListener('click',()=>{if(Notification.permission!=='granted'){alert('فعّل الإشعارات أولاً.');return;}showNotif('🔔 اختبار','هذا إشعار تجريبي من Smart Fix AI.','test-'+Date.now());});
+  document.getElementById('testNotifBtn').addEventListener('click',()=>{
+    if(!('Notification' in window) || Notification.permission!=='granted'){alert('فعّل الإشعارات أولاً.');return;}
+    showNotif('🔔 اختبار','هذا إشعار تجريبي من Smart Fix AI.','test-'+Date.now());
+  });
 
   document.getElementById('enablePinBtn').addEventListener('click',enablePin);
   document.getElementById('disablePinBtn').addEventListener('click',disablePin);
@@ -1425,36 +1613,29 @@ function init(){
 
   document.getElementById('installBtn').addEventListener('click',installClick);
 
-  // Setup wizard
   document.getElementById('setupSaveBtn').addEventListener('click',saveSetup);
   document.getElementById('setupSkipBtn').addEventListener('click',e=>{e.preventDefault();skipSetup();});
 
-  // License
   document.getElementById('licenseActivateBtn').addEventListener('click',activateLicense);
   document.getElementById('licenseKey').addEventListener('keydown',e=>{if(e.key==='Enter')activateLicense();});
 
-  // Config / license reset
   document.getElementById('resetConfigBtn').addEventListener('click',resetConfig);
   document.getElementById('clearLicenseBtn').addEventListener('click',clearLicense);
 
-  // الشبكة
   window.addEventListener('online',()=>{updateNet();checkAIStatus();});
   window.addEventListener('offline',()=>{updateNet();checkAIStatus();});
 
-  // أول شغّل - تحقق من الإعداد
   startTrialIfNeeded();
   if (!isConfigured()){
     showSetupWizard();
-    return; // لا تشغّل التطبيق بعد
+    return;
   }
 
-  // تحقق من الترخيص
   if (!isLicensed() && trialRemainingDays() <= 0){
     showLicenseGate();
     return;
   }
 
-  // عرض أولي
   render();
   updateStorageInfo();
   updatePinStatus();
@@ -1465,13 +1646,18 @@ function init(){
   checkAIStatus();
   checkLock();
   updateLicenseStatus();
+
+  // تسجيل Service Worker (بعد تهيئة كل شيء)
+  if('serviceWorker' in navigator && location.protocol==='https:'){
+    navigator.serviceWorker.register('sw.js').catch(e=>console.warn('[SW] register failed:', e));
+  }
 }
 
 document.addEventListener('DOMContentLoaded',init);
 </script>
 
 <!-- ============================================================
-     Cloud Sync Add-On (Supabase) - يقرأ config من localStorage
+     Cloud Sync (Supabase)
      ============================================================ -->
 <script>
 (function(){
@@ -1482,7 +1668,6 @@ const CFG_URL_KEY = 'smartfix_sb_url';
 const CFG_KEY_KEY = 'smartfix_sb_key';
 const CFG_MODE_KEY = 'smartfix_mode';
 
-// انتظر حتى تنتهي init الأساسية
 function tryStart(){
   const mode = localStorage.getItem(CFG_MODE_KEY);
   const url = localStorage.getItem(CFG_URL_KEY);
@@ -1597,7 +1782,7 @@ function tryStart(){
     setStatus('⏳ جارٍ الرفع...');
     try {
       if (db.jobs.length){
-        const rows = db.jobs.map(j => ({ id: j.id, data: j }));
+        const rows = db.jobs.map(j => ({ id: j.id, user_id: cloudUser.id, data: j }));
         const { error } = await sb.from('jobs').upsert(rows);
         if (error) throw error;
       }
@@ -1610,7 +1795,7 @@ function tryStart(){
       for (const p of db.parts){
         const { data: exists } = await sb.from('parts').select('qty').eq('id', p.id).maybeSingle();
         if (!exists){
-          await sb.from('parts').insert({ id: p.id, data: { name: p.name, price: p.price }, qty: p.qty });
+          await sb.from('parts').insert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price }, qty: p.qty });
         } else {
           await sb.from('parts').update({ data: { name: p.name, price: p.price } }).eq('id', p.id);
         }
@@ -1621,7 +1806,7 @@ function tryStart(){
         const del = rp.filter(r => !localIds.has(r.id)).map(r => r.id);
         if (del.length) await sb.from('parts').delete().in('id', del);
       }
-      await sb.from('settings').update({ data: { shop: db.settings.shop } }).eq('id', 1);
+      await sb.from('settings').upsert({ user_id: cloudUser.id, data: { shop: db.settings.shop } });
       setStatus('✅ آخر مزامنة: ' + new Date().toLocaleTimeString('ar-IQ'), 'var(--green)');
     } catch(e){
       console.error('[Cloud] sync:', e);
@@ -1635,7 +1820,7 @@ function tryStart(){
     const { data, error } = await sb.rpc('adjust_stock', { p_id: id, p_delta: delta });
     if (error){
       if (String(error.message||'').includes('not found') && p){
-        await sb.from('parts').upsert({ id: p.id, data: { name: p.name, price: p.price }, qty: p.qty });
+        await sb.from('parts').upsert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price }, qty: p.qty });
         return;
       }
       console.warn('[Cloud] adjust_stock:', error.message);
@@ -1680,7 +1865,7 @@ function tryStart(){
           }
         }
       }
-      const { data: rSet } = await sb.from('settings').select('*').eq('id', 1).single();
+      const { data: rSet } = await sb.from('settings').select('*').eq('user_id', cloudUser.id).maybeSingle();
       if (rSet?.data?.shop) db.settings.shop = rSet.data.shop;
       lsSave(); render(); loadShopInfoToForm();
       setStatus('✅ تم الجلب', 'var(--green)');
@@ -1739,18 +1924,5 @@ function tryStart(){
     });
   }
 
-  // انتظر حتى ينتهي init الأساسي (يخفي wizard/gate إن لزم)
   setTimeout(() => {
-    // إذا الـ license gate أو setup wizard ظاهرين، لا تشغّل cloud
-    if (!$('setupWizard').classList.contains('hidden')) return;
-    if (!$('licenseGate').classList.contains('hidden')) return;
-    initCloud();
-  }, 100);
-}
-
-if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryStart);
-else tryStart();
-})();
-</script>
-</body>
-                                   </html>
+    if (!$('setupWizard').classList.contains('hidd
