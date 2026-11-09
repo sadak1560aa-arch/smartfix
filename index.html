@@ -157,7 +157,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 4.0 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 4.1 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
  <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، وتابع الأجهزة وقطع الغيار والبضاعة من مكان واحد.</p></div>
@@ -264,7 +264,15 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="primary" id="addPartBtn" style="margin-top:12px; width:100%; font-size:16px; padding:14px;">إضافة مستمرة للمخزون</button>
   </div>
   
-  <h2 class="section-title" style="margin-top:20px;">الموجودات الحالية</h2>
+  <div style="display:flex; justify-content:space-between; align-items:center; margin-top:20px; margin-bottom:10px;">
+    <h2 class="section-title" style="margin:0;">الموجودات الحالية</h2>
+  </div>
+  
+  <!-- خانة البحث الجديدة -->
+  <div class="filter-row" style="margin-bottom: 15px;">
+    <input id="stockSearch" placeholder="🔍 بحث في المخزون (اكتب اسم المادة)..." autocomplete="off">
+  </div>
+
   <div class="panel" id="stockList"></div>
  </section>
 
@@ -378,7 +386,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 4.0 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 4.1 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
@@ -415,7 +423,7 @@ function startTrialIfNeeded(){
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '4.0');
+  localStorage.setItem(CFG_VERSION_KEY, '4.1');
 }
 
 const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -1011,9 +1019,17 @@ function sellPart(id) {
 
 function renderStock(){
   const el=document.getElementById('stockList');
-  if(!db.parts.length){el.innerHTML='<div class="empty">المخزون فارغ.</div>';return;}
+  const search = (document.getElementById('stockSearch')?.value || '').trim().toLowerCase();
   
-  el.innerHTML=db.parts.map(p=>{
+  let parts = db.parts.slice();
+  if(search) parts = parts.filter(p => p.name.toLowerCase().includes(search));
+  
+  if(!parts.length){
+    el.innerHTML='<div class="empty">' + (db.parts.length ? 'لا نتائج مطابقة للبحث.' : 'المخزون فارغ.') + '</div>';
+    return;
+  }
+  
+  el.innerHTML=parts.map(p=>{
     const tagCls=p.qty<=0?'danger':p.qty<=2?'warn':'ok';
     const tagTxt=p.qty<=0?'نفد':p.qty<=2?'منخفض':'متوفر';
     
@@ -1473,6 +1489,9 @@ function init(){
 
   document.getElementById('jobSearch').addEventListener('input',renderJobs);
   document.getElementById('jobStatusFilter').addEventListener('change',renderJobs);
+  
+  // ربط حدث البحث في المخزون
+  document.getElementById('stockSearch').addEventListener('input', renderStock);
 
   const jobsListEl = document.getElementById('jobsList');
   jobsListEl.addEventListener('click',(e)=>{
@@ -1885,4 +1904,4 @@ else tryStart();
 })();
 </script>
 </body>
-</html>
+                                              </html>
