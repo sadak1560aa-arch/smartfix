@@ -147,10 +147,10 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 3.3 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 3.6 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
- <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، وتابع الأجهزة وقطع الغيار من مكان واحد.</p></div>
+ <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، وتابع الأجهزة وقطع الغيار والبضاعة من مكان واحد.</p></div>
  <div id="lowStockAlert" class="alert warn hidden"></div>
  <div class="stats">
   <div class="stat"><b id="jobsCount">0</b><span>طلبات الصيانة</span></div>
@@ -161,8 +161,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
   <button class="active" data-tab="home">الرئيسية</button>
   <button data-tab="diagnosis">تشخيص الأعطال</button>
   <button data-tab="jobs">طلبات الصيانة</button>
-  <button data-tab="inventory">قطع الغيار</button>
-  <button data-tab="assistant">المساعد الذكي</button>
+  <button data-tab="inventory">📦 إدارة المخزون</button>
   <button data-tab="tools">أدوات الفني</button>
   <button data-tab="reports">📊 التقارير</button>
   <button data-tab="sync">☁️ المزامنة</button>
@@ -172,10 +171,9 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
  <section id="home" class="section active">
   <h2 class="section-title">أقسام البرنامج</h2>
   <div class="grid">
-   <div class="tile" data-goto="diagnosis"><div class="ico">🩺</div><h3>تشخيص الأعطال</h3><p>حدد المشكلة واحصل على خطوات فحص أولية.</p></div>
+   <div class="tile" data-goto="inventory"><div class="ico">➕</div><h3>إضافة بضاعة جديدة</h3><p>سجل المشترياتك، الإكسسوارات، وقطع الغيار في المخزن.</p></div>
    <div class="tile" data-goto="jobs"><div class="ico">📋</div><h3>إدارة الصيانة</h3><p>سجل الزبائن والأجهزة وتابع حالة الإصلاح.</p></div>
-   <div class="tile" data-goto="inventory"><div class="ico">🧰</div><h3>قطع الغيار</h3><p>تابع الكميات والأسعار والتنبيه للمخزون.</p></div>
-   <div class="tile" data-goto="assistant"><div class="ico">🤖</div><h3>المساعد الفني</h3><p>إرشادات تعليمية أولية مع تنبيهات السلامة.</p></div>
+   <div class="tile" data-goto="diagnosis"><div class="ico">🩺</div><h3>تشخيص الأعطال</h3><p>حدد المشكلة واحصل على خطوات فحص أولية.</p></div>
    <div class="tile" data-goto="tools"><div class="ico">🧮</div><h3>أدوات الفني</h3><p>حاسبة قانون أوم ومعلومات القياس.</p></div>
    <div class="tile" data-goto="reports"><div class="ico">📊</div><h3>التقارير</h3><p>إحصائيات الإيرادات والقطع والمبيعات.</p></div>
    <div class="tile" data-goto="sync"><div class="ico">☁️</div><h3>المزامنة</h3><p>اربط التطبيق بـ Google Sheets بأمان.</p></div>
@@ -238,27 +236,28 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
  </section>
 
  <section id="inventory" class="section">
-  <h2 class="section-title">إدارة قطع الغيار</h2>
-  <div class="panel">
-   <label for="partName">اسم القطعة</label><input id="partName" placeholder="مثلاً: منفذ شحن">
-   <div class="formgrid"><div><label for="partQty">الكمية</label><input id="partQty" type="number" min="0" value="1"></div><div><label for="partPrice">سعر القطعة (د.ع)</label><input id="partPrice" type="number" min="0" value="0"></div></div>
-   <button class="primary" id="addPartBtn">إضافة للمخزون</button>
+  <h2 class="section-title">📦 إدارة المخزون والبضاعة</h2>
+  <div class="panel" style="border-right: 4px solid var(--blue);">
+   <h3 style="margin:0 0 10px;font-size:16px;color:var(--navy)">➕ إضافة بضاعة جديدة للمخزن</h3>
+   <label for="partCategory">نوع البضاعة</label>
+   <select id="partCategory">
+     <option value="قطعة غيار">قطعة غيار (شاشة، بطارية...)</option>
+     <option value="إكسسوار">إكسسوار (شاحن، كفر...)</option>
+     <option value="جهاز">جهاز هاتف كامل</option>
+     <option value="أخرى">أخرى</option>
+   </select>
+   <label for="partName">اسم البضاعة</label>
+   <input id="partName" placeholder="مثلاً: شاشة سامسونج، شاحن أيفون...">
+   <div class="formgrid">
+     <div><label for="partQty">الكمية</label><input id="partQty" type="number" min="0" value="1"></div>
+     <div><label for="partCost">سعر الشراء (د.ع)</label><input id="partCost" type="number" min="0" value="0"></div>
+     <div><label for="partPrice">سعر البيع (د.ع)</label><input id="partPrice" type="number" min="0" value="0"></div>
+   </div>
+   <button class="primary" id="addPartBtn" style="margin-top:12px; width:100%;">إضافة البضاعة للمخزون</button>
   </div>
-  <div class="panel" id="stockList" style="margin-top:12px"></div>
- </section>
-
- <section id="assistant" class="section">
-  <h2 class="section-title">المساعد الفني الذكي</h2>
-  <div class="panel">
-   <p id="aiStatus" class="muted">جارٍ التحقق من اتصال المساعد بالخادم...</p>
-   <label for="assistantDevice">نوع الجهاز / الموديل</label><input id="assistantDevice" placeholder="مثلاً: Samsung Galaxy A54">
-   <label for="ask">اكتب سؤالك عن عطل الهاتف</label>
-   <textarea id="ask" maxlength="6000" placeholder="مثلاً: هاتفي لا يشحن، ما خطوات الفحص الأولية؟"></textarea>
-   <div class="muted" style="text-align:left;margin-top:4px"><span id="askCount">0</span> / 6000</div>
-   <button id="askButton" class="primary" style="margin-top:10px">اسأل المساعد الفني AI</button>
-   <div id="answer" class="result hidden"></div>
-   <p class="muted">لا تكتب اسم الزبون أو رقم هاتفه أو كلمات المرور أو رموز التحقق. إجابات المساعد احتمالية وليست بديلاً عن القياس والفحص المباشر.</p>
-  </div>
+  
+  <h2 class="section-title">الموجودات الحالية</h2>
+  <div class="panel" id="stockList"></div>
  </section>
 
  <section id="tools" class="section">
@@ -371,15 +370,12 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 3.3 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 3.6 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
 'use strict';
 
-/* ============================================================
-   0) إعدادات المنصة
-   ============================================================ */
 const CFG_URL_KEY = 'smartfix_sb_url';
 const CFG_KEY_KEY = 'smartfix_sb_key';
 const CFG_MODE_KEY = 'smartfix_mode';
@@ -411,16 +407,13 @@ function startTrialIfNeeded(){
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '3.3');
+  localStorage.setItem(CFG_VERSION_KEY, '3.6');
 }
 
-/* الترخيص: SF-XXXXX-XXXXX-CCCCC مع checksum */
 const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 function computeLicenseChecksum(payload){
   let sum = 0;
-  for(let i=0;i<payload.length;i++){
-    sum = ((sum * 31) + payload.charCodeAt(i)) >>> 0;
-  }
+  for(let i=0;i<payload.length;i++){ sum = ((sum * 31) + payload.charCodeAt(i)) >>> 0; }
   let out = '';
   let n = sum;
   for(let i=0;i<5;i++){ out += LIC_CHARSET[n % 36]; n = Math.floor(n / 36); }
@@ -434,9 +427,6 @@ function isValidLicenseKey(k){
   return computeLicenseChecksum(payload) === m[3];
 }
 
-/* ============================================================
-   1) قاعدة البيانات + IndexedDB
-   ============================================================ */
 const KEY='smartfixai_v4';
 const OLD_KEYS=['smartfixai_v3','smartfixai_v2','smartfixai_v1'];
 const VALID_STATUSES=['تم الاستلام','قيد الفحص','قيد الإصلاح','جاهز للتسليم','تم التسليم'];
@@ -475,8 +465,10 @@ function normalizePart(p){
   return{
     id: validId(p.id) ? String(p.id) : genId(),
     name:String(p.name??'').slice(0,100),
+    category:String(p.category??'قطعة غيار').slice(0,50),
     qty:num(p.qty),
-    price:num(p.price)
+    price:num(p.price), // سعر البيع
+    costPrice:num(p.costPrice || 0) // سعر الشراء
   };
 }
 
@@ -519,7 +511,6 @@ function saveDB(){
   updateStorageInfo();
 }
 
-/* IndexedDB للصور */
 const IDB_NAME='smartfix_photos_v1';
 let idb=null;
 function openIDB(){
@@ -605,18 +596,12 @@ function compressLogo(file){
   });
 }
 
-/* ============================================================
-   2) التنقل
-   ============================================================ */
 function showTab(id){
   document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===id));
   document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));
   window.scrollTo({top:0,behavior:'smooth'});
 }
 
-/* ============================================================
-   3) الإشعارات
-   ============================================================ */
 async function requestNotif(){
   if(!('Notification' in window)){alert('هذا المتصفح لا يدعم الإشعارات.');return false;}
   if(Notification.permission==='granted')return true;
@@ -653,9 +638,6 @@ function updateNotifStatus(){
   else{el.textContent='⚠️ الإشعارات غير مفعّلة.';el.style.color='var(--amber)';}
 }
 
-/* ============================================================
-   4) تشخيص الأعطال
-   ============================================================ */
 const faults={
 power:{title:'الهاتف لا يعمل',steps:['جرّب شاحناً وكابلاً موثوقين ومناسبين للجهاز.','اترك الهاتف على الشحن مدة مناسبة ثم جرّب إعادة التشغيل القسرية وفق تعليمات الشركة.','افحص منفذ الشحن بصرياً دون إدخال أدوات معدنية.','إذا تعرض الجهاز للماء أو السقوط، أوقف المحاولات واطلب فحصاً فنياً.'],causes:'بطارية فارغة أو تالفة، منفذ شحن، زر تشغيل، شاشة، أو عطل على اللوحة.'},
 charge:{title:'مشكلة الشحن',steps:['اختبر المقبس والكابل ومحول الطاقة المعروف سلامته.','افحص المنفذ بحثاً عن غبار أو تلف؛ لا تستخدم أدوات معدنية أو سوائل.','تحقق من حرارة الجهاز ورسالة الشحن.','جرّب شاحناً معتمداً متوافقاً. إذا استمر العطل يلزم قياس وفحص فني.'],causes:'كابل أو محول، اتساخ/تلف المنفذ، بطارية، دائرة الشحن أو اللوحة.'},
@@ -681,11 +663,7 @@ function diagnose(){
     '\n\n<b>تنبيه:</b> احتمالات وليست تشخيصاً مؤكداً.</div>';
 }
 
-/* ============================================================
-   5) طلبات الصيانة
-   ============================================================ */
 const validatePhone=v=>/^[0-9+\-\s]{7,20}$/.test(v);
-
 let _renderJobsToken = 0;
 const photoCache = new Map();
 
@@ -901,9 +879,6 @@ function openPhotoViewer(src){
   document.body.appendChild(v);
 }
 
-/* ============================================================
-   6) فاتورة
-   ============================================================ */
 async function printJob(id){
   const j=db.jobs.find(x=>x.id===id);if(!j)return;
   const shop=db.settings.shop||{};
@@ -970,40 +945,72 @@ async function printJob(id){
   w.document.close();
 }
 
-/* ============================================================
-   7) المخزون
-   ============================================================ */
 function addPart(){
-  const n=document.getElementById('partName').value.trim();
-  const q=Number(document.getElementById('partQty').value);
-  const p=Number(document.getElementById('partPrice').value);
-  if(!n){alert('أدخل اسم القطعة.');return;}
-  if(!Number.isFinite(q)||q<0){alert('الكمية غير صالحة.');return;}
-  if(!Number.isFinite(p)||p<0){alert('السعر غير صالح.');return;}
-  db.parts.unshift({id:genId(),name:n,qty:q,price:p});
+  const name=document.getElementById('partName').value.trim();
+  const cat=document.getElementById('partCategory').value;
+  const qty=Number(document.getElementById('partQty').value);
+  const cost=Number(document.getElementById('partCost').value);
+  const price=Number(document.getElementById('partPrice').value);
+  
+  if(!name){alert('أدخل اسم البضاعة.');return;}
+  if(!Number.isFinite(qty)||qty<0){alert('الكمية غير صالحة.');return;}
+  if(!Number.isFinite(cost)||cost<0){alert('سعر الشراء غير صالح.');return;}
+  if(!Number.isFinite(price)||price<0){alert('سعر البيع غير صالح.');return;}
+  
+  db.parts.unshift({id:genId(), name, category:cat, qty, costPrice:cost, price});
   document.getElementById('partName').value='';
   document.getElementById('partQty').value='1';
+  document.getElementById('partCost').value='0';
   document.getElementById('partPrice').value='0';
   saveDB();
+  alert('✅ تمت إضافة البضاعة للمخزون بنجاح.');
 }
-function deletePart(id){if(!confirm('حذف القطعة؟'))return;db.parts=db.parts.filter(x=>x.id!==id);saveDB();}
+
+function deletePart(id){if(!confirm('حذف البضاعة؟'))return;db.parts=db.parts.filter(x=>x.id!==id);saveDB();}
 function adjustStock(id,delta){const p=db.parts.find(x=>x.id===id);if(!p)return;if(p.qty+delta<0){alert('لا يمكن أن تصبح سالبة.');return;}p.qty+=delta;saveDB();}
+
+function sellPart(id) {
+  const p = db.parts.find(x => x.id === id);
+  if (!p) return;
+  const qtyStr = prompt(`كم تريد أن تبيع من "${p.name}"؟\n(المتوفر حالياً: ${p.qty})`);
+  if (qtyStr === null) return;
+  const qty = Number(qtyStr);
+  if (!Number.isFinite(qty) || qty <= 0) { alert('أدخل كمية صحيحة.'); return; }
+  if (qty > p.qty) { alert('الكمية المطلوبة أكبر من المخزون.'); return; }
+  
+  adjustStock(id, -qty);
+  alert(`✅ تم البيع بنجاح!\nتم خصم ${qty} من المخزون.\nالمتبقي: ${p.qty}`);
+}
+
 function renderStock(){
   const el=document.getElementById('stockList');
   if(!db.parts.length){el.innerHTML='<div class="empty">المخزون فارغ.</div>';return;}
+  
   el.innerHTML=db.parts.map(p=>{
     const tagCls=p.qty<=0?'danger':p.qty<=2?'warn':'ok';
     const tagTxt=p.qty<=0?'نفد':p.qty<=2?'منخفض':'متوفر';
-    return '<div class="item"><strong>'+esc(p.name)+'</strong>'+
-      '<span class="tag '+tagCls+'">'+tagTxt+' — '+p.qty+'</span>'+
-      '<p class="muted">'+p.price.toLocaleString('en-US')+' د.ع</p>'+
+    const profit = p.price - p.costPrice;
+    
+    return '<div class="item">'+
+      '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">'+
+        '<strong style="margin:0;font-size:15px;color:var(--navy)">'+esc(p.name)+'</strong>'+
+        '<span class="tag '+tagCls+'">'+tagTxt+' — الكمية: '+p.qty+'</span>'+
+      '</div>'+
+      '<p class="muted" style="margin:0 0 8px 0;">'+
+        'النوع: <b>'+esc(p.category)+'</b><br>'+
+        'سعر الشراء: '+p.costPrice.toLocaleString('en-US')+' د.ع · '+
+        'سعر البيع: <b>'+p.price.toLocaleString('en-US')+' د.ع</b><br>'+
+        'الربح للقطعة: <span style="color:'+(profit>0?'var(--green)':'var(--red)')+'">'+profit.toLocaleString('en-US')+' د.ع</span>'+
+      '</p>'+
       '<div class="actions">'+
+        '<button class="primary" data-act="stock-sell" data-id="'+esc(p.id)+'" style="background:var(--green)">💵 بيع</button>'+
         '<button class="secondary" data-act="stock-inc" data-id="'+esc(p.id)+'">+</button>'+
         '<button class="secondary" data-act="stock-dec" data-id="'+esc(p.id)+'">−</button>'+
         '<button class="danger" data-act="stock-del" data-id="'+esc(p.id)+'">حذف</button>'+
       '</div></div>';
   }).join('');
 }
+
 function renderLowStock(){
   const el=document.getElementById('lowStockAlert');
   const low=db.parts.filter(p=>p.qty<=2);
@@ -1012,87 +1019,6 @@ function renderLowStock(){
   el.innerHTML='<b>⚠️ مخزون منخفض:</b> '+low.map(p=>esc(p.name)+' ('+p.qty+')').join(' · ');
 }
 
-/* ============================================================
-   8) المساعد الذكي
-   ============================================================ */
-function localFaultAnswer(q){
-  const text=q.toLowerCase();
-  const kws={power:['لا يعمل','لا يشتغل','مطفي','ميت','power'],charge:['شحن','يشحن','منفذ','charge'],battery:['بطارية','ينفد','يخلص','battery'],screen:['شاشة','لمس','سوداء','screen'],heat:['حرارة','يسخن','سخون','heat'],sound:['صوت','سماعة','ميكروفون','sound'],network:['شبكة','إشارة','شريحة','network'],wifi:['واي فاي','wifi','بلوتوث','bluetooth'],restart:['اعادة تشغيل','يعيد','يطفي','restart'],camera:['كاميرا','صورة','camera']};
-  const matched=[];
-  for(const [k,arr] of Object.entries(kws)){if(arr.some(kk=>text.includes(kk))&&!matched.includes(faults[k]))matched.push(faults[k]);}
-  if(!matched.length)return null;
-  return matched.map(f=>'🔎 '+f.title+'\n\nأسباب: '+f.causes+'\n\nخطوات:\n'+f.steps.map((s,i)=>(i+1)+'. '+s).join('\n')).join('\n\n─────────\n\n')+'\n\n⚠️ إجابة محلية إرشادية.';
-}
-async function checkAIStatus(){
-  const el=document.getElementById('aiStatus');
-  if(!navigator.onLine){el.textContent='⚠️ أنت أوفلاين. سيُستخدم البديل المحلي.';return;}
-  try{
-    const ctrl = new AbortController();
-    const t = setTimeout(()=>ctrl.abort(), 3000);
-    const r=await fetch('/api/health',{cache:'no-store', signal: ctrl.signal});
-    clearTimeout(t);
-    if(!r.ok)throw new Error();
-    const d=await r.json();
-    el.textContent=d.aiConfigured?'✅ المساعد متصل.':'⚠️ الخادم يعمل، مفتاح API غير مضبوط.';
-    el.style.color='';
-  }catch(_){
-    el.textContent='ℹ️ المساعد يعمل بالوضع المحلي (بدون AI سحابي).';
-    el.style.color='var(--muted)';
-  }
-}
-async function askAssistant(){
-  const q=document.getElementById('ask').value.trim();
-  const device=document.getElementById('assistantDevice').value.trim();
-  const answer=document.getElementById('answer');
-  const button=document.getElementById('askButton');
-  
-  // 🔴 ضع مفتاح OpenRouter الخاص بك هنا بين علامات التنصيص
-  const GEMINI_API_KEY = "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"; 
-  
-  if(!q){alert('اكتب السؤال.');return;}
-  if(q.length>6000){alert('السؤال طويل جداً.');return;}
-  
-  button.disabled=true;button.textContent='جارٍ الإرسال...';
-  answer.classList.remove('hidden');answer.textContent='لحظة...';
-  
-  try{
-    const prompt = `أنت مساعد فني خبير في صيانة الهواتف الذكية. أجب على هذا السؤال باللغة العربية بأسلوب منظم ومختصر. الجهاز: ${device||'غير محدد'}. السؤال: ${q}`;
-    
-    const res = await fetch(`https://openrouter.ai/api/v1/chat/completions`, {
-  method: 'POST',
-  headers: { 
-    'Content-Type': 'application/json',
-'Authorization': 'Bearer ' + GEMINI_API_KEY,
-    'HTTP-Referer': 'https://sadak1560aa-arch.github.io',
-    'X-Title': 'Smart Fix AI'
-  },
-  body: JSON.stringify({
-    model: "meta-llama/llama-3.1-8b-instruct:free",
-    messages: [{ role: "user", content: prompt }]
-  })
-});
-
-    const data = await res.json();
-    if(data.error) throw new Error(data.error.message);
-    
-    const aiText = data.choices[0].message.content;
-    answer.textContent = aiText;
-    
-  }catch(error){
-    const local=localFaultAnswer(q);
-    if(local)answer.textContent='⚠️ تعذر الاتصال بمحرك الذكاء الاصطناعي ('+error.message+').\n\n'+local;
-    else answer.textContent='تعذر الحصول على الإجابة: '+error.message;
-  }finally{
-    button.disabled=false;
-    button.textContent='اسأل المساعد الفني AI';
-  }
-                     
-        
-}
-
-/* ============================================================
-   9) حاسبة أوم
-   ============================================================ */
 function ohm(){
   const vRaw=document.getElementById('voltage').value.trim();
   const iRaw=document.getElementById('current').value.trim();
@@ -1111,9 +1037,6 @@ function ohm(){
   el.textContent=out;
 }
 
-/* ============================================================
-   10) التقارير + CSV
-   ============================================================ */
 function getJobDate(j){
   if(j.dateISO){ const d=new Date(j.dateISO); if(!isNaN(d)) return d; }
   const s = String(j.date||'')
@@ -1172,15 +1095,12 @@ function exportJobsCSV(){
   downloadCSV(rows,'jobs-'+new Date().toISOString().slice(0,10)+'.csv');
 }
 function exportPartsCSV(){
-  if(!db.parts.length){alert('لا قطع.');return;}
-  const rows=[['ID','القطعة','الكمية','السعر']];
-  db.parts.forEach(p=>rows.push([p.id,p.name,p.qty,p.price]));
-  downloadCSV(rows,'parts-'+new Date().toISOString().slice(0,10)+'.csv');
+  if(!db.parts.length){alert('لا توجد بضاعة.');return;}
+  const rows=[['ID','النوع','الاسم','الكمية','سعر الشراء','سعر البيع']];
+  db.parts.forEach(p=>rows.push([p.id,p.category,p.name,p.qty,p.costPrice,p.price]));
+  downloadCSV(rows,'inventory-'+new Date().toISOString().slice(0,10)+'.csv');
 }
 
-/* ============================================================
-   11) Google Sheets Sync
-   ============================================================ */
 const SYNC_URL_KEY='smartfix_sync_url';
 const SYNC_KEY_KEY='smartfix_sync_key';
 function saveSyncSettings(){
@@ -1222,15 +1142,12 @@ async function pullFromSheets(){
   try{
     const data=await syncCall('pull');
     const jobs=(data.jobs||[]).map(j=>normalizeJob({id:String(j.id||genId()),customer:String(j.customer||''),phone:String(j.phone||''),brand:String(j.brand||''),model:String(j.model||''),fault:String(j.fault||''),price:Number(j.price)||0,status:String(j.status||'تم الاستلام'),date:String(j.date||''),dateISO:'',photoId:'',partsUsed:[]}));
-    const parts=(data.parts||[]).map(p=>normalizePart({id:String(p.id||genId()),name:String(p.name||''),qty:Number(p.qty)||0,price:Number(p.price)||0}));
+    const parts=(data.parts||[]).map(p=>normalizePart({id:String(p.id||genId()),name:String(p.name||''),category:String(p.category||'قطعة غيار'),qty:Number(p.qty)||0,costPrice:Number(p.costPrice)||0,price:Number(p.price)||0}));
     db.jobs=jobs;db.parts=parts;saveDB();
-    statusEl.textContent='✅ تم جلب '+jobs.length+' طلب و '+parts.length+' قطعة.';
+    statusEl.textContent='✅ تم جلب '+jobs.length+' طلب و '+parts.length+' قطعة/بضاعة.';
   }catch(_){}
 }
 
-/* ============================================================
-   12) النسخ الاحتياطي
-   ============================================================ */
 function exportData(){
   const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
@@ -1309,13 +1226,10 @@ function updateStorageInfo(){
   try{
     const used=JSON.stringify(db).length;
     const info=document.getElementById('storageInfo');
-    if(info)info.textContent='حجم البيانات: ~'+(used/1024).toFixed(1)+' كيلوبايت · الطلبات: '+db.jobs.length+' · القطع: '+db.parts.length;
+    if(info)info.textContent='حجم البيانات: ~'+(used/1024).toFixed(1)+' كيلوبايت · الطلبات: '+db.jobs.length+' · المخزون: '+db.parts.length;
   }catch{}
 }
 
-/* ============================================================
-   13) معلومات المتجر
-   ============================================================ */
 let pendingLogoData=null;
 function loadShopInfoToForm(){
   const s=db.settings.shop||{};
@@ -1337,9 +1251,6 @@ function saveShopInfo(){
   saveDB();loadShopInfoToForm();alert('تم حفظ معلومات المتجر.');
 }
 
-/* ============================================================
-   14) PIN
-   ============================================================ */
 async function hashPin(pin){
   const s = String(pin) + '|smartfix|v5';
   const buf = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
@@ -1410,9 +1321,6 @@ function updatePinStatus(){
   else{el.textContent='الحماية غير مفعّلة.';el.style.color='';}
 }
 
-/* ============================================================
-   15) PWA
-   ============================================================ */
 let deferredInstallPrompt=null;
 function setupPWA(){
   const iconSvg="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 192 192'%3E%3Crect width='192' height='192' rx='42' fill='%23101d35'/%3E%3Ctext x='96' y='128' font-size='82' text-anchor='middle' fill='%23e6b84a' font-family='Arial' font-weight='bold'%3ESF%3C/text%3E%3C/svg%3E";
@@ -1433,9 +1341,6 @@ function installClick(){
   deferredInstallPrompt.userChoice.then(()=>{deferredInstallPrompt=null;document.getElementById('installBtn').style.display='none';});
 }
 
-/* ============================================================
-   16) الشبكة + العرض
-   ============================================================ */
 function updateNet(){
   const el=document.getElementById('netStatus');if(!el)return;
   el.textContent=navigator.onLine?'متصل':'أوفلاين';
@@ -1448,9 +1353,6 @@ function render(){
   renderJobs();renderStock();renderLowStock();
 }
 
-/* ============================================================
-   17) الترخيص + الإعداد
-   ============================================================ */
 function updateLicenseStatus(){
   const el=document.getElementById('licenseStatus');if(!el)return;
   const c = getConfig();
@@ -1532,9 +1434,6 @@ function clearLicense(){
   updateLicenseStatus();
 }
 
-/* ============================================================
-   18) التشغيل
-   ============================================================ */
 function init(){
   document.querySelectorAll('.nav button').forEach(b=>b.addEventListener('click',()=>showTab(b.dataset.tab)));
   document.querySelectorAll('[data-goto]').forEach(t=>t.addEventListener('click',()=>showTab(t.dataset.goto)));
@@ -1544,12 +1443,10 @@ function init(){
   document.getElementById('cancelEditBtn').addEventListener('click',cancelEdit);
   document.getElementById('addPartBtn').addEventListener('click',addPart);
   document.getElementById('ohmBtn').addEventListener('click',ohm);
-  document.getElementById('askButton').addEventListener('click',askAssistant);
-  document.getElementById('ask').addEventListener('input',e=>{document.getElementById('askCount').textContent=e.target.value.length;});
+  
   document.getElementById('jobSearch').addEventListener('input',renderJobs);
   document.getElementById('jobStatusFilter').addEventListener('change',renderJobs);
 
-  // Event delegation - jobs list
   const jobsListEl = document.getElementById('jobsList');
   jobsListEl.addEventListener('click',(e)=>{
     const img = e.target.closest('.photo-thumb');
@@ -1569,13 +1466,13 @@ function init(){
     if(sel) changeStatus(sel.dataset.job, sel.value);
   });
 
-  // Event delegation - stock list
   const stockListEl = document.getElementById('stockList');
   stockListEl.addEventListener('click',(e)=>{
     const b = e.target.closest('[data-act]');
     if(!b) return;
     if(b.dataset.act==='stock-inc') adjustStock(b.dataset.id, 1);
     else if(b.dataset.act==='stock-dec') adjustStock(b.dataset.id, -1);
+    else if(b.dataset.act==='stock-sell') sellPart(b.dataset.id);
     else if(b.dataset.act==='stock-del') deletePart(b.dataset.id);
   });
 
@@ -1651,8 +1548,8 @@ function init(){
   document.getElementById('resetConfigBtn').addEventListener('click',resetConfig);
   document.getElementById('clearLicenseBtn').addEventListener('click',clearLicense);
 
-  window.addEventListener('online',()=>{updateNet();checkAIStatus();});
-  window.addEventListener('offline',()=>{updateNet();checkAIStatus();});
+  window.addEventListener('online',()=>{updateNet();});
+  window.addEventListener('offline',()=>{updateNet();});
 
   startTrialIfNeeded();
   if (!isConfigured()){
@@ -1672,11 +1569,9 @@ function init(){
   updateNet();
   loadShopInfoToForm();
   setupPWA();
-  checkAIStatus();
   checkLock();
   updateLicenseStatus();
 
-  // تسجيل Service Worker (بعد تهيئة كل شيء)
   if('serviceWorker' in navigator && location.protocol==='https:'){
     navigator.serviceWorker.register('sw.js').catch(e=>console.warn('[SW] register failed:', e));
   }
@@ -1685,9 +1580,6 @@ function init(){
 document.addEventListener('DOMContentLoaded',init);
 </script>
 
-<!-- ============================================================
-     Cloud Sync (Supabase)
-     ============================================================ -->
 <script>
 (function(){
 'use strict';
@@ -1824,9 +1716,9 @@ function tryStart(){
       for (const p of db.parts){
         const { data: exists } = await sb.from('parts').select('qty').eq('id', p.id).maybeSingle();
         if (!exists){
-          await sb.from('parts').insert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price }, qty: p.qty });
+          await sb.from('parts').insert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price, category: p.category, costPrice: p.costPrice }, qty: p.qty });
         } else {
-          await sb.from('parts').update({ data: { name: p.name, price: p.price } }).eq('id', p.id);
+          await sb.from('parts').update({ data: { name: p.name, price: p.price, category: p.category, costPrice: p.costPrice } }).eq('id', p.id);
         }
       }
       const { data: rp } = await sb.from('parts').select('id');
@@ -1849,7 +1741,7 @@ function tryStart(){
     const { data, error } = await sb.rpc('adjust_stock', { p_id: id, p_delta: delta });
     if (error){
       if (String(error.message||'').includes('not found') && p){
-        await sb.from('parts').upsert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price }, qty: p.qty });
+        await sb.from('parts').upsert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price, category: p.category, costPrice: p.costPrice }, qty: p.qty });
         return;
       }
       console.warn('[Cloud] adjust_stock:', error.message);
@@ -1888,9 +1780,11 @@ function tryStart(){
           if (lp){
             if (rpart.data?.name) lp.name = rpart.data.name;
             if (rpart.data?.price !== undefined) lp.price = Number(rpart.data.price) || 0;
+            if (rpart.data?.category !== undefined) lp.category = rpart.data.category;
+            if (rpart.data?.costPrice !== undefined) lp.costPrice = Number(rpart.data.costPrice) || 0;
             lp.qty = Number(rpart.qty);
           } else {
-            db.parts.push({ id: rpart.id, name: rpart.data?.name || '', price: Number(rpart.data?.price) || 0, qty: Number(rpart.qty) });
+            db.parts.push({ id: rpart.id, name: rpart.data?.name || '', price: Number(rpart.data?.price) || 0, category: rpart.data?.category || 'قطعة غيار', costPrice: Number(rpart.data?.costPrice) || 0, qty: Number(rpart.qty) });
           }
         }
       }
@@ -1954,4 +1848,15 @@ function tryStart(){
   }
 
   setTimeout(() => {
-    if (!$('setupWizard').classList.contains('hidd
+    if (!$('setupWizard').classList.contains('hidden')) return;
+    if (!$('licenseGate').classList.contains('hidden')) return;
+    initCloud();
+  }, 100);
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryStart);
+else tryStart();
+})();
+</script>
+</body>
+</html>
