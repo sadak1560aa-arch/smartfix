@@ -1041,24 +1041,47 @@ async function checkAIStatus(){
   }
 }
 async function askAssistant(){
+
   const q=document.getElementById('ask').value.trim();
   const device=document.getElementById('assistantDevice').value.trim();
   const answer=document.getElementById('answer');
   const button=document.getElementById('askButton');
+  
+  // 🔴 ضع مفتاح Gemini الخاص بك هنا بين علامات التنصيص
+  const GEMINI_API_KEY = "AQ.Ab8RN6JtJNu1Q_v1JGhzD6UWErcz-QCPwCENY8RM7g9hSfJNEQ"
+  
   if(!q){alert('اكتب السؤال.');return;}
   if(q.length>6000){alert('السؤال طويل جداً.');return;}
+  
   button.disabled=true;button.textContent='جارٍ الإرسال...';
   answer.classList.remove('hidden');answer.textContent='لحظة...';
+  
   try{
-    const r=await fetch('/api/assistant',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:q,device})});
-    const data=await r.json().catch(()=>({}));
-    if(!r.ok)throw new Error(data.error||'تعذر الاتصال.');
-    answer.textContent=data.answer||'لم تصل إجابة.';
+    const prompt = `أنت مساعد فني خبير في صيانة الهواتف الذكية. أجب على هذا السؤال باللغة العربية بأسلوب منظم ومختصر. الجهاز: ${device||'غير محدد'}. السؤال: ${q}`;
+    
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        contents: [{ parts: [{ text: prompt }] }]
+      })
+    });
+
+    const data = await res.json();
+    if(data.error) throw new Error(data.error.message);
+    
+    const aiText = data.candidates[0].content.parts[0].text;
+    answer.textContent = aiText;
+    
   }catch(error){
     const local=localFaultAnswer(q);
-    if(local)answer.textContent='ℹ️ المساعد السحابي غير متاح.\n\n'+local;
+    if(local)answer.textContent='⚠️ تعذر الاتصال بمحرك الذكاء الاصطناعي ('+error.message+').\n\n'+local;
     else answer.textContent='تعذر الحصول على الإجابة: '+error.message;
-  }finally{button.disabled=false;button.textContent='اسأل المساعد الفني AI';}
+  }finally{
+    button.disabled=false;
+    button.textContent='اسأل المساعد الفني AI';
+  }
+        }
 }
 
 /* ============================================================
