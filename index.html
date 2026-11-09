@@ -1059,16 +1059,18 @@ async function askAssistant(){
     const prompt = `أنت مساعد فني خبير في صيانة الهواتف الذكية. أجب على هذا السؤال باللغة العربية بأسلوب منظم ومختصر. الجهاز: ${device||'غير محدد'}. السؤال: ${q}`;
     
     const res = await fetch(`https://openrouter.ai/api/v1/chat/completions`, {
-      method: 'POST',
-      headers: { 
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${GEMINI_API_KEY}`
-      },
-      body: JSON.stringify({
-        model: "google/gemini-2.0-flash-lite-preview-02-05:free",
-        messages: [{ role: "user", content: prompt }]
-      })
-    });
+  method: 'POST',
+  headers: { 
+    'Content-Type': 'application/json',
+'Authorization': `Bearer ${GEMINI_API_KEY}`,
+    'HTTP-Referer': 'https://sadak1560aa-arch.github.io',
+    'X-Title': 'Smart Fix AI'
+  },
+  body: JSON.stringify({
+    model: "meta-llama/llama-3.1-8b-instruct:free",
+    messages: [{ role: "user", content: prompt }]
+  })
+});
 
     const data = await res.json();
     if(data.error) throw new Error(data.error.message);
