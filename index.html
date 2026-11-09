@@ -1041,14 +1041,13 @@ async function checkAIStatus(){
   }
 }
 async function askAssistant(){
-
   const q=document.getElementById('ask').value.trim();
   const device=document.getElementById('assistantDevice').value.trim();
   const answer=document.getElementById('answer');
   const button=document.getElementById('askButton');
   
-  // 🔴 ضع مفتاح Gemini الخاص بك هنا بين علامات التنصيص
-  const GEMINI_API_KEY = "AQ.Ab8RN6JtJNu1Q_v1JGhzD6UWErcz-QCPwCENY8RM7g9hSfJNEQ"
+  // 🔴 ضع مفتاح OpenRouter الخاص بك هنا بين علامات التنصيص
+  const GEMINI_API_KEY = "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"; 
   
   if(!q){alert('اكتب السؤال.');return;}
   if(q.length>6000){alert('السؤال طويل جداً.');return;}
@@ -1059,18 +1058,22 @@ async function askAssistant(){
   try{
     const prompt = `أنت مساعد فني خبير في صيانة الهواتف الذكية. أجب على هذا السؤال باللغة العربية بأسلوب منظم ومختصر. الجهاز: ${device||'غير محدد'}. السؤال: ${q}`;
     
-    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`, {
+    const res = await fetch(`https://openrouter.ai/api/v1/chat/completions`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: { 
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${GEMINI_API_KEY}`
+      },
       body: JSON.stringify({
-        contents: [{ parts: [{ text: prompt }] }]
+        model: "google/gemini-2.0-flash-lite-preview-02-05:free",
+        messages: [{ role: "user", content: prompt }]
       })
     });
 
     const data = await res.json();
     if(data.error) throw new Error(data.error.message);
     
-    const aiText = data.candidates[0].content.parts[0].text;
+    const aiText = data.choices[0].message.content;
     answer.textContent = aiText;
     
   }catch(error){
@@ -1081,6 +1084,7 @@ async function askAssistant(){
     button.disabled=false;
     button.textContent='اسأل المساعد الفني AI';
   }
+                     
         
 }
 
