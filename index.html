@@ -81,6 +81,16 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 .modal-card .buttons{display:flex;gap:8px;margin-top:14px}
 .modal-card .buttons button{flex:1}
 .warn-box{background:#fff7e6;border:1px solid #ffe0a3;color:#7a4a00;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.7;margin:10px 0}
+
+/* ستايل خاص بصندوق الإضافة المستمر */
+.sticky-add-box {
+  position: sticky;
+  top: 10px;
+  z-index: 100;
+  background: #fff;
+  border: 2px solid var(--blue);
+  box-shadow: 0 8px 25px rgba(37, 99, 235, 0.15);
+}
 </style>
 </head>
 <body>
@@ -147,7 +157,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 3.7 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 4.0 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
  <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، وتابع الأجهزة وقطع الغيار والبضاعة من مكان واحد.</p></div>
@@ -237,20 +247,24 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
  <section id="inventory" class="section">
   <h2 class="section-title">📦 إدارة المخزون</h2>
-  <div class="panel" style="border-right: 4px solid var(--blue);">
+  
+  <!-- واجهة الإضافة المستمرة -->
+  <div class="panel sticky-add-box">
    <h3 style="margin:0 0 10px;font-size:16px;color:var(--navy)">➕ إضافة مادة جديدة</h3>
+   <div id="addStatus" style="display:none; background:var(--green); color:white; padding:8px; border-radius:8px; margin-bottom:10px; text-align:center; font-weight:bold;">تمت الإضافة بنجاح! يمكنك إضافة المادة التالية.</div>
+   
    <label for="partName">اسم المادة / البضاعة</label>
-   <input id="partName" placeholder="مثلاً: شاشة سامسونج A51، شاحن أيفون...">
+   <input id="partName" placeholder="مثلاً: شاشة سامسونج A51، شاحن أيفون..." autocomplete="off">
    
    <div class="formgrid">
-     <div><label for="partQty">الكمية</label><input id="partQty" type="number" min="0" value="1"></div>
-     <div><label for="partPrice">السعر (د.ع)</label><input id="partPrice" type="number" min="0" value="0"></div>
+     <div><label for="partQty">الكمية</label><input id="partQty" type="number" min="1" value="1"></div>
+     <div><label for="partPrice">السعر المفرد (د.ع)</label><input id="partPrice" type="number" min="0" value="0"></div>
    </div>
    
-   <button class="primary" id="addPartBtn" style="margin-top:12px; width:100%;">إضافة إلى المخزون</button>
+   <button class="primary" id="addPartBtn" style="margin-top:12px; width:100%; font-size:16px; padding:14px;">إضافة مستمرة للمخزون</button>
   </div>
   
-  <h2 class="section-title">الموجودات الحالية</h2>
+  <h2 class="section-title" style="margin-top:20px;">الموجودات الحالية</h2>
   <div class="panel" id="stockList"></div>
  </section>
 
@@ -364,7 +378,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 3.7 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 4.0 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
@@ -401,7 +415,7 @@ function startTrialIfNeeded(){
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '3.7');
+  localStorage.setItem(CFG_VERSION_KEY, '4.0');
 }
 
 const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -938,23 +952,49 @@ async function printJob(id){
 }
 
 function addPart(){
-  const name=document.getElementById('partName').value.trim();
-  const qty=Number(document.getElementById('partQty').value);
-  const price=Number(document.getElementById('partPrice').value);
+  const nameEl=document.getElementById('partName');
+  const qtyEl=document.getElementById('partQty');
+  const priceEl=document.getElementById('partPrice');
+  const statusEl=document.getElementById('addStatus');
+  
+  const name=nameEl.value.trim();
+  const qty=Number(qtyEl.value);
+  const price=Number(priceEl.value);
   
   if(!name){alert('أدخل اسم المادة.');return;}
   if(!Number.isFinite(qty)||qty<0){alert('الكمية غير صالحة.');return;}
   if(!Number.isFinite(price)||price<0){alert('السعر غير صالح.');return;}
   
   db.parts.unshift({id:genId(), name, qty, price});
-  document.getElementById('partName').value='';
-  document.getElementById('partQty').value='1';
-  document.getElementById('partPrice').value='0';
   saveDB();
+  
+  // تفريغ الحقول للاستمرار في الإضافة
+  nameEl.value='';
+  qtyEl.value='1';
+  priceEl.value='0';
+  nameEl.focus();
+  
+  // إظهار رسالة نجاح خفيفة لا توقف العمل
+  if(statusEl){
+    statusEl.style.display = 'block';
+    setTimeout(() => { statusEl.style.display = 'none'; }, 2000);
+  }
 }
 
 function deletePart(id){if(!confirm('حذف المادة؟'))return;db.parts=db.parts.filter(x=>x.id!==id);saveDB();}
 function adjustStock(id,delta){const p=db.parts.find(x=>x.id===id);if(!p)return;if(p.qty+delta<0){alert('لا يمكن أن تصبح سالبة.');return;}p.qty+=delta;saveDB();}
+
+function addStockQty(id) {
+  const p = db.parts.find(x => x.id === id);
+  if (!p) return;
+  const qtyStr = prompt(`كم تريد أن تضيف من "${p.name}"؟\n(الكمية الحالية: ${p.qty})`);
+  if (qtyStr === null) return;
+  const qty = Number(qtyStr);
+  if (!Number.isFinite(qty) || qty <= 0) { alert('أدخل كمية صحيحة أكبر من صفر.'); return; }
+  
+  adjustStock(id, qty);
+  alert(`✅ تمت الإضافة بنجاح!\nالكمية الجديدة: ${p.qty}`);
+}
 
 function sellPart(id) {
   const p = db.parts.find(x => x.id === id);
@@ -985,11 +1025,10 @@ function renderStock(){
         '<span class="tag '+tagCls+'">الكمية: '+p.qty+' ('+tagTxt+')</span>'+
         '<span style="font-weight:bold; color:var(--blue)">السعر: '+p.price.toLocaleString('en-US')+' د.ع</span>'+
       '</div>'+
-      '<div class="actions">'+
-        '<button class="primary" data-act="stock-sell" data-id="'+esc(p.id)+'" style="background:var(--green); flex:1">💵 بيع</button>'+
-        '<button class="secondary" data-act="stock-inc" data-id="'+esc(p.id)+'" style="font-size:18px; padding:8px 15px">+</button>'+
-        '<button class="secondary" data-act="stock-dec" data-id="'+esc(p.id)+'" style="font-size:18px; padding:8px 15px">−</button>'+
-        '<button class="danger" data-act="stock-del" data-id="'+esc(p.id)+'">حذف</button>'+
+      '<div class="actions" style="display:flex; gap:6px; width:100%;">'+
+        '<button class="primary" data-act="stock-sell" data-id="'+esc(p.id)+'" style="background:var(--green); flex:1; padding:8px 10px;">💵 بيع</button>'+
+        '<button class="secondary" data-act="stock-add-qty" data-id="'+esc(p.id)+'" style="flex:1; background:#e3f7ee; color:var(--green); font-weight:bold; padding:8px 10px;">➕ إضافة كمية</button>'+
+        '<button class="danger" data-act="stock-del" data-id="'+esc(p.id)+'" style="padding:8px 10px;">حذف</button>'+
       '</div></div>';
   }).join('');
 }
@@ -1427,6 +1466,11 @@ function init(){
   document.getElementById('addPartBtn').addEventListener('click',addPart);
   document.getElementById('ohmBtn').addEventListener('click',ohm);
   
+  // Enter key in inventory to add
+  document.getElementById('partName').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') addPart(); });
+  document.getElementById('partQty').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') addPart(); });
+  document.getElementById('partPrice').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') addPart(); });
+
   document.getElementById('jobSearch').addEventListener('input',renderJobs);
   document.getElementById('jobStatusFilter').addEventListener('change',renderJobs);
 
@@ -1455,6 +1499,7 @@ function init(){
     if(!b) return;
     if(b.dataset.act==='stock-inc') adjustStock(b.dataset.id, 1);
     else if(b.dataset.act==='stock-dec') adjustStock(b.dataset.id, -1);
+    else if(b.dataset.act==='stock-add-qty') addStockQty(b.dataset.id);
     else if(b.dataset.act==='stock-sell') sellPart(b.dataset.id);
     else if(b.dataset.act==='stock-del') deletePart(b.dataset.id);
   });
@@ -1840,4 +1885,4 @@ else tryStart();
 })();
 </script>
 </body>
-  </html>
+</html>
