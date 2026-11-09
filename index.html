@@ -147,7 +147,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 3.6 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 3.7 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
  <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، وتابع الأجهزة وقطع الغيار والبضاعة من مكان واحد.</p></div>
@@ -236,24 +236,18 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
  </section>
 
  <section id="inventory" class="section">
-  <h2 class="section-title">📦 إدارة المخزون والبضاعة</h2>
+  <h2 class="section-title">📦 إدارة المخزون</h2>
   <div class="panel" style="border-right: 4px solid var(--blue);">
-   <h3 style="margin:0 0 10px;font-size:16px;color:var(--navy)">➕ إضافة بضاعة جديدة للمخزن</h3>
-   <label for="partCategory">نوع البضاعة</label>
-   <select id="partCategory">
-     <option value="قطعة غيار">قطعة غيار (شاشة، بطارية...)</option>
-     <option value="إكسسوار">إكسسوار (شاحن، كفر...)</option>
-     <option value="جهاز">جهاز هاتف كامل</option>
-     <option value="أخرى">أخرى</option>
-   </select>
-   <label for="partName">اسم البضاعة</label>
-   <input id="partName" placeholder="مثلاً: شاشة سامسونج، شاحن أيفون...">
+   <h3 style="margin:0 0 10px;font-size:16px;color:var(--navy)">➕ إضافة مادة جديدة</h3>
+   <label for="partName">اسم المادة / البضاعة</label>
+   <input id="partName" placeholder="مثلاً: شاشة سامسونج A51، شاحن أيفون...">
+   
    <div class="formgrid">
      <div><label for="partQty">الكمية</label><input id="partQty" type="number" min="0" value="1"></div>
-     <div><label for="partCost">سعر الشراء (د.ع)</label><input id="partCost" type="number" min="0" value="0"></div>
-     <div><label for="partPrice">سعر البيع (د.ع)</label><input id="partPrice" type="number" min="0" value="0"></div>
+     <div><label for="partPrice">السعر (د.ع)</label><input id="partPrice" type="number" min="0" value="0"></div>
    </div>
-   <button class="primary" id="addPartBtn" style="margin-top:12px; width:100%;">إضافة البضاعة للمخزون</button>
+   
+   <button class="primary" id="addPartBtn" style="margin-top:12px; width:100%;">إضافة إلى المخزون</button>
   </div>
   
   <h2 class="section-title">الموجودات الحالية</h2>
@@ -370,7 +364,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 3.6 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 3.7 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
@@ -407,7 +401,7 @@ function startTrialIfNeeded(){
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '3.6');
+  localStorage.setItem(CFG_VERSION_KEY, '3.7');
 }
 
 const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -465,10 +459,8 @@ function normalizePart(p){
   return{
     id: validId(p.id) ? String(p.id) : genId(),
     name:String(p.name??'').slice(0,100),
-    category:String(p.category??'قطعة غيار').slice(0,50),
     qty:num(p.qty),
-    price:num(p.price), // سعر البيع
-    costPrice:num(p.costPrice || 0) // سعر الشراء
+    price:num(p.price)
   };
 }
 
@@ -947,26 +939,21 @@ async function printJob(id){
 
 function addPart(){
   const name=document.getElementById('partName').value.trim();
-  const cat=document.getElementById('partCategory').value;
   const qty=Number(document.getElementById('partQty').value);
-  const cost=Number(document.getElementById('partCost').value);
   const price=Number(document.getElementById('partPrice').value);
   
-  if(!name){alert('أدخل اسم البضاعة.');return;}
+  if(!name){alert('أدخل اسم المادة.');return;}
   if(!Number.isFinite(qty)||qty<0){alert('الكمية غير صالحة.');return;}
-  if(!Number.isFinite(cost)||cost<0){alert('سعر الشراء غير صالح.');return;}
-  if(!Number.isFinite(price)||price<0){alert('سعر البيع غير صالح.');return;}
+  if(!Number.isFinite(price)||price<0){alert('السعر غير صالح.');return;}
   
-  db.parts.unshift({id:genId(), name, category:cat, qty, costPrice:cost, price});
+  db.parts.unshift({id:genId(), name, qty, price});
   document.getElementById('partName').value='';
   document.getElementById('partQty').value='1';
-  document.getElementById('partCost').value='0';
   document.getElementById('partPrice').value='0';
   saveDB();
-  alert('✅ تمت إضافة البضاعة للمخزون بنجاح.');
 }
 
-function deletePart(id){if(!confirm('حذف البضاعة؟'))return;db.parts=db.parts.filter(x=>x.id!==id);saveDB();}
+function deletePart(id){if(!confirm('حذف المادة؟'))return;db.parts=db.parts.filter(x=>x.id!==id);saveDB();}
 function adjustStock(id,delta){const p=db.parts.find(x=>x.id===id);if(!p)return;if(p.qty+delta<0){alert('لا يمكن أن تصبح سالبة.');return;}p.qty+=delta;saveDB();}
 
 function sellPart(id) {
@@ -989,23 +976,19 @@ function renderStock(){
   el.innerHTML=db.parts.map(p=>{
     const tagCls=p.qty<=0?'danger':p.qty<=2?'warn':'ok';
     const tagTxt=p.qty<=0?'نفد':p.qty<=2?'منخفض':'متوفر';
-    const profit = p.price - p.costPrice;
     
     return '<div class="item">'+
-      '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:5px;">'+
-        '<strong style="margin:0;font-size:15px;color:var(--navy)">'+esc(p.name)+'</strong>'+
-        '<span class="tag '+tagCls+'">'+tagTxt+' — الكمية: '+p.qty+'</span>'+
+      '<div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:8px;">'+
+        '<strong style="margin:0;font-size:16px;color:var(--navy)">'+esc(p.name)+'</strong>'+
       '</div>'+
-      '<p class="muted" style="margin:0 0 8px 0;">'+
-        'النوع: <b>'+esc(p.category)+'</b><br>'+
-        'سعر الشراء: '+p.costPrice.toLocaleString('en-US')+' د.ع · '+
-        'سعر البيع: <b>'+p.price.toLocaleString('en-US')+' د.ع</b><br>'+
-        'الربح للقطعة: <span style="color:'+(profit>0?'var(--green)':'var(--red)')+'">'+profit.toLocaleString('en-US')+' د.ع</span>'+
-      '</p>'+
+      '<div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px 12px; border-radius:8px; margin-bottom:8px;">'+
+        '<span class="tag '+tagCls+'">الكمية: '+p.qty+' ('+tagTxt+')</span>'+
+        '<span style="font-weight:bold; color:var(--blue)">السعر: '+p.price.toLocaleString('en-US')+' د.ع</span>'+
+      '</div>'+
       '<div class="actions">'+
-        '<button class="primary" data-act="stock-sell" data-id="'+esc(p.id)+'" style="background:var(--green)">💵 بيع</button>'+
-        '<button class="secondary" data-act="stock-inc" data-id="'+esc(p.id)+'">+</button>'+
-        '<button class="secondary" data-act="stock-dec" data-id="'+esc(p.id)+'">−</button>'+
+        '<button class="primary" data-act="stock-sell" data-id="'+esc(p.id)+'" style="background:var(--green); flex:1">💵 بيع</button>'+
+        '<button class="secondary" data-act="stock-inc" data-id="'+esc(p.id)+'" style="font-size:18px; padding:8px 15px">+</button>'+
+        '<button class="secondary" data-act="stock-dec" data-id="'+esc(p.id)+'" style="font-size:18px; padding:8px 15px">−</button>'+
         '<button class="danger" data-act="stock-del" data-id="'+esc(p.id)+'">حذف</button>'+
       '</div></div>';
   }).join('');
@@ -1096,8 +1079,8 @@ function exportJobsCSV(){
 }
 function exportPartsCSV(){
   if(!db.parts.length){alert('لا توجد بضاعة.');return;}
-  const rows=[['ID','النوع','الاسم','الكمية','سعر الشراء','سعر البيع']];
-  db.parts.forEach(p=>rows.push([p.id,p.category,p.name,p.qty,p.costPrice,p.price]));
+  const rows=[['ID','الاسم','الكمية','السعر']];
+  db.parts.forEach(p=>rows.push([p.id,p.name,p.qty,p.price]));
   downloadCSV(rows,'inventory-'+new Date().toISOString().slice(0,10)+'.csv');
 }
 
@@ -1142,9 +1125,9 @@ async function pullFromSheets(){
   try{
     const data=await syncCall('pull');
     const jobs=(data.jobs||[]).map(j=>normalizeJob({id:String(j.id||genId()),customer:String(j.customer||''),phone:String(j.phone||''),brand:String(j.brand||''),model:String(j.model||''),fault:String(j.fault||''),price:Number(j.price)||0,status:String(j.status||'تم الاستلام'),date:String(j.date||''),dateISO:'',photoId:'',partsUsed:[]}));
-    const parts=(data.parts||[]).map(p=>normalizePart({id:String(p.id||genId()),name:String(p.name||''),category:String(p.category||'قطعة غيار'),qty:Number(p.qty)||0,costPrice:Number(p.costPrice)||0,price:Number(p.price)||0}));
+    const parts=(data.parts||[]).map(p=>normalizePart({id:String(p.id||genId()),name:String(p.name||''),qty:Number(p.qty)||0,price:Number(p.price)||0}));
     db.jobs=jobs;db.parts=parts;saveDB();
-    statusEl.textContent='✅ تم جلب '+jobs.length+' طلب و '+parts.length+' قطعة/بضاعة.';
+    statusEl.textContent='✅ تم جلب '+jobs.length+' طلب و '+parts.length+' مادة.';
   }catch(_){}
 }
 
@@ -1716,9 +1699,9 @@ function tryStart(){
       for (const p of db.parts){
         const { data: exists } = await sb.from('parts').select('qty').eq('id', p.id).maybeSingle();
         if (!exists){
-          await sb.from('parts').insert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price, category: p.category, costPrice: p.costPrice }, qty: p.qty });
+          await sb.from('parts').insert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price }, qty: p.qty });
         } else {
-          await sb.from('parts').update({ data: { name: p.name, price: p.price, category: p.category, costPrice: p.costPrice } }).eq('id', p.id);
+          await sb.from('parts').update({ data: { name: p.name, price: p.price } }).eq('id', p.id);
         }
       }
       const { data: rp } = await sb.from('parts').select('id');
@@ -1741,7 +1724,7 @@ function tryStart(){
     const { data, error } = await sb.rpc('adjust_stock', { p_id: id, p_delta: delta });
     if (error){
       if (String(error.message||'').includes('not found') && p){
-        await sb.from('parts').upsert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price, category: p.category, costPrice: p.costPrice }, qty: p.qty });
+        await sb.from('parts').upsert({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price }, qty: p.qty });
         return;
       }
       console.warn('[Cloud] adjust_stock:', error.message);
@@ -1780,11 +1763,9 @@ function tryStart(){
           if (lp){
             if (rpart.data?.name) lp.name = rpart.data.name;
             if (rpart.data?.price !== undefined) lp.price = Number(rpart.data.price) || 0;
-            if (rpart.data?.category !== undefined) lp.category = rpart.data.category;
-            if (rpart.data?.costPrice !== undefined) lp.costPrice = Number(rpart.data.costPrice) || 0;
             lp.qty = Number(rpart.qty);
           } else {
-            db.parts.push({ id: rpart.id, name: rpart.data?.name || '', price: Number(rpart.data?.price) || 0, category: rpart.data?.category || 'قطعة غيار', costPrice: Number(rpart.data?.costPrice) || 0, qty: Number(rpart.qty) });
+            db.parts.push({ id: rpart.id, name: rpart.data?.name || '', price: Number(rpart.data?.price) || 0, qty: Number(rpart.qty) });
           }
         }
       }
@@ -1859,4 +1840,4 @@ else tryStart();
 })();
 </script>
 </body>
-</html>
+  </html>
