@@ -156,7 +156,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 5.0 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 5.1 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
  <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، سجل المبيعات، وتابع الأرصدة وقطع الغيار من مكان واحد.</p></div>
@@ -270,7 +270,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
   
   <div class="panel sticky-add-box">
     <div class="formgrid">
-      <div>
+      <div class="full">
         <label for="creditType">نوع الرصيد / الخدمة</label>
         <select id="creditType">
           <option value="اسيا سيل">اسيا سيل (Asiacell)</option>
@@ -283,16 +283,24 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
           <option value="أخرى">أخرى...</option>
         </select>
       </div>
+      
+      <div class="full" style="margin-top:10px;">
+        <label>اختر الفئة</label>
+        <div id="quickAmountsContainer" style="display:flex; gap:8px; flex-wrap:wrap; margin-bottom:10px;">
+          <!-- سيتم توليد الأزرار هنا بالجافاسكربت -->
+        </div>
+      </div>
+
       <div>
         <label for="creditAmount">المبلغ (دينار عراقي)</label>
         <input id="creditAmount" type="number" min="0" placeholder="0" autocomplete="off">
       </div>
-      <div class="full">
+      <div>
         <label for="creditPhone">رقم الهاتف / آيدي اللعبة (اختياري)</label>
         <input id="creditPhone" placeholder="07xxxxxxxxx أو ID" autocomplete="off">
       </div>
     </div>
-    <button class="primary" id="saveCreditBtn" style="width:100%;margin-top:12px; background:var(--green)">تسجيل بيع الرصيد</button>
+    <button class="primary" id="saveCreditBtn" style="width:100%;margin-top:12px; background:var(--green)">تسجيل بيع الرصيد وطباعة الفاتورة</button>
   </div>
 
   <div class="stats" id="creditStatsContainer" style="margin-top:15px">
@@ -436,7 +444,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 5.0 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 5.1 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
@@ -473,7 +481,7 @@ function startTrialIfNeeded(){
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '5.0');
+  localStorage.setItem(CFG_VERSION_KEY, '5.1');
 }
 
 const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -698,6 +706,7 @@ function showTab(id){
   document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));
   window.scrollTo({top:0,behavior:'smooth'});
   if(id==='sales') renderSaleDropdown();
+  if(id==='balances') renderCreditQuickAmounts(); // تحديث الأزرار السريعة
 }
 
 async function requestNotif(){
@@ -1189,8 +1198,44 @@ function printSaleInvoice(id) {
 }
 
 // ---------------------------------------------------------
-// دوال الأرصدة الرقمية
+// دوال الأرصدة الرقمية (مع الفئات السريعة)
 // ---------------------------------------------------------
+
+const CREDIT_DENOMINATIONS = {
+  'اسيا سيل': [1000, 2000, 3000, 5000, 10000, 15000, 25000],
+  'زين': [1000, 2000, 3000, 5000, 10000, 15000, 25000],
+  'كورك': [1000, 2000, 5000, 10000, 25000],
+  'باقات نت': [1000, 2000, 5000, 10000, 20000, 50000],
+  'شدات ببجي': [1000, 5000, 10000, 20000, 50000],
+  'فري فاير': [1000, 5000, 10000, 20000, 50000],
+  'بطاقة كارت': [5000, 10000, 25000],
+  'أخرى': [1000, 5000, 10000]
+};
+
+function renderCreditQuickAmounts() {
+  const type = document.getElementById('creditType').value;
+  const container = document.getElementById('quickAmountsContainer');
+  const denominations = CREDIT_DENOMINATIONS[type] || [1000, 5000, 10000];
+  
+  container.innerHTML = denominations.map(amt => `
+    <button type="button" class="secondary quick-amount" data-amount="${amt}">${amt.toLocaleString('en-US')} د.ع</button>
+  `).join('') + `<button type="button" class="secondary quick-amount" data-amount="">مبلغ مخصص</button>`;
+
+  container.querySelectorAll('.quick-amount').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      const amount = btn.dataset.amount;
+      const input = document.getElementById('creditAmount');
+      input.value = amount;
+      if (amount === '') input.focus();
+      
+      // إزالة التحديد من الأزرار الأخرى
+      container.querySelectorAll('.quick-amount').forEach(b => b.style.background = '');
+      btn.style.background = '#d1e0ff';
+    });
+  });
+}
+
 function saveCreditHandler() {
   const type = document.getElementById('creditType').value;
   const amount = Number(document.getElementById('creditAmount').value);
@@ -1198,7 +1243,7 @@ function saveCreditHandler() {
 
   if(amount <= 0 || isNaN(amount)) { alert('أدخل مبلغاً صحيحاً.'); return; }
 
-  db.credits.unshift({
+  const credit = {
     id: genId(),
     type: type,
     amount: amount,
@@ -1207,13 +1252,16 @@ function saveCreditHandler() {
     dateISO: new Date().toISOString(),
     updated_at: Date.now(),
     is_deleted: false
-  });
+  };
   
+  db.credits.unshift(credit);
   saveDB();
   
   document.getElementById('creditAmount').value = '';
   document.getElementById('creditPhone').value = '';
-  alert('✅ تم تسجيل بيع الرصيد بنجاح!');
+  
+  // طباعة الفاتورة تلقائياً
+  printCreditInvoice(credit.id);
 }
 
 function renderCredits() {
@@ -1250,6 +1298,7 @@ function renderCredits() {
       </div>
       <p class="muted" style="margin:0">${c.phone ? '📱 ' + esc(c.phone) + ' <br>' : ''} 📅 ${esc(c.date)}</p>
       <div class="actions" style="margin-top:8px">
+        <button class="secondary" data-act="print-credit" data-id="${esc(c.id)}" style="padding:6px 12px;font-size:12px">🧾 الفاتورة</button>
         <button class="danger" data-act="delete-credit" data-id="${esc(c.id)}" style="padding:6px 12px;font-size:12px">حذف</button>
       </div>
     </div>
@@ -1260,6 +1309,48 @@ function deleteCredit(id) {
   if(!confirm('حذف عملية الرصيد هذه؟')) return;
   const c = db.credits.find(x => x.id === id);
   if(c) { c.is_deleted = true; c.updated_at = Date.now(); saveDB(); }
+}
+
+function printCreditInvoice(id) {
+  const c = db.credits.find(x => x.id === id);
+  if(!c) return;
+  const shop = db.settings.shop || {};
+  const logoHtml = (shop.logo && validPhotoData(shop.logo)) ? '<img src="'+shop.logo+'" class="brand-logo" alt="logo">' : '';
+  
+  const w = window.open('', '_blank');
+  if(!w) { alert('اسمح بالنوافذ المنبثقة لطباعة الفاتورة.'); return; }
+  
+  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة رصيد - '+esc(c.type)+'</title>'+
+    '<style>'+
+    'body{font-family:Tahoma,Arial,sans-serif;padding:0;margin:0;color:#172033;background:#f3f6fb}'+
+    '.invoice{max-width:500px;margin:20px auto;background:#fff;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.08);border-radius:12px}'+
+    '.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #101d35;padding-bottom:16px;margin-bottom:20px}'+
+    '.brand-box{display:flex;align-items:center;gap:12px}'+
+    '.brand-logo{max-height:60px;max-width:120px;object-fit:contain;border-radius:6px}'+
+    '.brand-text h1{margin:0;font-size:20px;color:#101d35}.brand-text p{margin:2px 0;font-size:12px;color:#68758a}'+
+    '.invoice-meta{text-align:left;font-size:12px;color:#68758a}.invoice-meta b{color:#101d35;font-size:14px}'+
+    '.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #eee;font-size:13px}'+
+    '.info-row b{color:#68758a}'+
+    '.grand-total{margin-top:20px;padding:16px;background:#f7f9fc;border-radius:8px;display:flex;justify-content:space-between;font-size:18px;font-weight:bold;color:#15956b}'+
+    '.footer-note{text-align:center;font-size:11px;color:#999;margin-top:30px;padding-top:14px;border-top:1px solid #eee}'+
+    '@media print{body{background:#fff}.invoice{box-shadow:none;margin:0;padding:20px}.no-print{display:none}}'+
+    '</style></head><body>'+
+    '<div class="invoice">'+
+    '<div class="header">'+
+      '<div class="brand-box">'+logoHtml+'<div class="brand-text"><h1>'+esc(shop.name||'Smart Fix AI')+'</h1>'+
+        (shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':'')+
+        '</div></div>'+
+      '<div class="invoice-meta"><b>فاتورة تعبئة رصيد</b><br>رقم: '+esc(c.id.slice(-8).toUpperCase())+'<br>التاريخ: '+esc(c.date)+'</div>'+
+    '</div>'+
+    '<div class="info-row"><b>نوع الخدمة:</b> <span>'+esc(c.type)+'</span></div>'+
+    (c.phone ? '<div class="info-row"><b>رقم الهاتف / الآيدي:</b> <span>'+esc(c.phone)+'</span></div>' : '')+
+    '<div class="grand-total"><span>المبلغ المدفوع:</span> <span>'+c.amount.toLocaleString('en-US')+' د.ع</span></div>'+
+    '<div class="footer-note">شكراً لتعاملكم معنا · '+esc(shop.name||'Smart Fix AI')+' · '+new Date().toLocaleString('ar-IQ')+'</div>'+
+    '</div>'+
+    '<div class="no-print" style="text-align:center;padding:14px">'+
+    '<button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة الفاتورة</button>'+
+    '</div></body></html>');
+  w.document.close();
 }
 
 // ---------------------------------------------------------
@@ -1824,8 +1915,10 @@ function init(){
 
   const creditsListEl = document.getElementById('creditsList');
   creditsListEl.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-act="delete-credit"]');
-    if(btn) deleteCredit(btn.dataset.id);
+    const btn = e.target.closest('[data-act]');
+    if(!btn) return;
+    if(btn.dataset.act === 'print-credit') printCreditInvoice(btn.dataset.id);
+    else if(btn.dataset.act === 'delete-credit') deleteCredit(btn.dataset.id);
   });
 
   const stockListEl = document.getElementById('stockList');
@@ -1932,6 +2025,7 @@ function init(){
   checkLock();
   updateLicenseStatus();
   renderSaleDropdown();
+  renderCreditQuickAmounts(); // تشغيل أزرار الفئات
 
   if('serviceWorker' in navigator && location.protocol==='https:'){
     navigator.serviceWorker.register('sw.js').catch(e=>console.warn('[SW] register failed:', e));
