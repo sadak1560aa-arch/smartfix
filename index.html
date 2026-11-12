@@ -380,10 +380,10 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
   <h2 class="section-title">📊 التقارير والإحصائيات</h2>
   <div class="panel">
     <div class="formgrid">
-      <div><label for="reportFrom">من تاريخ</label><input id="reportFrom" type="date" class="date-input"></div>
-      <div><label for="reportTo">إلى تاريخ</label><input id="reportTo" type="date" class="date-input"></div>
+      <div><label for="reportFrom">من تاريخ (سنة-شهر-يوم)</label><input id="reportFrom" type="text" placeholder="مثال: 2026-11-12" style="direction: ltr; text-align: right;"></div>
+      <div><label for="reportTo">إلى تاريخ (سنة-شهر-يوم)</label><input id="reportTo" type="text" placeholder="مثال: 2026-11-12" style="direction: ltr; text-align: right;"></div>
     </div>
-    <p class="muted">اترك الحقول فارغة لاحتساب كل الطلبات.</p>
+    <p class="muted">اترك الحقول فارغة لاحتساب كل الطلبات. اكتب التاريخ بالشكل: 2026-11-12</p>
     <div class="actions">
       <button class="primary" id="reportBtn">عرض التقرير</button>
       <button class="secondary" id="printReportBtn">طباعة / PDF</button>
@@ -536,7 +536,6 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const num=(v,d=0)=>{const n=Number(v);return Number.isFinite(n)&&n>=0?n:d;};
 const validPhotoData=s=>typeof s==='string' && /^data:image\/(jpeg|png|webp);base64,/.test(s);
 
-// دالة تنسيق التاريخ ليكون بالشكل العربي 2026/11/12
 const formatDate = (d = new Date()) => {
   const y = d.getFullYear();
   const m = String(d.getMonth() + 1).padStart(2, '0');
@@ -1256,7 +1255,6 @@ function addCreditStockHandler() {
   if(!qty || qty <= 0) { alert('أدخل كمية صحيحة.'); return; }
   if(price < 0) { alert('أدخل سعراً صحيحاً.'); return; }
 
-  // التحقق من وجود نفس الفئة مسبقاً
   const existing = db.creditStock.find(c => !c.is_deleted && c.type === type && c.amount === amount);
   if(existing) {
     existing.qty += qty;
@@ -1585,34 +1583,124 @@ function getJobDate(j){
   if(m) return new Date(+m[3], +m[2]-1, +m[1]);
   return null;
 }
+
 function generateReport(){
-  const fromVal=document.getElementById('reportFrom').value;
-  const toVal=document.getElementById('reportTo').value;
-  const from=fromVal?new Date(fromVal+'T00:00:00'):null;
-  const to=toVal?new Date(toVal+'T23:59:59'):null;
+  const fromVal=document.getElementById('reportFrom').value.trim();
+  const toVal=document.getElementById('reportTo').value.trim();
+  
+  // دالة مساعدة لتحويل نص التاريخ (سنة-شهر-يوم) إلى كائن Date
+  const parseDate = (str, isEnd) => {
+    if(!str) return null;
+    const parts = str.split('-');
+    if(parts.length !== 3) return null;
+    const y = parseInt(parts[0]);
+    const m = parseInt(parts[1]) - 1;
+    const d = parseInt(parts[2]);
+    if(isNaN(y) || isNaN(m) || isNaN(d)) return null;
+    return isEnd ? new Date(y, m, d, 23, 59, 59) : new Date(y, m, d, 0, 0, 0);
+  };
+
+  const from = parseDate(fromVal, false);
+  const to = parseDate(toVal, true);
+  
+  if(fromVal && !from) { alert('صيغة تاريخ البداية غير صحيحة. استخدم: 2026-11-12'); return; }
+  if(toVal && !to) { alert('صيغة تاريخ النهاية غير صحيحة. استخدم: 2026-11-12'); return; }
+  if(from && to && from > to) { alert('تاريخ البداية يجب أن يكون قبل تاريخ النهاية.'); return; }
+
   const out=document.getElementById('reportOutput');
-  if(from&&to&&from>to){out.innerHTML='<div class="empty">تاريخ البداية بعد تاريخ النهاية.</div>';return;}
-  let jobs=db.jobs.filter(j => !j.is_deleted);
-  if(from||to)jobs=jobs.filter(j=>{const d=getJobDate(j);if(!d)return false;if(from&&d<from)return false;if(to&&d>to)return false;return true;});
-  if(!jobs.length){out.innerHTML='<div class="empty">لا توجد طلبات في هذه الفترة.</div>';return;}
-  const total=jobs.length;
-  const byStatus={};jobs.forEach(j=>byStatus[j.status]=(byStatus[j.status]||0)+1);
-  let labor=0,partsRev=0;
-  jobs.forEach(j=>{labor+=j.price||0;(j.partsUsed||[]).forEach(p=>partsRev+=(p.price||0)*(p.qty||0));});
-  const grand=labor+partsRev;
-  const partUsage={};jobs.forEach(j=>(j.partsUsed||[]).forEach(p=>{if(!partUsage[p.name])partUsage[p.name]={qty:0,rev:0};partUsage[p.name].qty+=p.qty;partUsage[p.name].rev+=p.price*p.qty;}));
+  
+  // دالة فلترة عامة
+  const isInRange = (dateISO, dateStr) => {
+    if(!from && !to) return true;
+    let d = null;
+    if(dateISO) d = new Date(dateISO);
+    else if(dateStr) {
+      const parts = dateStr.split('/');
+      if(parts.length === 3) d = new Date(parseInt(parts[0]), parseInt(parts[1])-1, parseInt(parts[2]));
+    }
+    if(!d || isNaN(d)) return false;
+    if(from && d < from) return false;
+    if(to && d > to) return false;
+    return true;
+  };
+
+  // 1. فلترة الصيانة
+  const jobs = db.jobs.filter(j => !j.is_deleted && isInRange(j.dateISO, j.date));
+  let labor=0, partsRev=0;
+  jobs.forEach(j => {
+    labor += j.price || 0;
+    (j.partsUsed || []).forEach(p => partsRev += (p.price || 0) * (p.qty || 0));
+  });
+  const repairsTotal = labor + partsRev;
+
+  // 2. فلترة المبيعات المباشرة
+  const sales = db.sales.filter(s => !s.is_deleted && isInRange(s.dateISO, s.date));
+  const salesTotal = sales.reduce((sum, s) => sum + (s.total || 0), 0);
+
+  // 3. فلترة الأرصدة الرقمية
+  const credits = db.credits.filter(c => !c.is_deleted && isInRange(c.dateISO, c.date));
+  const creditsTotal = credits.reduce((sum, c) => sum + (c.amount || 0), 0);
+
+  const grandTotal = repairsTotal + salesTotal + creditsTotal;
+
+  if(!jobs.length && !sales.length && !credits.length){
+    out.innerHTML = '<div class="empty">لا توجد عمليات مسجلة في هذه الفترة.</div>';
+    return;
+  }
+
+  // إحصائيات إضافية للصيانة
+  const byStatus={};
+  jobs.forEach(j=>byStatus[j.status]=(byStatus[j.status]||0)+1);
+  
+  const partUsage={};
+  jobs.forEach(j=>(j.partsUsed||[]).forEach(p=>{
+    if(!partUsage[p.name])partUsage[p.name]={qty:0,rev:0};
+    partUsage[p.name].qty+=p.qty;
+    partUsage[p.name].rev+=p.price*p.qty;
+  }));
   const topParts=Object.entries(partUsage).sort((a,b)=>b[1].qty-a[1].qty).slice(0,10);
-  const monthly={};jobs.forEach(j=>{const d=getJobDate(j);if(!d)return;const key=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');if(!monthly[key])monthly[key]={count:0,rev:0};monthly[key].count++;monthly[key].rev+=(j.price||0);(j.partsUsed||[]).forEach(p=>monthly[key].rev+=p.price*p.qty);});
+
   let h='<div class="result" style="white-space:normal">';
-  h+='<h3 style="margin:0 0 12px">ملخص</h3>';
-  h+='<p><b>عدد الطلبات:</b> '+total+'<br><b>الأجور:</b> '+labor.toLocaleString('en-US')+' د.ع<br><b>القطع:</b> '+partsRev.toLocaleString('en-US')+' د.ع<br><b>الإجمالي:</b> <span class="grand">'+grand.toLocaleString('en-US')+' د.ع</span></p>';
-  h+='<h4>حسب الحالة</h4><table class="report-table"><tbody>';
-  Object.entries(byStatus).forEach(([s,c])=>{h+='<tr><td>'+esc(s)+'</td><td class="left"><b>'+c+'</b></td></tr>';});
-  h+='</tbody></table>';
-  if(topParts.length){h+='<h4>أكثر القطع استخداماً</h4><table class="report-table"><thead><tr><th>القطعة</th><th class="left">الكمية</th><th class="left">الإيراد</th></tr></thead><tbody>';topParts.forEach(([n,d])=>{h+='<tr><td>'+esc(n)+'</td><td class="left">'+d.qty+'</td><td class="left">'+d.rev.toLocaleString('en-US')+'</td></tr>';});h+='</tbody></table>';}
-  const mKeys=Object.keys(monthly).sort();
-  if(mKeys.length){h+='<h4>حسب الشهر</h4><table class="report-table"><thead><tr><th>الشهر</th><th class="left">الطلبات</th><th class="left">الإيراد</th></tr></thead><tbody>';mKeys.forEach(k=>{const m=monthly[k];h+='<tr><td>'+esc(k)+'</td><td class="left">'+m.count+'</td><td class="left">'+m.rev.toLocaleString('en-US')+'</td></tr>';});h+='</tbody></table>';}
-  h+='</div>';out.innerHTML=h;
+  
+  h+='<h3 style="margin:0 0 12px;color:var(--navy)">💰 ملخص الإيرادات الكلي</h3>';
+  h+='<div style="background:#e3f7ee;border:1px solid #a8e6cc;padding:15px;border-radius:10px;margin-bottom:15px;text-align:center">';
+  h+='<div style="font-size:14px;color:var(--muted);margin-bottom:5px">إجمالي دخل المحل في هذه الفترة</div>';
+  h+='<div style="font-size:28px;font-weight:bold;color:var(--green)">'+grandTotal.toLocaleString('en-US')+' د.ع</div>';
+  h+='</div>';
+
+  h+='<table class="report-table">';
+  h+='<tr><td>إيرادات الصيانة (أجور + قطع)</td><td class="left"><b>'+repairsTotal.toLocaleString('en-US')+' د.ع</b></td></tr>';
+  h+='<tr><td>إيرادات البيع المباشر (إكسسوارات)</td><td class="left"><b>'+salesTotal.toLocaleString('en-US')+' د.ع</b></td></tr>';
+  h+='<tr><td>إيرادات الأرصدة الرقمية</td><td class="left"><b>'+creditsTotal.toLocaleString('en-US')+' د.ع</b></td></tr>';
+  h+='<tr style="background:#f8fafc;"><td><b>الإجمالي الكلي</b></td><td class="left"><b style="color:var(--green)">'+grandTotal.toLocaleString('en-US')+' د.ع</b></td></tr>';
+  h+='</table>';
+
+  if(jobs.length) {
+    h+='<h4 style="color:var(--navy);margin-top:20px">🔧 تفاصيل الصيانة</h4>';
+    h+='<p><b>عدد الطلبات:</b> '+jobs.length+'<br><b>الأجور:</b> '+labor.toLocaleString('en-US')+' د.ع<br><b>القطع:</b> '+partsRev.toLocaleString('en-US')+' د.ع</p>';
+    h+='<h4>حسب الحالة</h4><table class="report-table"><tbody>';
+    Object.entries(byStatus).forEach(([s,c])=>{h+='<tr><td>'+esc(s)+'</td><td class="left"><b>'+c+'</b></td></tr>';});
+    h+='</tbody></table>';
+    
+    if(topParts.length){
+      h+='<h4>أكثر القطع استخداماً</h4><table class="report-table"><thead><tr><th>القطعة</th><th class="left">الكمية</th><th class="left">الإيراد</th></tr></thead><tbody>';
+      topParts.forEach(([n,d])=>{h+='<tr><td>'+esc(n)+'</td><td class="left">'+d.qty+'</td><td class="left">'+d.rev.toLocaleString('en-US')+'</td></tr>';});
+      h+='</tbody></table>';
+    }
+  }
+
+  if(sales.length) {
+    h+='<h4 style="color:var(--navy);margin-top:20px">💵 تفاصيل البيع المباشر</h4>';
+    h+='<p><b>عدد عمليات البيع:</b> '+sales.length+'<br><b>إجمالي المبيعات:</b> '+salesTotal.toLocaleString('en-US')+' د.ع</p>';
+  }
+
+  if(credits.length) {
+    h+='<h4 style="color:var(--navy);margin-top:20px">📱 تفاصيل الأرصدة الرقمية</h4>';
+    h+='<p><b>عدد عمليات الرصيد:</b> '+credits.length+'<br><b>إجمالي الأرصدة:</b> '+creditsTotal.toLocaleString('en-US')+' د.ع</p>';
+  }
+
+  h+='</div>';
+  out.innerHTML=h;
 }
 function printReport(){
   const out=document.getElementById('reportOutput');
