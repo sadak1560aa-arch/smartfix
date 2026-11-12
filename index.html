@@ -69,8 +69,8 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 #logoPreview img{max-height:80px;border-radius:8px;border:1px solid var(--line);margin-top:6px}
 .photo-viewer{position:fixed;inset:0;background:rgba(0,0,0,.9);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;cursor:zoom-out}
 .photo-viewer img{max-width:100%;max-height:100%;border-radius:10px}
-@media(min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.stats{grid-template-columns:repeat(3,1fr)}}
-@media(max-width:420px){.stats{gap:7px}.stat{padding:10px}.stat b{font-size:19px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.actions select,.actions input{width:100%}}
+@media(min-width:700px){.grid{grid-template-columns:repeat(3,minmax(0,1fr))}.stats{grid-template-columns:repeat(4,1fr)}}
+@media(max-width:420px){.stats{gap:7px;grid-template-columns:repeat(2,1fr)}.stat{padding:10px}.stat b{font-size:19px}.formgrid{grid-template-columns:1fr}.full{grid-column:auto}.actions select,.actions input{width:100%}}
 .modal-bg{position:fixed;inset:0;background:linear-gradient(125deg,var(--navy),var(--navy2));display:grid;place-items:center;z-index:9999;padding:20px;overflow-y:auto}
 .modal-card{background:white;border-radius:18px;padding:26px 22px;max-width:480px;width:100%;box-shadow:0 20px 60px rgba(0,0,0,.4)}
 .modal-card h2{margin:0 0 6px;font-size:21px;color:var(--navy)}
@@ -82,7 +82,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 .modal-card .buttons button{flex:1}
 .warn-box{background:#fff7e6;border:1px solid #ffe0a3;color:#7a4a00;padding:10px 12px;border-radius:10px;font-size:12px;line-height:1.7;margin:10px 0}
 
-/* ستايل خاص بصندوق الإضافة المستمر */
 .sticky-add-box {
   position: sticky;
   top: 10px;
@@ -157,7 +156,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 4.3 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 5.0 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
  <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، سجل المبيعات، وتابع الأرصدة وقطع الغيار من مكان واحد.</p></div>
@@ -172,7 +171,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
   <button data-tab="diagnosis">تشخيص الأعطال</button>
   <button data-tab="jobs">طلبات الصيانة</button>
   <button data-tab="sales">💵 البيع المباشر</button>
-  <button data-tab="balances">💰 الأرصدة</button>
+  <button data-tab="balances">📱 الأرصدة الرقمية</button>
   <button data-tab="inventory">📦 إدارة المخزون</button>
   <button data-tab="tools">أدوات الفني</button>
   <button data-tab="reports">📊 التقارير</button>
@@ -185,8 +184,8 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
   <div class="grid">
    <div class="tile" data-goto="inventory"><div class="ico">➕</div><h3>إضافة بضاعة جديدة</h3><p>سجل المشترياتك، الإكسسوارات، وقطع الغيار في المخزن.</p></div>
    <div class="tile" data-goto="jobs"><div class="ico">📋</div><h3>إدارة الصيانة</h3><p>سجل الزبائن والأجهزة وتابع حالة الإصلاح.</p></div>
-   <div class="tile" data-goto="sales"><div class="ico">💵</div><h3>البيع المباشر</h3><p>بيع قطع الغيار والإكسسوارات للزبائن بشكل مباشر.</p></div>
-   <div class="tile" data-goto="balances"><div class="ico">💰</div><h3>الأرصدة المالية</h3><p>متابعة الإيرادات من الصيانة والمبيعات وقيمة المخزون.</p></div>
+   <div class="tile" data-goto="sales"><div class="ico">💵</div><h3>البيع المباشر</h3><p>بيع قطع الغيار والإكسسوارات مع طباعة فاتورة.</p></div>
+   <div class="tile" data-goto="balances"><div class="ico">📱</div><h3>الأرصدة الرقمية</h3><p>بيع وتعبئة أرصدة اسيا سيل، كورك، ببجي، والنت.</p></div>
    <div class="tile" data-goto="diagnosis"><div class="ico">🩺</div><h3>تشخيص الأعطال</h3><p>حدد المشكلة واحصل على خطوات فحص أولية.</p></div>
    <div class="tile" data-goto="tools"><div class="ico">🧮</div><h3>أدوات الفني</h3><p>حاسبة قانون أوم ومعلومات القياس.</p></div>
    <div class="tile" data-goto="reports"><div class="ico">📊</div><h3>التقارير</h3><p>إحصائيات الإيرادات والقطع والمبيعات.</p></div>
@@ -259,27 +258,49 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
       <div><label for="saleQty">الكمية</label><input id="saleQty" type="number" min="1" value="1"></div>
       <div><label for="salePrice">سعر البيع (للمفرد)</label><input id="salePrice" type="number" min="0" value="0"></div>
     </div>
-    <button class="primary" id="saveSaleBtn" style="width:100%;margin-top:12px">تسجيل عملية البيع وخصم من المخزون</button>
+    <button class="primary" id="saveSaleBtn" style="width:100%;margin-top:12px">تسجيل عملية البيع وطباعة الفاتورة</button>
   </div>
   <h2 class="section-title">سجل المبيعات</h2>
   <div class="panel" id="salesList"></div>
  </section>
 
- <!-- قسم الأرصدة -->
+ <!-- قسم الأرصدة الرقمية -->
  <section id="balances" class="section">
-  <h2 class="section-title">💰 الأرصدة المالية</h2>
-  <div class="stats">
-    <div class="stat" style="border-right:4px solid var(--green)"><b id="balRepairs">0</b><span>إيرادات الصيانة</span></div>
-    <div class="stat" style="border-right:4px solid var(--blue)"><b id="balSales">0</b><span>إيرادات المبيعات</span></div>
-    <div class="stat" style="border-right:4px solid var(--gold)"><b id="balStock">0</b><span>قيمة المخزون (بيع)</span></div>
-  </div>
-  <div class="panel" style="text-align:center; margin-top:15px; background:linear-gradient(125deg,#101d35,#172b4d); color:white;">
-    <h3 style="margin:0 0 10px; font-size:16px; color:#e1eaff">إجمالي الإيرادات (الصيانة + المبيعات)</h3>
-    <div style="font-size:36px; font-weight:bold; color:var(--gold)" id="balTotal">0 د.ع</div>
-  </div>
+  <h2 class="section-title">📱 بيع الأرصدة الرقمية (تعبئة رصيد)</h2>
   
-  <h2 class="section-title" style="margin-top:20px">حركة الصندوق (آخر العمليات)</h2>
-  <div class="panel" id="cashflowList"></div>
+  <div class="panel sticky-add-box">
+    <div class="formgrid">
+      <div>
+        <label for="creditType">نوع الرصيد / الخدمة</label>
+        <select id="creditType">
+          <option value="اسيا سيل">اسيا سيل (Asiacell)</option>
+          <option value="كورك">كورك (Korek)</option>
+          <option value="زين">زين (Zain)</option>
+          <option value="باقات نت">باقات إنترنت</option>
+          <option value="شدات ببجي">شدات ببجي (PUBG UC)</option>
+          <option value="فري فاير">فري فاير (Free Fire)</option>
+          <option value="بطاقة كارت">بطاقة كارت</option>
+          <option value="أخرى">أخرى...</option>
+        </select>
+      </div>
+      <div>
+        <label for="creditAmount">المبلغ (دينار عراقي)</label>
+        <input id="creditAmount" type="number" min="0" placeholder="0" autocomplete="off">
+      </div>
+      <div class="full">
+        <label for="creditPhone">رقم الهاتف / آيدي اللعبة (اختياري)</label>
+        <input id="creditPhone" placeholder="07xxxxxxxxx أو ID" autocomplete="off">
+      </div>
+    </div>
+    <button class="primary" id="saveCreditBtn" style="width:100%;margin-top:12px; background:var(--green)">تسجيل بيع الرصيد</button>
+  </div>
+
+  <div class="stats" id="creditStatsContainer" style="margin-top:15px">
+    <!-- سيتم تعبئتها بالجافاسكربت -->
+  </div>
+
+  <h2 class="section-title" style="margin-top:20px">سجل عمليات الرصيد</h2>
+  <div class="panel" id="creditsList"></div>
  </section>
 
  <section id="inventory" class="section">
@@ -415,7 +436,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 4.3 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 5.0 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
@@ -452,7 +473,7 @@ function startTrialIfNeeded(){
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '4.3');
+  localStorage.setItem(CFG_VERSION_KEY, '5.0');
 }
 
 const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -472,8 +493,8 @@ function isValidLicenseKey(k){
   return computeLicenseChecksum(payload) === m[3];
 }
 
-const KEY='smartfixai_v4';
-const OLD_KEYS=['smartfixai_v3','smartfixai_v2','smartfixai_v1'];
+const KEY='smartfixai_v5';
+const OLD_KEYS=['smartfixai_v4','smartfixai_v3','smartfixai_v2','smartfixai_v1'];
 const VALID_STATUSES=['تم الاستلام','قيد الفحص','قيد الإصلاح','جاهز للتسليم','تم التسليم'];
 
 const genId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -482,7 +503,7 @@ const esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const num=(v,d=0)=>{const n=Number(v);return Number.isFinite(n)&&n>=0?n:d;};
 const validPhotoData=s=>typeof s==='string' && /^data:image\/(jpeg|png|webp);base64,/.test(s);
 
-function defaultDB(){return{version:5,jobs:[],parts:[],sales:[],settings:{pinEnabled:false,pinHash:null,shop:{name:'',phone:'',address:'',logo:null}}};}
+function defaultDB(){return{version:5,jobs:[],parts:[],sales:[],credits:[],settings:{pinEnabled:false,pinHash:null,shop:{name:'',phone:'',address:'',logo:null}}};}
 
 function normalizeJob(j){
   const st = VALID_STATUSES.includes(String(j.status)) ? String(j.status) : 'تم الاستلام';
@@ -533,6 +554,18 @@ function normalizeSale(s){
     is_deleted: !!s.is_deleted
   };
 }
+function normalizeCredit(c){
+  return {
+    id: validId(c.id) ? String(c.id) : genId(),
+    type: String(c.type ?? 'أخرى').slice(0,50),
+    amount: num(c.amount),
+    phone: String(c.phone ?? '').slice(0,50),
+    date: String(c.date ?? new Date().toLocaleDateString('en-GB')),
+    dateISO: String(c.dateISO ?? ''),
+    updated_at: Number(c.updated_at) || Date.now(),
+    is_deleted: !!c.is_deleted
+  };
+}
 
 function loadDB(){
   let raw=null;
@@ -548,6 +581,7 @@ function loadDB(){
       jobs:Array.isArray(d.jobs)?d.jobs.map(normalizeJob):[],
       parts:Array.isArray(d.parts)?d.parts.map(normalizePart):[],
       sales:Array.isArray(d.sales)?d.sales.map(normalizeSale):[],
+      credits:Array.isArray(d.credits)?d.credits.map(normalizeCredit):[],
       settings:{
         pinEnabled:!!(d.settings&&d.settings.pinEnabled),
         pinHash:(d.settings&&d.settings.pinHash)||null,
@@ -1016,6 +1050,220 @@ async function printJob(id){
   w.document.close();
 }
 
+// ---------------------------------------------------------
+// دوال البيع المباشر مع الفاتورة
+// ---------------------------------------------------------
+function renderSaleDropdown() {
+  const sel = document.getElementById('salePart');
+  const availParts = db.parts.filter(p => !p.is_deleted && p.qty > 0);
+  sel.innerHTML = availParts.map(p => `<option value="${esc(p.id)}">${esc(p.name)} (متوفر: ${p.qty}) - ${p.price.toLocaleString('en-US')} د.ع</option>`).join('');
+  if(!availParts.length) sel.innerHTML = '<option value="">لا توجد قطع متوفرة</option>';
+  
+  sel.addEventListener('change', () => {
+    const part = db.parts.find(x => x.id === sel.value);
+    if(part) document.getElementById('salePrice').value = part.price;
+  });
+}
+
+function saveSaleHandler() {
+  const customer = document.getElementById('saleCustomer').value.trim() || 'زبون نقدي';
+  const partId = document.getElementById('salePart').value;
+  const qty = Number(document.getElementById('saleQty').value);
+  const price = Number(document.getElementById('salePrice').value);
+
+  if(!partId) { alert('اختر مادة.'); return; }
+  const part = db.parts.find(x => x.id === partId);
+  if(!part) return;
+  if(qty <= 0 || isNaN(qty)) { alert('كمية غير صالحة.'); return; }
+  if(qty > part.qty) { alert('الكمية المطلوبة أكبر من المخزون المتوفر ('+part.qty+').'); return; }
+  if(price < 0 || isNaN(price)) { alert('سعر غير صالح.'); return; }
+
+  part.qty -= qty;
+  part.updated_at = Date.now();
+
+  const sale = {
+    id: genId(),
+    customer: customer,
+    partId: part.id,
+    partName: part.name,
+    qty: qty,
+    price: price,
+    total: qty * price,
+    date: new Date().toLocaleDateString('en-GB'),
+    dateISO: new Date().toISOString(),
+    updated_at: Date.now(),
+    is_deleted: false
+  };
+  db.sales.unshift(sale);
+  saveDB();
+  
+  document.getElementById('saleCustomer').value = '';
+  document.getElementById('saleQty').value = '1';
+  renderSaleDropdown();
+  
+  printSaleInvoice(sale.id);
+}
+
+function renderSales() {
+  const el = document.getElementById('salesList');
+  const sales = db.sales.filter(s => !s.is_deleted);
+  
+  if(!sales.length) {
+    el.innerHTML = '<div class="empty">لا توجد مبيعات مسجلة بعد.</div>';
+    return;
+  }
+
+  el.innerHTML = sales.map(s => {
+    return `<div class="item">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <strong style="color:var(--navy)">${esc(s.customer)}</strong>
+        <span style="font-weight:bold;color:var(--green)">${s.total.toLocaleString('en-US')} د.ع</span>
+      </div>
+      <p class="muted" style="margin:0">📦 ${esc(s.partName)} × ${s.qty} <br> 📅 ${esc(s.date)}</p>
+      <div class="actions" style="margin-top:8px">
+        <button class="secondary" data-act="print-sale" data-id="${esc(s.id)}" style="padding:6px 12px;font-size:12px">📄 الفاتورة</button>
+        <button class="danger" data-act="delete-sale" data-id="${esc(s.id)}" style="padding:6px 12px;font-size:12px">إرجاع / حذف</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function deleteSale(id) {
+  if(!confirm('هل أنت متأكد من حذف هذه العملية؟ سيتم إرجاع الكمية إلى المخزون.')) return;
+  const s = db.sales.find(x => x.id === id);
+  if(!s) return;
+  
+  s.is_deleted = true;
+  s.updated_at = Date.now();
+  
+  const part = db.parts.find(p => p.id === s.partId);
+  if(part) {
+    part.qty += s.qty;
+    part.updated_at = Date.now();
+  }
+  saveDB();
+}
+
+function printSaleInvoice(id) {
+  const s = db.sales.find(x => x.id === id);
+  if(!s) return;
+  const shop = db.settings.shop || {};
+  const logoHtml = (shop.logo && validPhotoData(shop.logo)) ? '<img src="'+shop.logo+'" class="brand-logo" alt="logo">' : '';
+  
+  const w = window.open('', '_blank');
+  if(!w) { alert('اسمح بالنوافذ المنبثقة لطباعة الفاتورة.'); return; }
+  
+  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة مبيعات - '+esc(s.customer)+'</title>'+
+    '<style>'+
+    'body{font-family:Tahoma,Arial,sans-serif;padding:0;margin:0;color:#172033;background:#f3f6fb}'+
+    '.invoice{max-width:500px;margin:20px auto;background:#fff;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.08);border-radius:12px}'+
+    '.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #101d35;padding-bottom:16px;margin-bottom:20px}'+
+    '.brand-box{display:flex;align-items:center;gap:12px}'+
+    '.brand-logo{max-height:60px;max-width:120px;object-fit:contain;border-radius:6px}'+
+    '.brand-text h1{margin:0;font-size:20px;color:#101d35}.brand-text p{margin:2px 0;font-size:12px;color:#68758a}'+
+    '.invoice-meta{text-align:left;font-size:12px;color:#68758a}.invoice-meta b{color:#101d35;font-size:14px}'+
+    '.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #eee;font-size:13px}'+
+    '.info-row b{color:#68758a}'+
+    '.grand-total{margin-top:20px;padding:16px;background:#f7f9fc;border-radius:8px;display:flex;justify-content:space-between;font-size:18px;font-weight:bold;color:#15956b}'+
+    '.footer-note{text-align:center;font-size:11px;color:#999;margin-top:30px;padding-top:14px;border-top:1px solid #eee}'+
+    '@media print{body{background:#fff}.invoice{box-shadow:none;margin:0;padding:20px}.no-print{display:none}}'+
+    '</style></head><body>'+
+    '<div class="invoice">'+
+    '<div class="header">'+
+      '<div class="brand-box">'+logoHtml+'<div class="brand-text"><h1>'+esc(shop.name||'Smart Fix AI')+'</h1>'+
+        (shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':'')+
+        '</div></div>'+
+      '<div class="invoice-meta"><b>فاتورة مبيعات</b><br>رقم: '+esc(s.id.slice(-8).toUpperCase())+'<br>التاريخ: '+esc(s.date)+'</div>'+
+    '</div>'+
+    '<div class="info-row"><b>الزبون:</b> <span>'+esc(s.customer)+'</span></div>'+
+    '<div class="info-row"><b>المادة:</b> <span>'+esc(s.partName)+'</span></div>'+
+    '<div class="info-row"><b>الكمية:</b> <span>'+s.qty+'</span></div>'+
+    '<div class="info-row"><b>سعر المفرد:</b> <span>'+s.price.toLocaleString('en-US')+' د.ع</span></div>'+
+    '<div class="grand-total"><span>الإجمالي:</span> <span>'+s.total.toLocaleString('en-US')+' د.ع</span></div>'+
+    '<div class="footer-note">شكراً لتعاملكم معنا · '+esc(shop.name||'Smart Fix AI')+' · '+new Date().toLocaleString('ar-IQ')+'</div>'+
+    '</div>'+
+    '<div class="no-print" style="text-align:center;padding:14px">'+
+    '<button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة الفاتورة</button>'+
+    '</div></body></html>');
+  w.document.close();
+}
+
+// ---------------------------------------------------------
+// دوال الأرصدة الرقمية
+// ---------------------------------------------------------
+function saveCreditHandler() {
+  const type = document.getElementById('creditType').value;
+  const amount = Number(document.getElementById('creditAmount').value);
+  const phone = document.getElementById('creditPhone').value.trim();
+
+  if(amount <= 0 || isNaN(amount)) { alert('أدخل مبلغاً صحيحاً.'); return; }
+
+  db.credits.unshift({
+    id: genId(),
+    type: type,
+    amount: amount,
+    phone: phone,
+    date: new Date().toLocaleDateString('en-GB'),
+    dateISO: new Date().toISOString(),
+    updated_at: Date.now(),
+    is_deleted: false
+  });
+  
+  saveDB();
+  
+  document.getElementById('creditAmount').value = '';
+  document.getElementById('creditPhone').value = '';
+  alert('✅ تم تسجيل بيع الرصيد بنجاح!');
+}
+
+function renderCredits() {
+  const listEl = document.getElementById('creditsList');
+  const statsEl = document.getElementById('creditStatsContainer');
+  const credits = db.credits.filter(c => !c.is_deleted);
+
+  const totals = {};
+  credits.forEach(c => {
+    totals[c.type] = (totals[c.type] || 0) + c.amount;
+  });
+
+  if(!Object.keys(totals).length) {
+    statsEl.innerHTML = '<div class="empty" style="grid-column:1/-1">لا توجد أرصدة مباعة بعد.</div>';
+  } else {
+    statsEl.innerHTML = Object.entries(totals).map(([type, total]) => `
+      <div class="stat" style="border-right:4px solid var(--gold)">
+        <b>${total.toLocaleString('en-US')}</b>
+        <span>إجمالي مبيعات ${esc(type)}</span>
+      </div>
+    `).join('');
+  }
+
+  if(!credits.length) {
+    listEl.innerHTML = '<div class="empty">لا توجد عمليات مسجلة.</div>';
+    return;
+  }
+
+  listEl.innerHTML = credits.map(c => `
+    <div class="item">
+      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
+        <strong style="color:var(--navy)">${esc(c.type)}</strong>
+        <span style="font-weight:bold;color:var(--green)">${c.amount.toLocaleString('en-US')} د.ع</span>
+      </div>
+      <p class="muted" style="margin:0">${c.phone ? '📱 ' + esc(c.phone) + ' <br>' : ''} 📅 ${esc(c.date)}</p>
+      <div class="actions" style="margin-top:8px">
+        <button class="danger" data-act="delete-credit" data-id="${esc(c.id)}" style="padding:6px 12px;font-size:12px">حذف</button>
+      </div>
+    </div>
+  `).join('');
+}
+
+function deleteCredit(id) {
+  if(!confirm('حذف عملية الرصيد هذه؟')) return;
+  const c = db.credits.find(x => x.id === id);
+  if(c) { c.is_deleted = true; c.updated_at = Date.now(); saveDB(); }
+}
+
+// ---------------------------------------------------------
+
 function addPart(){
   const nameEl=document.getElementById('partName');
   const qtyEl=document.getElementById('partQty');
@@ -1125,163 +1373,6 @@ function ohm(){
   else out='أدخل قيمتين فقط وتأكد من عدم القسمة على صفر.';
   el.textContent=out;
 }
-
-// --- الدوال الجديدة للبيع المباشر والأرصدة ---
-
-function renderSaleDropdown() {
-  const sel = document.getElementById('salePart');
-  const availParts = db.parts.filter(p => !p.is_deleted && p.qty > 0);
-  sel.innerHTML = availParts.map(p => `<option value="${esc(p.id)}">${esc(p.name)} (متوفر: ${p.qty}) - ${p.price.toLocaleString('en-US')} د.ع</option>`).join('');
-  if(!availParts.length) sel.innerHTML = '<option value="">لا توجد قطع متوفرة</option>';
-  
-  // تحديث السعر تلقائياً عند اختيار المادة
-  sel.addEventListener('change', () => {
-    const part = db.parts.find(x => x.id === sel.value);
-    if(part) document.getElementById('salePrice').value = part.price;
-  });
-}
-
-function saveSaleHandler() {
-  const customer = document.getElementById('saleCustomer').value.trim() || 'زبون نقدي';
-  const partId = document.getElementById('salePart').value;
-  const qty = Number(document.getElementById('saleQty').value);
-  const price = Number(document.getElementById('salePrice').value);
-
-  if(!partId) { alert('اختر مادة.'); return; }
-  const part = db.parts.find(x => x.id === partId);
-  if(!part) return;
-  if(qty <= 0 || isNaN(qty)) { alert('كمية غير صالحة.'); return; }
-  if(qty > part.qty) { alert('الكمية المطلوبة أكبر من المخزون المتوفر ('+part.qty+').'); return; }
-  if(price < 0 || isNaN(price)) { alert('سعر غير صالح.'); return; }
-
-  // خصم من المخزون
-  part.qty -= qty;
-  part.updated_at = Date.now();
-
-  // تسجيل البيع
-  const sale = {
-    id: genId(),
-    customer: customer,
-    partId: part.id,
-    partName: part.name,
-    qty: qty,
-    price: price,
-    total: qty * price,
-    date: new Date().toLocaleDateString('en-GB'),
-    dateISO: new Date().toISOString(),
-    updated_at: Date.now(),
-    is_deleted: false
-  };
-  db.sales.unshift(sale);
-  saveDB();
-  
-  // تصفير النموذج
-  document.getElementById('saleCustomer').value = '';
-  document.getElementById('saleQty').value = '1';
-  renderSaleDropdown();
-  alert('✅ تم تسجيل البيع بنجاح!');
-}
-
-function renderSales() {
-  const el = document.getElementById('salesList');
-  const sales = db.sales.filter(s => !s.is_deleted);
-  
-  if(!sales.length) {
-    el.innerHTML = '<div class="empty">لا توجد مبيعات مسجلة بعد.</div>';
-    return;
-  }
-
-  el.innerHTML = sales.map(s => {
-    return `<div class="item">
-      <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
-        <strong style="color:var(--navy)">${esc(s.customer)}</strong>
-        <span style="font-weight:bold;color:var(--green)">${s.total.toLocaleString('en-US')} د.ع</span>
-      </div>
-      <p class="muted" style="margin:0">📦 ${esc(s.partName)} × ${s.qty} <br> 📅 ${esc(s.date)}</p>
-      <div class="actions" style="margin-top:8px">
-        <button class="danger" data-act="delete-sale" data-id="${esc(s.id)}" style="padding:6px 12px;font-size:12px">إرجاع / حذف</button>
-      </div>
-    </div>`;
-  }).join('');
-}
-
-function deleteSale(id) {
-  if(!confirm('هل أنت متأكد من حذف هذه العملية؟ سيتم إرجاع الكمية إلى المخزون.')) return;
-  const s = db.sales.find(x => x.id === id);
-  if(!s) return;
-  
-  s.is_deleted = true;
-  s.updated_at = Date.now();
-  
-  // إرجاع الكمية للمخزون
-  const part = db.parts.find(p => p.id === s.partId);
-  if(part) {
-    part.qty += s.qty;
-    part.updated_at = Date.now();
-  }
-  
-  saveDB();
-}
-
-function renderBalances() {
-  // حساب إيرادات الصيانة
-  let repairsIncome = 0;
-  db.jobs.filter(j => !j.is_deleted).forEach(j => {
-    repairsIncome += j.price || 0;
-    (j.partsUsed || []).forEach(p => repairsIncome += (p.price || 0) * (p.qty || 0));
-  });
-
-  // حساب إيرادات المبيعات
-  let salesIncome = 0;
-  db.sales.filter(s => !s.is_deleted).forEach(s => {
-    salesIncome += s.total || 0;
-  });
-
-  // قيمة المخزون (بسعر البيع)
-  let stockValue = 0;
-  db.parts.filter(p => !p.is_deleted).forEach(p => {
-    stockValue += (p.qty || 0) * (p.price || 0);
-  });
-
-  const totalIncome = repairsIncome + salesIncome;
-
-  document.getElementById('balRepairs').textContent = repairsIncome.toLocaleString('en-US');
-  document.getElementById('balSales').textContent = salesIncome.toLocaleString('en-US');
-  document.getElementById('balStock').textContent = stockValue.toLocaleString('en-US');
-  document.getElementById('balTotal').textContent = totalIncome.toLocaleString('en-US') + ' د.ع';
-
-  // حركة الصندوق (دمج الصيانة والمبيعات)
-  const cashflow = [];
-  db.jobs.filter(j => !j.is_deleted).forEach(j => {
-    const partsTotal = (j.partsUsed || []).reduce((sum, p) => sum + (p.price * p.qty), 0);
-    if(j.price + partsTotal > 0) {
-      cashflow.push({ type: 'صيانة', desc: `${j.brand} ${j.model} - ${j.customer}`, amount: j.price + partsTotal, date: j.dateISO || j.date, ts: new Date(j.dateISO || j.date).getTime() });
-    }
-  });
-  db.sales.filter(s => !s.is_deleted).forEach(s => {
-    cashflow.push({ type: 'مبيعات', desc: `${s.partName} × ${s.qty}`, amount: s.total, date: s.dateISO || s.date, ts: new Date(s.dateISO || s.date).getTime() });
-  });
-
-  cashflow.sort((a, b) => b.ts - a.ts);
-  const recent = cashflow.slice(0, 15);
-
-  const listEl = document.getElementById('cashflowList');
-  if(!recent.length) {
-    listEl.innerHTML = '<div class="empty">لا توجد حركات مالية.</div>';
-  } else {
-    listEl.innerHTML = recent.map(c => `
-      <div class="item" style="display:flex;justify-content:space-between;align-items:center">
-        <div>
-          <strong style="margin:0;font-size:14px">${esc(c.desc)}</strong>
-          <div class="muted" style="margin-top:4px">${esc(c.type)} · ${new Date(c.ts).toLocaleDateString('en-GB')}</div>
-        </div>
-        <div style="color:var(--green);font-weight:bold;font-size:16px">+${c.amount.toLocaleString('en-US')} د.ع</div>
-      </div>
-    `).join('');
-  }
-}
-
-// ---------------------------------------------
 
 function getJobDate(j){
   if(j.dateISO){ const d=new Date(j.dateISO); if(!isNaN(d)) return d; }
@@ -1443,6 +1534,7 @@ async function importData(e){
         jobs:dbData.jobs.map(normalizeJob),
         parts:dbData.parts.map(normalizePart),
         sales:Array.isArray(dbData.sales)?dbData.sales.map(normalizeSale):[],
+        credits:Array.isArray(dbData.credits)?dbData.credits.map(normalizeCredit):[],
         settings:{
           pinEnabled:!!(dbData.settings&&dbData.settings.pinEnabled),
           pinHash:(dbData.settings&&dbData.settings.pinHash)||null,
@@ -1599,7 +1691,7 @@ function render(){
   renderStock();
   renderLowStock();
   renderSales();
-  renderBalances();
+  renderCredits();
 }
 
 function updateLicenseStatus(){
@@ -1693,6 +1785,7 @@ function init(){
   document.getElementById('addPartBtn').addEventListener('click',addPart);
   document.getElementById('ohmBtn').addEventListener('click',ohm);
   document.getElementById('saveSaleBtn').addEventListener('click',saveSaleHandler);
+  document.getElementById('saveCreditBtn').addEventListener('click',saveCreditHandler);
   
   document.getElementById('partName').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') addPart(); });
   document.getElementById('partQty').addEventListener('keydown', (e)=>{ if(e.key === 'Enter') addPart(); });
@@ -1723,8 +1816,16 @@ function init(){
 
   const salesListEl = document.getElementById('salesList');
   salesListEl.addEventListener('click', (e) => {
-    const btn = e.target.closest('[data-act="delete-sale"]');
-    if(btn) deleteSale(btn.dataset.id);
+    const btn = e.target.closest('[data-act]');
+    if(!btn) return;
+    if(btn.dataset.act === 'print-sale') printSaleInvoice(btn.dataset.id);
+    else if(btn.dataset.act === 'delete-sale') deleteSale(btn.dataset.id);
+  });
+
+  const creditsListEl = document.getElementById('creditsList');
+  creditsListEl.addEventListener('click', (e) => {
+    const btn = e.target.closest('[data-act="delete-credit"]');
+    if(btn) deleteCredit(btn.dataset.id);
   });
 
   const stockListEl = document.getElementById('stockList');
@@ -1975,7 +2076,7 @@ function tryStart(){
       }
       
       if (db.parts.length){
-        const partRows = db.parts.map(p => ({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price }, qty: p.qty, updated_at: new Date(p.updated_at || Date.now()).toISOString() }));
+        const partRows = db.parts.map(p => ({ id: p.id, user_id: cloudUser.id, data: { name: p.name, price: p.price, is_deleted: p.is_deleted }, qty: p.qty, updated_at: new Date(p.updated_at || Date.now()).toISOString() }));
         const { error: pErr } = await sb.from('parts').upsert(partRows);
         if (pErr) throw pErr;
       }
@@ -1986,5 +2087,180 @@ function tryStart(){
         if (del.length) await sb.from('parts').delete().in('id', del);
       }
 
-      // Sync Sales (Requires new table in Supabase)
-      if (db.sales.l
+      if (db.sales.length){
+        const saleRows = db.sales.map(s => ({ id: s.id, user_id: cloudUser.id, data: s, updated_at: new Date(s.updated_at || Date.now()).toISOString() }));
+        const { error: sErr } = await sb.from('sales').upsert(saleRows);
+        if (sErr) console.warn("Sales sync failed:", sErr);
+      }
+      const { data: rs } = await sb.from('sales').select('id');
+      if (rs){
+        const localIds = new Set(db.sales.map(s => s.id));
+        const del = rs.filter(r => !localIds.has(r.id)).map(r => r.id);
+        if (del.length) await sb.from('sales').delete().in('id', del);
+      }
+
+      if (db.credits.length){
+        const creditRows = db.credits.map(c => ({ id: c.id, user_id: cloudUser.id, data: c, updated_at: new Date(c.updated_at || Date.now()).toISOString() }));
+        const { error: cErr } = await sb.from('credits').upsert(creditRows);
+        if (cErr) console.warn("Credits sync failed:", cErr);
+      }
+      const { data: rc } = await sb.from('credits').select('id');
+      if (rc){
+        const localIds = new Set(db.credits.map(c => c.id));
+        const del = rc.filter(r => !localIds.has(r.id)).map(r => r.id);
+        if (del.length) await sb.from('credits').delete().in('id', del);
+      }
+
+      await sb.from('settings').upsert({ user_id: cloudUser.id, data: { shop: db.settings.shop } });
+      setStatus('✅ آخر مزامنة: ' + new Date().toLocaleTimeString('ar-IQ'), 'var(--green)');
+    } catch(e){
+      console.error('[Cloud] sync:', e);
+      setStatus('❌ فشل الرفع: ' + (e.message || 'خطأ'), 'var(--red)');
+    } finally { syncing = false; }
+  }
+
+  async function cloudPull(){
+    if (!cloudReady) return;
+    setStatus('⏳ جارٍ الجلب...');
+    try {
+      const { data: rJobs } = await sb.from('jobs').select('*');
+      if (rJobs){
+        const remoteById = new Map(rJobs.map(r => [r.id, r]));
+        const merged = [], seen = new Set();
+        for (const lj of db.jobs){
+          const rj = remoteById.get(lj.id);
+          if (!rj){ merged.push(lj); continue; }
+          seen.add(lj.id);
+          const lt = new Date(lj.updated_at || 0).getTime();
+          const rt = new Date(rj.updated_at).getTime();
+          merged.push(lt > rt ? lj : normalizeJob(rj.data));
+        }
+        for (const rj of rJobs) if (!seen.has(rj.id)) merged.push(normalizeJob(rj.data));
+        db.jobs = merged;
+      }
+
+      const { data: rParts } = await sb.from('parts').select('*');
+      if (rParts){
+        const remoteById = new Map(rParts.map(r => [r.id, r]));
+        const merged = [], seen = new Set();
+        for (const lp of db.parts){
+          const rp = remoteById.get(lp.id);
+          if (!rp){ merged.push(lp); continue; }
+          seen.add(lp.id);
+          const lt = new Date(lp.updated_at || 0).getTime();
+          const rt = new Date(rp.updated_at).getTime();
+          if(lt > rt) merged.push(lp);
+          else merged.push({ id: rp.id, name: rp.data?.name || '', price: Number(rp.data?.price) || 0, qty: Number(rp.qty), updated_at: rt, is_deleted: !!rp.data?.is_deleted });
+        }
+        for (const rp of rParts) if (!seen.has(rp.id)) merged.push({ id: rp.id, name: rp.data?.name || '', price: Number(rp.data?.price) || 0, qty: Number(rp.qty), updated_at: new Date(rp.updated_at).getTime(), is_deleted: !!rp.data?.is_deleted });
+        db.parts = merged;
+      }
+
+      const { data: rSales } = await sb.from('sales').select('*');
+      if (rSales){
+        const remoteById = new Map(rSales.map(r => [r.id, r]));
+        const merged = [], seen = new Set();
+        for (const ls of db.sales){
+          const rs = remoteById.get(ls.id);
+          if (!rs){ merged.push(ls); continue; }
+          seen.add(ls.id);
+          const lt = new Date(ls.updated_at || 0).getTime();
+          const rt = new Date(rs.updated_at).getTime();
+          merged.push(lt > rt ? ls : normalizeSale(rs.data));
+        }
+        for (const rs of rSales) if (!seen.has(rs.id)) merged.push(normalizeSale(rs.data));
+        db.sales = merged;
+      }
+
+      const { data: rCredits } = await sb.from('credits').select('*');
+      if (rCredits){
+        const remoteById = new Map(rCredits.map(r => [r.id, r]));
+        const merged = [], seen = new Set();
+        for (const lc of db.credits){
+          const rc = remoteById.get(lc.id);
+          if (!rc){ merged.push(lc); continue; }
+          seen.add(lc.id);
+          const lt = new Date(lc.updated_at || 0).getTime();
+          const rt = new Date(rc.updated_at).getTime();
+          merged.push(lt > rt ? lc : normalizeCredit(rc.data));
+        }
+        for (const rc of rCredits) if (!seen.has(rc.id)) merged.push(normalizeCredit(rc.data));
+        db.credits = merged;
+      }
+
+      const { data: rSet } = await sb.from('settings').select('*').eq('user_id', cloudUser.id).maybeSingle();
+      if (rSet?.data?.shop) db.settings.shop = rSet.data.shop;
+      lsSave(); render(); loadShopInfoToForm();
+      setStatus('✅ تم الجلب', 'var(--green)');
+    } catch(e){
+      console.error('[Cloud] pull:', e);
+      setStatus('❌ فشل الجلب: ' + (e.message || 'خطأ'), 'var(--red)');
+    }
+  }
+
+  function cloudSubscribe(){
+    if (cloudChannel) return;
+    cloudChannel = sb.channel('smartfix-changes')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'jobs' }, cloudPull)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'parts' }, cloudPull)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'sales' }, cloudPull)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'credits' }, cloudPull)
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'settings' }, cloudPull)
+      .subscribe();
+  }
+
+  function wrapFunctions(){
+    const _saveDB = saveDB;
+    window.saveDB = function(){ _saveDB.apply(this, arguments); scheduleCloudSync(); };
+    const _adjustStock = adjustStock;
+    window.adjustStock = function(id, delta){ _adjustStock(id, delta); scheduleCloudSync(); };
+    function wrapQtyChange(fn){
+      return function(){
+        const r = fn.apply(this, arguments);
+        scheduleCloudSync();
+        return r;
+      };
+    }
+    window.addPartToJob = wrapQtyChange(addPartToJob);
+    window.removePartFromJob = wrapQtyChange(removePartFromJob);
+    window.saveSaleHandler = wrapQtyChange(saveSaleHandler);
+    window.deleteSale = wrapQtyChange(deleteSale);
+    window.saveCreditHandler = wrapQtyChange(saveCreditHandler);
+    window.deleteCredit = wrapQtyChange(deleteCredit);
+  }
+
+  async function initCloud(){
+    injectUI();
+    wrapFunctions();
+    $('cloudLoginBtn').addEventListener('click', login);
+    $('cloudLogoutBtn').addEventListener('click', logout);
+    $('cloudSyncBtn').addEventListener('click', async () => { await cloudPull(); await cloudSync(); });
+    $('cloudPassword').addEventListener('keydown', e => { if (e.key === 'Enter') login(); });
+    window.addEventListener('online', () => { if (cloudReady) cloudSync(); });
+    try {
+      const { data: { session } } = await sb.auth.getSession();
+      if (session){
+        cloudUser = session.user; cloudReady = true; updateUI();
+        await cloudPull(); cloudSubscribe(); await cloudSync();
+      } else {
+        updateUI();
+      }
+    } catch(e){ console.warn('[Cloud] session restore:', e); updateUI(); }
+    sb.auth.onAuthStateChange((ev, sess) => {
+      if (ev === 'SIGNED_OUT'){ cloudUser = null; cloudReady = false; updateUI(); }
+    });
+  }
+
+  setTimeout(() => {
+    if (!$('setupWizard').classList.contains('hidden')) return;
+    if (!$('licenseGate').classList.contains('hidden')) return;
+    initCloud();
+  }, 100);
+}
+
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', tryStart);
+else tryStart();
+})();
+</script>
+</body>
+</html>
