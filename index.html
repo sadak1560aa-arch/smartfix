@@ -574,7 +574,7 @@ function normalizeJob(j){
       name:String(p.name??'').slice(0,100),
       qty:num(p.qty),
       price:num(p.price),
-      cost:num(p.cost) // أضفنا سعر الشراء
+      cost:num(p.cost)
     })):[]
   };
 }
@@ -583,7 +583,7 @@ function normalizePart(p){
     id: validId(p.id) ? String(p.id) : genId(),
     name:String(p.name??'').slice(0,100),
     qty:num(p.qty),
-    price:num(p.price), // سعر الشراء
+    price:num(p.price),
     updated_at: Number(p.updated_at) || Date.now(),
     is_deleted: !!p.is_deleted
   };
@@ -595,8 +595,8 @@ function normalizeSale(s){
     partName:String(s.partName??'').slice(0,100),
     partId: validId(s.partId) ? String(s.partId) : '',
     qty:num(s.qty,1),
-    price:num(s.price), // سعر البيع
-    cost:num(s.cost),   // سعر الشراء
+    price:num(s.price),
+    cost:num(s.cost),
     total:num(s.total),
     date:String(s.date??formatDate()),
     dateISO:String(s.dateISO??''),
@@ -608,9 +608,9 @@ function normalizeCredit(c){
   return {
     id: validId(c.id) ? String(c.id) : genId(),
     type: String(c.type ?? 'أخرى').slice(0,50),
-    amount: num(c.amount), // الفئة (سعر الشراء)
+    amount: num(c.amount),
     qty: num(c.qty, 1),
-    price: num(c.price), // سعر البيع
+    price: num(c.price),
     phone: String(c.phone ?? '').slice(0,50),
     date: String(c.date ?? formatDate()),
     dateISO: String(c.dateISO ?? ''),
@@ -622,9 +622,9 @@ function normalizeCreditStock(cs){
   return {
     id: validId(cs.id) ? String(cs.id) : genId(),
     type: String(cs.type ?? 'أخرى').slice(0,50),
-    amount: num(cs.amount), // سعر الشراء
+    amount: num(cs.amount),
     qty: num(cs.qty),
-    price: num(cs.price), // سعر البيع
+    price: num(cs.price),
     updated_at: Number(cs.updated_at) || Date.now(),
     is_deleted: !!cs.is_deleted
   };
@@ -1130,7 +1130,7 @@ function renderSaleDropdown() {
   
   sel.addEventListener('change', () => {
     const part = db.parts.find(x => x.id === sel.value);
-    if(part) document.getElementById('salePrice').value = part.price; // سعر البيع الافتراضي
+    if(part) document.getElementById('salePrice').value = part.price;
   });
 }
 
@@ -1157,7 +1157,7 @@ function saveSaleHandler() {
     partName: part.name,
     qty: qty,
     price: price,
-    cost: part.price, // سعر الشراء
+    cost: part.price,
     total: qty * price,
     date: formatDate(),
     dateISO: new Date().toISOString(),
@@ -1170,7 +1170,7 @@ function saveSaleHandler() {
   document.getElementById('saleCustomer').value = '';
   document.getElementById('saleQty').value = '';
   renderSaleDropdown();
-  renderSalesStats(); // تحديث الأرباح
+  renderSalesStats();
   
   printSaleInvoice(sale.id);
 }
@@ -1401,9 +1401,9 @@ function saveCreditSaleHandler() {
   const credit = {
     id: genId(),
     type: c.type,
-    amount: c.amount, // سعر الشراء
+    amount: c.amount,
     qty: qty,
-    price: c.price, // سعر البيع
+    price: c.price,
     phone: phone,
     date: formatDate(),
     dateISO: new Date().toISOString(),
@@ -1479,8 +1479,8 @@ function printCreditInvoice(id) {
   const shop = db.settings.shop || {};
   const logoHtml = (shop.logo && validPhotoData(shop.logo)) ? '<img src="'+shop.logo+'" class="brand-logo" alt="logo">' : '';
   
-  const costPrice = c.amount; // سعر الشراء
-  const sellPrice = c.price;  // سعر البيع
+  const costPrice = c.amount;
+  const sellPrice = c.price;
   const totalQty = c.qty || 1;
   const profitPerUnit = sellPrice - costPrice;
   const totalProfit = profitPerUnit * totalQty;
@@ -2041,7 +2041,7 @@ function render(){
   renderStock();
   renderLowStock();
   renderSales();
-  renderSalesStats(); // تحديث الإحصائيات
+  renderSalesStats();
   renderCredits();
   renderCreditStockList();
 }
@@ -2296,7 +2296,7 @@ function init(){
   checkLock();
   updateLicenseStatus();
   renderSaleDropdown();
-  renderSalesStats(); // تحديث الأرباح
+  renderSalesStats();
   renderCreditSaleDropdown();
 
   if('serviceWorker' in navigator && location.protocol==='https:'){
