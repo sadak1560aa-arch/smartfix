@@ -166,7 +166,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 5.3 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 6.0 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
  <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، سجل المبيعات، وتابع الأرصدة وقطع الغيار من مكان واحد.</p></div>
@@ -261,6 +261,14 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
  <!-- قسم البيع المباشر -->
  <section id="sales" class="section">
   <h2 class="section-title">💵 البيع المباشر (إكسسوارات / قطع)</h2>
+  
+  <!-- إحصائيات الأرباح -->
+  <div class="stats" style="grid-template-columns:repeat(3,1fr); margin-bottom:15px;">
+    <div class="stat" style="border-right:4px solid var(--blue)"><b id="totalPurchases">0</b><span>إجمالي المشتريات (تكلفة)</span></div>
+    <div class="stat" style="border-right:4px solid var(--gold)"><b id="totalSales">0</b><span>إجمالي المبيعات</span></div>
+    <div class="stat" style="border-right:4px solid var(--green)"><b id="totalProfit">0</b><span>صافي الربح</span></div>
+  </div>
+
   <div class="panel">
     <div class="formgrid">
       <div><label for="saleCustomer">اسم الزبون (اختياري)</label><input id="saleCustomer" placeholder="زبون نقدي"></div>
@@ -270,6 +278,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
     </div>
     <button class="primary" id="saveSaleBtn" style="width:100%;margin-top:12px">تسجيل عملية البيع وطباعة الفاتورة</button>
   </div>
+  
   <h2 class="section-title">سجل المبيعات</h2>
   <div class="panel" id="salesList"></div>
  </section>
@@ -278,7 +287,6 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
  <section id="balances" class="section">
   <h2 class="section-title">📱 الأرصدة الرقمية</h2>
   
-  <!-- إضافة رصيد للمخزون -->
   <div class="panel sticky-add-box" style="border-color: var(--navy);">
     <h3 style="margin:0 0 10px;font-size:16px;color:var(--navy)">➕ إضافة رصيد للمخزون</h3>
     <div class="formgrid">
@@ -296,7 +304,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
         </select>
       </div>
       <div>
-        <label for="creditAmountInput">الفئة (دينار)</label>
+        <label for="creditAmountInput">الفئة (سعر الشراء)</label>
         <input id="creditAmountInput" type="number" min="0" placeholder="مثلاً 5000">
       </div>
       <div>
@@ -348,7 +356,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    
    <div class="formgrid">
      <div><label for="partQty">الكمية</label><input id="partQty" type="number" min="1" placeholder="العدد"></div>
-     <div><label for="partPrice">السعر المفرد (د.ع)</label><input id="partPrice" type="number" min="0" placeholder="0"></div>
+     <div><label for="partPrice">سعر الشراء (التكلفة)</label><input id="partPrice" type="number" min="0" placeholder="0"></div>
    </div>
    
    <button class="primary" id="addPartBtn" style="margin-top:12px; width:100%; font-size:16px; padding:14px;">إضافة مستمرة للمخزون</button>
@@ -469,7 +477,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 5.3 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 6.0 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
@@ -506,7 +514,7 @@ function startTrialIfNeeded(){
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '5.3');
+  localStorage.setItem(CFG_VERSION_KEY, '6.0');
 }
 
 const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
@@ -526,8 +534,8 @@ function isValidLicenseKey(k){
   return computeLicenseChecksum(payload) === m[3];
 }
 
-const KEY='smartfixai_v5';
-const OLD_KEYS=['smartfixai_v4','smartfixai_v3','smartfixai_v2','smartfixai_v1'];
+const KEY='smartfixai_v6';
+const OLD_KEYS=['smartfixai_v5','smartfixai_v4','smartfixai_v3','smartfixai_v2','smartfixai_v1'];
 const VALID_STATUSES=['تم الاستلام','قيد الفحص','قيد الإصلاح','جاهز للتسليم','تم التسليم'];
 
 const genId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -543,7 +551,7 @@ const formatDate = (d = new Date()) => {
   return `${y}/${m}/${day}`;
 };
 
-function defaultDB(){return{version:5,jobs:[],parts:[],sales:[],credits:[],creditStock:[],settings:{pinEnabled:false,pinHash:null,shop:{name:'',phone:'',address:'',logo:null}}};}
+function defaultDB(){return{version:6,jobs:[],parts:[],sales:[],credits:[],creditStock:[],settings:{pinEnabled:false,pinHash:null,shop:{name:'',phone:'',address:'',logo:null}}};}
 
 function normalizeJob(j){
   const st = VALID_STATUSES.includes(String(j.status)) ? String(j.status) : 'تم الاستلام';
@@ -565,7 +573,8 @@ function normalizeJob(j){
       id: validId(p.id) ? String(p.id) : genId(),
       name:String(p.name??'').slice(0,100),
       qty:num(p.qty),
-      price:num(p.price)
+      price:num(p.price),
+      cost:num(p.cost) // أضفنا سعر الشراء
     })):[]
   };
 }
@@ -574,7 +583,7 @@ function normalizePart(p){
     id: validId(p.id) ? String(p.id) : genId(),
     name:String(p.name??'').slice(0,100),
     qty:num(p.qty),
-    price:num(p.price),
+    price:num(p.price), // سعر الشراء
     updated_at: Number(p.updated_at) || Date.now(),
     is_deleted: !!p.is_deleted
   };
@@ -586,7 +595,8 @@ function normalizeSale(s){
     partName:String(s.partName??'').slice(0,100),
     partId: validId(s.partId) ? String(s.partId) : '',
     qty:num(s.qty,1),
-    price:num(s.price),
+    price:num(s.price), // سعر البيع
+    cost:num(s.cost),   // سعر الشراء
     total:num(s.total),
     date:String(s.date??formatDate()),
     dateISO:String(s.dateISO??''),
@@ -598,9 +608,9 @@ function normalizeCredit(c){
   return {
     id: validId(c.id) ? String(c.id) : genId(),
     type: String(c.type ?? 'أخرى').slice(0,50),
-    amount: num(c.amount),
+    amount: num(c.amount), // الفئة (سعر الشراء)
     qty: num(c.qty, 1),
-    price: num(c.price),
+    price: num(c.price), // سعر البيع
     phone: String(c.phone ?? '').slice(0,50),
     date: String(c.date ?? formatDate()),
     dateISO: String(c.dateISO ?? ''),
@@ -612,9 +622,9 @@ function normalizeCreditStock(cs){
   return {
     id: validId(cs.id) ? String(cs.id) : genId(),
     type: String(cs.type ?? 'أخرى').slice(0,50),
-    amount: num(cs.amount),
+    amount: num(cs.amount), // سعر الشراء
     qty: num(cs.qty),
-    price: num(cs.price),
+    price: num(cs.price), // سعر البيع
     updated_at: Number(cs.updated_at) || Date.now(),
     is_deleted: !!cs.is_deleted
   };
@@ -630,7 +640,7 @@ function loadDB(){
     if(!d||typeof d!=='object')return defaultDB();
     const shopSrc=(d.settings&&d.settings.shop)||{};
     return{
-      version:5,
+      version:6,
       jobs:Array.isArray(d.jobs)?d.jobs.map(normalizeJob):[],
       parts:Array.isArray(d.parts)?d.parts.map(normalizePart):[],
       sales:Array.isArray(d.sales)?d.sales.map(normalizeSale):[],
@@ -751,7 +761,7 @@ function showTab(id){
   document.querySelectorAll('.section').forEach(x=>x.classList.toggle('active',x.id===id));
   document.querySelectorAll('.nav button').forEach(x=>x.classList.toggle('active',x.dataset.tab===id));
   window.scrollTo({top:0,behavior:'smooth'});
-  if(id==='sales') renderSaleDropdown();
+  if(id==='sales') { renderSaleDropdown(); renderSalesStats(); }
   if(id==='balances') { renderCreditStockList(); renderCreditSaleDropdown(); renderCredits(); }
 }
 
@@ -963,7 +973,7 @@ function addPartToJob(jobId){
   part.updated_at=Date.now();
   const existing=job.partsUsed.find(x=>x.id===part.id);
   if(existing)existing.qty+=qty;
-  else job.partsUsed.push({id:part.id,name:part.name,qty,price:part.price});
+  else job.partsUsed.push({id:part.id,name:part.name,qty,price:part.price,cost:part.price});
   job.updated_at=Date.now();
   saveDB();
 }
@@ -1110,17 +1120,17 @@ async function printJob(id){
 }
 
 // ---------------------------------------------------------
-// دوال البيع المباشر مع الفاتورة
+// دوال البيع المباشر مع الفاتورة (تعديلات الربح)
 // ---------------------------------------------------------
 function renderSaleDropdown() {
   const sel = document.getElementById('salePart');
   const availParts = db.parts.filter(p => !p.is_deleted && p.qty > 0);
-  sel.innerHTML = availParts.map(p => `<option value="${esc(p.id)}">${esc(p.name)} (متوفر: ${p.qty}) - ${p.price.toLocaleString('en-US')} د.ع</option>`).join('');
+  sel.innerHTML = availParts.map(p => `<option value="${esc(p.id)}">${esc(p.name)} (متوفر: ${p.qty}) - سعر الشراء: ${p.price.toLocaleString('en-US')} د.ع</option>`).join('');
   if(!availParts.length) sel.innerHTML = '<option value="">لا توجد قطع متوفرة</option>';
   
   sel.addEventListener('change', () => {
     const part = db.parts.find(x => x.id === sel.value);
-    if(part) document.getElementById('salePrice').value = part.price;
+    if(part) document.getElementById('salePrice').value = part.price; // سعر البيع الافتراضي
   });
 }
 
@@ -1147,6 +1157,7 @@ function saveSaleHandler() {
     partName: part.name,
     qty: qty,
     price: price,
+    cost: part.price, // سعر الشراء
     total: qty * price,
     date: formatDate(),
     dateISO: new Date().toISOString(),
@@ -1159,8 +1170,27 @@ function saveSaleHandler() {
   document.getElementById('saleCustomer').value = '';
   document.getElementById('saleQty').value = '';
   renderSaleDropdown();
+  renderSalesStats(); // تحديث الأرباح
   
   printSaleInvoice(sale.id);
+}
+
+function renderSalesStats() {
+  const sales = db.sales.filter(s => !s.is_deleted);
+  let totalCost = 0, totalSales = 0, totalProfit = 0;
+  
+  sales.forEach(s => {
+    const cost = (s.cost || 0) * s.qty;
+    const income = s.total;
+    const profit = income - cost;
+    totalCost += cost;
+    totalSales += income;
+    totalProfit += profit;
+  });
+
+  document.getElementById('totalPurchases').textContent = totalCost.toLocaleString('en-US');
+  document.getElementById('totalSales').textContent = totalSales.toLocaleString('en-US');
+  document.getElementById('totalProfit').textContent = totalProfit.toLocaleString('en-US');
 }
 
 function renderSales() {
@@ -1173,12 +1203,18 @@ function renderSales() {
   }
 
   el.innerHTML = sales.map(s => {
+    const cost = (s.cost || 0) * s.qty;
+    const profit = s.total - cost;
     return `<div class="item">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
         <strong style="color:var(--navy)">${esc(s.customer)}</strong>
         <span style="font-weight:bold;color:var(--green)">${s.total.toLocaleString('en-US')} د.ع</span>
       </div>
       <p class="muted" style="margin:0">📦 ${esc(s.partName)} × ${s.qty} <br> 📅 ${esc(s.date)}</p>
+      <div style="background:#fef2f2; border-radius:5px; padding:5px 10px; margin-top:5px; display:flex; justify-content:space-between; font-size:12px;">
+        <span>سعر الشراء: ${cost.toLocaleString('en-US')}</span>
+        <span style="color:var(--green); font-weight:bold;">الربح: ${profit.toLocaleString('en-US')}</span>
+      </div>
       <div class="actions" style="margin-top:8px">
         <button class="secondary" data-act="print-sale" data-id="${esc(s.id)}" style="padding:6px 12px;font-size:12px">📄 الفاتورة</button>
         <button class="danger" data-act="delete-sale" data-id="${esc(s.id)}" style="padding:6px 12px;font-size:12px">إرجاع / حذف</button>
@@ -1201,6 +1237,7 @@ function deleteSale(id) {
     part.updated_at = Date.now();
   }
   saveDB();
+  renderSalesStats();
 }
 
 function printSaleInvoice(id) {
@@ -1246,11 +1283,11 @@ function printSaleInvoice(id) {
   const blob = new Blob([html], {type: 'text/html'});
   const url = URL.createObjectURL(blob);
   const w = window.open(url, '_blank');
-  if(!w){alert('اسمح بالنوافذ المنبثقة لطباعة الفاتورة.');}
+  if(!w) { alert('اسمح بالنوافذ المنبثقة لطباعة الفاتورة.'); }
 }
 
 // ---------------------------------------------------------
-// دوال الأرصدة الرقمية (مخزون وبيع)
+// دوال الأرصدة الرقمية (مخزون وبيع) - تعديل الربح
 // ---------------------------------------------------------
 
 function addCreditStockHandler() {
@@ -1287,7 +1324,7 @@ function addCreditStockHandler() {
   document.getElementById('creditPrice').value = '';
   
   saveDB();
-  renderCreditSaleDropdown(); // تحديث القائمة فوراً
+  renderCreditSaleDropdown();
 }
 
 function renderCreditStockList() {
@@ -1309,8 +1346,8 @@ function renderCreditStockList() {
         <span class="tag ${tagCls}">الكمية: ${c.qty}</span>
       </div>
       <div style="background:#f8fafc;padding:8px 12px;border-radius:8px;margin-bottom:8px;display:flex;justify-content:space-between">
-        <span style="color:var(--muted)">سعر البيع:</span>
-        <span style="font-weight:bold;color:var(--blue)">${c.price.toLocaleString('en-US')} د.ع</span>
+        <span style="color:var(--muted)">سعر الشراء: ${c.amount.toLocaleString('en-US')} د.ع</span>
+        <span style="font-weight:bold;color:var(--green)">سعر البيع: ${c.price.toLocaleString('en-US')} د.ع</span>
       </div>
       <div class="actions" style="display:flex;gap:6px">
         <button class="secondary" data-act="credit-stock-add-qty" data-id="${esc(c.id)}" style="flex:1;background:#ecfdf5;color:var(--green);font-weight:bold">➕ إضافة كمية</button>
@@ -1342,7 +1379,7 @@ function addCreditStockQty(id) {
 function renderCreditSaleDropdown() {
   const sel = document.getElementById('saleCreditItem');
   const avail = db.creditStock.filter(c => !c.is_deleted && c.qty > 0);
-  sel.innerHTML = avail.map(c => `<option value="${esc(c.id)}">${esc(c.type)} - فئة ${c.amount.toLocaleString('en-US')} (متوفر: ${c.qty}) - ${c.price.toLocaleString('en-US')} د.ع</option>`).join('');
+  sel.innerHTML = avail.map(c => `<option value="${esc(c.id)}">${esc(c.type)} - فئة ${c.amount.toLocaleString('en-US')} (متوفر: ${c.qty}) - سعر البيع: ${c.price.toLocaleString('en-US')} د.ع</option>`).join('');
   if(!avail.length) sel.innerHTML = '<option value="">لا توجد أرصدة متوفرة</option>';
 }
 
@@ -1364,9 +1401,9 @@ function saveCreditSaleHandler() {
   const credit = {
     id: genId(),
     type: c.type,
-    amount: c.amount,
+    amount: c.amount, // سعر الشراء
     qty: qty,
-    price: c.price, 
+    price: c.price, // سعر البيع
     phone: phone,
     date: formatDate(),
     dateISO: new Date().toISOString(),
@@ -1410,19 +1447,24 @@ function renderCredits() {
     return;
   }
 
-  listEl.innerHTML = credits.map(c => `
-    <div class="item">
+  listEl.innerHTML = credits.map(c => {
+    const profit = (c.price - c.amount) * (c.qty || 1);
+    return `<div class="item">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:5px">
         <strong style="color:var(--navy)">${esc(c.type)} - فئة ${c.amount.toLocaleString('en-US')}</strong>
-        <span style="font-weight:bold;color:var(--green)">${c.amount.toLocaleString('en-US')} د.ع</span>
+        <span style="font-weight:bold;color:var(--green)">${(c.price * (c.qty||1)).toLocaleString('en-US')} د.ع</span>
       </div>
       <p class="muted" style="margin:0">${c.qty ? 'الكمية: ' + c.qty + ' <br>' : ''} ${c.phone ? '📱 ' + esc(c.phone) + ' <br>' : ''} 📅 ${esc(c.date)}</p>
+      <div style="background:#fef2f2; border-radius:5px; padding:5px 10px; margin-top:5px; display:flex; justify-content:space-between; font-size:12px;">
+        <span>سعر الشراء: ${(c.amount * (c.qty||1)).toLocaleString('en-US')}</span>
+        <span style="color:var(--green); font-weight:bold;">الربح: ${profit.toLocaleString('en-US')}</span>
+      </div>
       <div class="actions" style="margin-top:8px">
         <button class="secondary" data-act="print-credit" data-id="${esc(c.id)}" style="padding:6px 12px;font-size:12px">🧾 الفاتورة</button>
         <button class="danger" data-act="delete-credit" data-id="${esc(c.id)}" style="padding:6px 12px;font-size:12px">حذف</button>
       </div>
-    </div>
-  `).join('');
+    </div>`;
+  }).join('');
 }
 
 function deleteCredit(id) {
@@ -1437,6 +1479,12 @@ function printCreditInvoice(id) {
   const shop = db.settings.shop || {};
   const logoHtml = (shop.logo && validPhotoData(shop.logo)) ? '<img src="'+shop.logo+'" class="brand-logo" alt="logo">' : '';
   
+  const costPrice = c.amount; // سعر الشراء
+  const sellPrice = c.price;  // سعر البيع
+  const totalQty = c.qty || 1;
+  const profitPerUnit = sellPrice - costPrice;
+  const totalProfit = profitPerUnit * totalQty;
+
   const html = `
     <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة رصيد - ${esc(c.type)}</title>
     <style>
@@ -1450,6 +1498,7 @@ function printCreditInvoice(id) {
     .info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e2e8f0;font-size:13px}
     .info-row b{color:#64748b}
     .grand-total{margin-top:20px;padding:16px;background:#f8fafc;border-radius:8px;display:flex;justify-content:space-between;font-size:18px;font-weight:bold;color:#10b981}
+    .profit-box{margin-top:10px;padding:12px;background:#fef2f2;border:1px dashed #fecaca;border-radius:8px;display:flex;justify-content:space-between;font-size:14px;color:#ef4444;font-weight:bold}
     .footer-note{text-align:center;font-size:11px;color:#94a3b8;margin-top:30px;padding-top:14px;border-top:1px solid #e2e8f0}
     @media print{body{background:#fff}.invoice{box-shadow:none;margin:0;padding:20px}.no-print{display:none}}
     </style></head><body>
@@ -1465,6 +1514,7 @@ function printCreditInvoice(id) {
     <div class="info-row"><b>سعر المفرد:</b> <span>${c.price.toLocaleString('en-US')} د.ع</span></div>
     ${c.phone ? '<div class="info-row"><b>رقم الهاتف / الآيدي:</b> <span>'+esc(c.phone)+'</span></div>' : ''}
     <div class="grand-total"><span>الإجمالي:</span> <span>${(c.price * (c.qty || 1)).toLocaleString('en-US')} د.ع</span></div>
+    <div class="profit-box no-print"><span>الربح الصافي:</span> <span>${totalProfit.toLocaleString('en-US')} د.ع</span></div>
     <div class="footer-note">شكراً لتعاملكم معنا · ${esc(shop.name||'Smart Fix AI')} · ${new Date().toLocaleString('ar-IQ')}</div>
     </div>
     <div class="no-print" style="text-align:center;padding:14px">
@@ -1554,7 +1604,7 @@ function renderStock(){
       '</div>'+
       '<div style="display:flex; justify-content:space-between; align-items:center; background:#f8fafc; padding:8px 12px; border-radius:8px; margin-bottom:8px;">'+
         '<span class="tag '+tagCls+'">الكمية: '+p.qty+' ('+tagTxt+')</span>'+
-        '<span style="font-weight:bold; color:var(--blue)">السعر: '+p.price.toLocaleString('en-US')+' د.ع</span>'+
+        '<span style="font-weight:bold; color:var(--blue)">سعر الشراء: '+p.price.toLocaleString('en-US')+' د.ع</span>'+
       '</div>'+
       '<div class="actions" style="display:flex; gap:6px; width:100%;">'+
         '<button class="secondary" data-act="stock-add-qty" data-id="'+esc(p.id)+'" style="flex:1; background:#ecfdf5; color:var(--green); font-weight:bold; padding:8px 10px;">➕ إضافة كمية</button>'+
@@ -1802,7 +1852,7 @@ async function exportWithPhotos(){
       }catch(_){}
     }
   }
-  const full={version:5,exportedAt:new Date().toISOString(),db:db,photos:photos};
+  const full={version:6,exportedAt:new Date().toISOString(),db:db,photos:photos};
   const blob=new Blob([JSON.stringify(full,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
   a.download='SmartFixAI-full-'+new Date().toISOString().slice(0,10)+'.json';a.click();
@@ -1829,7 +1879,7 @@ async function importData(e){
         }
       }
       db={
-        version:5,
+        version:6,
         jobs:dbData.jobs.map(normalizeJob),
         parts:dbData.parts.map(normalizePart),
         sales:Array.isArray(dbData.sales)?dbData.sales.map(normalizeSale):[],
@@ -1991,6 +2041,7 @@ function render(){
   renderStock();
   renderLowStock();
   renderSales();
+  renderSalesStats(); // تحديث الإحصائيات
   renderCredits();
   renderCreditStockList();
 }
@@ -2245,6 +2296,7 @@ function init(){
   checkLock();
   updateLicenseStatus();
   renderSaleDropdown();
+  renderSalesStats(); // تحديث الأرباح
   renderCreditSaleDropdown();
 
   if('serviceWorker' in navigator && location.protocol==='https:'){
