@@ -1455,9 +1455,9 @@ function printCreditInvoice(id) {
     '</div>'+
     '<div class="info-row"><b>نوع الخدمة:</b> <span>'+esc(c.type)+' (فئة '+c.amount.toLocaleString('en-US')+')</span></div>'+
     '<div class="info-row"><b>الكمية:</b> <span>'+ (c.qty || 1) +'</span></div>'+
-    '<div class="info-row"><b>سعر المفرد:</b> <span>'+c.amount.toLocaleString('en-US')+' د.ع</span></div>'+
+    '<div class="info-row"><b>سعر المفرد:</b> <span>'+c.price.toLocaleString('en-US')+' د.ع</span></div>'+
     (c.phone ? '<div class="info-row"><b>رقم الهاتف / الآيدي:</b> <span>'+esc(c.phone)+'</span></div>' : '')+
-    '<div class="grand-total"><span>الإجمالي:</span> <span>'+(c.amount * (c.qty || 1)).toLocaleString('en-US')+' د.ع</span></div>'+
+    '<div class="grand-total"><span>الإجمالي:</span> <span>'+(c.price * (c.qty || 1)).toLocaleString('en-US')+' د.ع</span></div>'+
     '<div class="footer-note">شكراً لتعاملكم معنا · '+esc(shop.name||'Smart Fix AI')+' · '+new Date().toLocaleString('ar-IQ')+'</div>'+
     '</div>'+
     '<div class="no-print" style="text-align:center;padding:14px">'+
