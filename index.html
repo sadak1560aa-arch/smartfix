@@ -600,6 +600,7 @@ function normalizeCredit(c){
     type: String(c.type ?? 'أخرى').slice(0,50),
     amount: num(c.amount),
     qty: num(c.qty, 1),
+    price: num(c.price),
     phone: String(c.phone ?? '').slice(0,50),
     date: String(c.date ?? formatDate()),
     dateISO: String(c.dateISO ?? ''),
@@ -1047,61 +1048,65 @@ async function printJob(id){
   const partsRows=j.partsUsed.length?j.partsUsed.map(p=>'<tr><td>'+esc(p.name)+'</td><td>'+p.qty+'</td><td>'+(p.price*p.qty).toLocaleString('en-US')+' د.ع</td></tr>').join(''):'<tr><td colspan="3" style="text-align:center;color:#999">لا قطع</td></tr>';
   const logoHtml=(shop.logo && validPhotoData(shop.logo))?'<img src="'+shop.logo+'" class="brand-logo" alt="logo">':'';
   const photoHtml=(photo && validPhotoData(photo))?'<div class="photo-section"><h4>صورة الجهاز عند الاستلام</h4><img src="'+photo+'" alt="صورة الجهاز"></div>':'';
-  const w=window.open('','_blank');
-  if(!w){alert('اسمح بالنوافذ المنبثقة.');return;}
-  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة - '+esc(j.customer)+'</title>'+
-    '<style>'+
-    'body{font-family:Tahoma,Arial,sans-serif;padding:0;margin:0;color:#1e293b;background:#f8fafc}'+
-    '.invoice{max-width:720px;margin:20px auto;background:#fff;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.08)}'+
-    '.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e3a8a;padding-bottom:16px;margin-bottom:20px}'+
-    '.brand-box{display:flex;align-items:center;gap:12px}'+
-    '.brand-logo{max-height:70px;max-width:150px;object-fit:contain;border-radius:6px}'+
-    '.brand-text h1{margin:0;font-size:22px;color:#1e3a8a}.brand-text p{margin:2px 0;font-size:12px;color:#64748b}'+
-    '.invoice-meta{text-align:left;font-size:12px;color:#64748b;direction:ltr}.invoice-meta b{color:#1e3a8a;font-size:14px}'+
-    '.section-title-bar{background:#f8fafc;padding:10px 14px;border-right:4px solid #e6b84a;font-weight:bold;color:#1e3a8a;margin:18px 0 10px;font-size:14px}'+
-    '.info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;line-height:1.9}'+
-    '.info-grid div b{display:inline-block;min-width:70px;color:#64748b}'+
-    'table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}'+
-    'th{background:#1e3a8a;color:#fff;padding:10px;text-align:right;font-weight:bold}'+
-    'td{padding:9px 10px;border-bottom:1px solid #e2e8f0;text-align:right}'+
-    '.totals{margin-top:16px;padding:14px;background:#f8fafc;border-radius:8px;font-size:14px}'+
-    '.totals div{display:flex;justify-content:space-between;padding:4px 0}'+
-    '.totals .grand{border-top:2px solid #1e3a8a;margin-top:6px;padding-top:10px;font-size:17px;font-weight:bold;color:#10b981}'+
-    '.photo-section{margin-top:18px;text-align:center}.photo-section h4{color:#1e3a8a;font-size:13px;margin-bottom:6px}.photo-section img{max-width:280px;border-radius:8px;border:1px solid #cbd5e1}'+
-    '.sign{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:44px;font-size:13px;color:#64748b}'+
-    '.sign div{border-top:1px dashed #cbd5e1;padding-top:8px;text-align:center}'+
-    '.footer-note{text-align:center;font-size:11px;color:#94a3b8;margin-top:30px;padding-top:14px;border-top:1px solid #e2e8f0}'+
-    '@media print{body{background:#fff}.invoice{box-shadow:none;margin:0;padding:20px}.no-print{display:none}}'+
-    '</style></head><body>'+
-    '<div class="invoice">'+
-    '<div class="header">'+
-      '<div class="brand-box">'+logoHtml+'<div class="brand-text"><h1>'+esc(shop.name||'Smart Fix AI')+'</h1>'+
-        (shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':'')+(shop.address?'<p>📍 '+esc(shop.address)+'</p>':'')+
-        '</div></div>'+
-      '<div class="invoice-meta"><b>فاتورة صيانة</b><br>رقم: '+esc(j.id.slice(-8).toUpperCase())+'<br>التاريخ: '+esc(j.date)+'</div>'+
-    '</div>'+
-    '<div class="section-title-bar">بيانات الزبون والجهاز</div>'+
-    '<div class="info-grid">'+
-      '<div><b>الزبون:</b> '+esc(j.customer)+'</div>'+
-      '<div><b>الهاتف:</b> '+esc(j.phone)+'</div>'+
-      '<div><b>الجهاز:</b> '+esc(j.brand)+' '+esc(j.model)+'</div>'+
-      '<div><b>الحالة:</b> '+esc(j.status)+'</div>'+
-      '<div style="grid-column:1/-1"><b>العطل:</b> '+esc(j.fault||'غير محدد')+'</div>'+
-    '</div>'+
-    '<div class="section-title-bar">قطع الغيار المستخدمة</div>'+
-    '<table><thead><tr><th>القطعة</th><th>الكمية</th><th>الإجمالي</th></tr></thead><tbody>'+partsRows+'</tbody></table>'+
-    '<div class="totals">'+
-      '<div><span>أجرة الإصلاح:</span><span>'+j.price.toLocaleString('en-US')+' د.ع</span></div>'+
-      '<div><span>قطع الغيار:</span><span>'+partsTotal.toLocaleString('en-US')+' د.ع</span></div>'+
-      '<div class="grand"><span>الإجمالي الكلي:</span><span>'+total.toLocaleString('en-US')+' د.ع</span></div>'+
-    '</div>'+photoHtml+
-    '<div class="sign"><div>توقيع الزبون</div><div>توقيع الفني</div></div>'+
-    '<div class="footer-note">شكراً لثقتكم · '+esc(shop.name||'Smart Fix AI')+' · '+new Date().toLocaleString('ar-IQ')+'</div>'+
-    '</div>'+
-    '<div class="no-print" style="text-align:center;padding:14px">'+
-    '<button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة / حفظ PDF</button>'+
-    '</div></body></html>');
-  w.document.close();
+
+  const html = `
+    <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة - ${esc(j.customer)}</title>
+    <style>
+    body{font-family:Tahoma,Arial,sans-serif;padding:0;margin:0;color:#1e293b;background:#f8fafc}
+    .invoice{max-width:720px;margin:20px auto;background:#fff;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.08)}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e3a8a;padding-bottom:16px;margin-bottom:20px}
+    .brand-box{display:flex;align-items:center;gap:12px}
+    .brand-logo{max-height:70px;max-width:150px;object-fit:contain;border-radius:6px}
+    .brand-text h1{margin:0;font-size:22px;color:#1e3a8a}.brand-text p{margin:2px 0;font-size:12px;color:#64748b}
+    .invoice-meta{text-align:left;font-size:12px;color:#64748b;direction:ltr}.invoice-meta b{color:#1e3a8a;font-size:14px}
+    .section-title-bar{background:#f8fafc;padding:10px 14px;border-right:4px solid #e6b84a;font-weight:bold;color:#1e3a8a;margin:18px 0 10px;font-size:14px}
+    .info-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;font-size:13px;line-height:1.9}
+    .info-grid div b{display:inline-block;min-width:70px;color:#64748b}
+    table{width:100%;border-collapse:collapse;margin-top:8px;font-size:13px}
+    th{background:#1e3a8a;color:#fff;padding:10px;text-align:right;font-weight:bold}
+    td{padding:9px 10px;border-bottom:1px solid #e2e8f0;text-align:right}
+    .totals{margin-top:16px;padding:14px;background:#f8fafc;border-radius:8px;font-size:14px}
+    .totals div{display:flex;justify-content:space-between;padding:4px 0}
+    .totals .grand{border-top:2px solid #1e3a8a;margin-top:6px;padding-top:10px;font-size:17px;font-weight:bold;color:#10b981}
+    .photo-section{margin-top:18px;text-align:center}.photo-section h4{color:#1e3a8a;font-size:13px;margin-bottom:6px}.photo-section img{max-width:280px;border-radius:8px;border:1px solid #cbd5e1}
+    .sign{display:grid;grid-template-columns:1fr 1fr;gap:40px;margin-top:44px;font-size:13px;color:#64748b}
+    .sign div{border-top:1px dashed #cbd5e1;padding-top:8px;text-align:center}
+    .footer-note{text-align:center;font-size:11px;color:#94a3b8;margin-top:30px;padding-top:14px;border-top:1px solid #e2e8f0}
+    @media print{body{background:#fff}.invoice{box-shadow:none;margin:0;padding:20px}.no-print{display:none}}
+    </style></head><body>
+    <div class="invoice">
+    <div class="header">
+      <div class="brand-box">${logoHtml}<div class="brand-text"><h1>${esc(shop.name||'Smart Fix AI')}</h1>
+        ${shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':''}${shop.address?'<p>📍 '+esc(shop.address)+'</p>':''}
+        </div></div>
+      <div class="invoice-meta"><b>فاتورة صيانة</b><br>رقم: ${esc(j.id.slice(-8).toUpperCase())}<br>التاريخ: ${esc(j.date)}</div>
+    </div>
+    <div class="section-title-bar">بيانات الزبون والجهاز</div>
+    <div class="info-grid">
+      <div><b>الزبون:</b> ${esc(j.customer)}</div>
+      <div><b>الهاتف:</b> ${esc(j.phone)}</div>
+      <div><b>الجهاز:</b> ${esc(j.brand)} ${esc(j.model)}</div>
+      <div><b>الحالة:</b> ${esc(j.status)}</div>
+      <div style="grid-column:1/-1"><b>العطل:</b> ${esc(j.fault||'غير محدد')}</div>
+    </div>
+    <div class="section-title-bar">قطع الغيار المستخدمة</div>
+    <table><thead><tr><th>القطعة</th><th>الكمية</th><th>الإجمالي</th></tr></thead><tbody>${partsRows}</tbody></table>
+    <div class="totals">
+      <div><span>أجرة الإصلاح:</span><span>${j.price.toLocaleString('en-US')} د.ع</span></div>
+      <div><span>قطع الغيار:</span><span>${partsTotal.toLocaleString('en-US')} د.ع</span></div>
+      <div class="grand"><span>الإجمالي الكلي:</span><span>${total.toLocaleString('en-US')} د.ع</span></div>
+    </div>${photoHtml}
+    <div class="sign"><div>توقيع الزبون</div><div>توقيع الفني</div></div>
+    <div class="footer-note">شكراً لثقتكم · ${esc(shop.name||'Smart Fix AI')} · ${new Date().toLocaleString('ar-IQ')}</div>
+    </div>
+    <div class="no-print" style="text-align:center;padding:14px">
+    <button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة / حفظ PDF</button>
+    </div></body></html>`;
+
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, '_blank');
+  if(!w){alert('اسمح بالنوافذ المنبثقة.');}
 }
 
 // ---------------------------------------------------------
@@ -1204,42 +1209,44 @@ function printSaleInvoice(id) {
   const shop = db.settings.shop || {};
   const logoHtml = (shop.logo && validPhotoData(shop.logo)) ? '<img src="'+shop.logo+'" class="brand-logo" alt="logo">' : '';
   
-  const w = window.open('', '_blank');
-  if(!w) { alert('اسمح بالنوافذ المنبثقة لطباعة الفاتورة.'); return; }
-  
-  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة مبيعات - '+esc(s.customer)+'</title>'+
-    '<style>'+
-    'body{font-family:Tahoma,Arial,sans-serif;padding:0;margin:0;color:#1e293b;background:#f8fafc}'+
-    '.invoice{max-width:500px;margin:20px auto;background:#fff;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.08);border-radius:12px}'+
-    '.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e3a8a;padding-bottom:16px;margin-bottom:20px}'+
-    '.brand-box{display:flex;align-items:center;gap:12px}'+
-    '.brand-logo{max-height:60px;max-width:120px;object-fit:contain;border-radius:6px}'+
-    '.brand-text h1{margin:0;font-size:20px;color:#1e3a8a}.brand-text p{margin:2px 0;font-size:12px;color:#64748b}'+
-    '.invoice-meta{text-align:left;font-size:12px;color:#64748b;direction:ltr}.invoice-meta b{color:#1e3a8a;font-size:14px}'+
-    '.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e2e8f0;font-size:13px}'+
-    '.info-row b{color:#64748b}'+
-    '.grand-total{margin-top:20px;padding:16px;background:#f8fafc;border-radius:8px;display:flex;justify-content:space-between;font-size:18px;font-weight:bold;color:#10b981}'+
-    '.footer-note{text-align:center;font-size:11px;color:#94a3b8;margin-top:30px;padding-top:14px;border-top:1px solid #e2e8f0}'+
-    '@media print{body{background:#fff}.invoice{box-shadow:none;margin:0;padding:20px}.no-print{display:none}}'+
-    '</style></head><body>'+
-    '<div class="invoice">'+
-    '<div class="header">'+
-      '<div class="brand-box">'+logoHtml+'<div class="brand-text"><h1>'+esc(shop.name||'Smart Fix AI')+'</h1>'+
-        (shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':'')+
-        '</div></div>'+
-      '<div class="invoice-meta"><b>فاتورة مبيعات</b><br>رقم: '+esc(s.id.slice(-8).toUpperCase())+'<br>التاريخ: '+esc(s.date)+'</div>'+
-    '</div>'+
-    '<div class="info-row"><b>الزبون:</b> <span>'+esc(s.customer)+'</span></div>'+
-    '<div class="info-row"><b>المادة:</b> <span>'+esc(s.partName)+'</span></div>'+
-    '<div class="info-row"><b>الكمية:</b> <span>'+s.qty+'</span></div>'+
-    '<div class="info-row"><b>سعر المفرد:</b> <span>'+s.price.toLocaleString('en-US')+' د.ع</span></div>'+
-    '<div class="grand-total"><span>الإجمالي:</span> <span>'+s.total.toLocaleString('en-US')+' د.ع</span></div>'+
-    '<div class="footer-note">شكراً لتعاملكم معنا · '+esc(shop.name||'Smart Fix AI')+' · '+new Date().toLocaleString('ar-IQ')+'</div>'+
-    '</div>'+
-    '<div class="no-print" style="text-align:center;padding:14px">'+
-    '<button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة الفاتورة</button>'+
-    '</div></body></html>');
-  w.document.close();
+  const html = `
+    <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة مبيعات - ${esc(s.customer)}</title>
+    <style>
+    body{font-family:Tahoma,Arial,sans-serif;padding:0;margin:0;color:#1e293b;background:#f8fafc}
+    .invoice{max-width:500px;margin:20px auto;background:#fff;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.08);border-radius:12px}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e3a8a;padding-bottom:16px;margin-bottom:20px}
+    .brand-box{display:flex;align-items:center;gap:12px}
+    .brand-logo{max-height:60px;max-width:120px;object-fit:contain;border-radius:6px}
+    .brand-text h1{margin:0;font-size:20px;color:#1e3a8a}.brand-text p{margin:2px 0;font-size:12px;color:#64748b}
+    .invoice-meta{text-align:left;font-size:12px;color:#64748b;direction:ltr}.invoice-meta b{color:#1e3a8a;font-size:14px}
+    .info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e2e8f0;font-size:13px}
+    .info-row b{color:#64748b}
+    .grand-total{margin-top:20px;padding:16px;background:#f8fafc;border-radius:8px;display:flex;justify-content:space-between;font-size:18px;font-weight:bold;color:#10b981}
+    .footer-note{text-align:center;font-size:11px;color:#94a3b8;margin-top:30px;padding-top:14px;border-top:1px solid #e2e8f0}
+    @media print{body{background:#fff}.invoice{box-shadow:none;margin:0;padding:20px}.no-print{display:none}}
+    </style></head><body>
+    <div class="invoice">
+    <div class="header">
+      <div class="brand-box">${logoHtml}<div class="brand-text"><h1>${esc(shop.name||'Smart Fix AI')}</h1>
+        ${shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':''}
+        </div></div>
+      <div class="invoice-meta"><b>فاتورة مبيعات</b><br>رقم: ${esc(s.id.slice(-8).toUpperCase())}<br>التاريخ: ${esc(s.date)}</div>
+    </div>
+    <div class="info-row"><b>الزبون:</b> <span>${esc(s.customer)}</span></div>
+    <div class="info-row"><b>المادة:</b> <span>${esc(s.partName)}</span></div>
+    <div class="info-row"><b>الكمية:</b> <span>${s.qty}</span></div>
+    <div class="info-row"><b>سعر المفرد:</b> <span>${s.price.toLocaleString('en-US')} د.ع</span></div>
+    <div class="grand-total"><span>الإجمالي:</span> <span>${s.total.toLocaleString('en-US')} د.ع</span></div>
+    <div class="footer-note">شكراً لتعاملكم معنا · ${esc(shop.name||'Smart Fix AI')} · ${new Date().toLocaleString('ar-IQ')}</div>
+    </div>
+    <div class="no-print" style="text-align:center;padding:14px">
+    <button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة الفاتورة</button>
+    </div></body></html>`;
+
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, '_blank');
+  if(!w){alert('اسمح بالنوافذ المنبثقة لطباعة الفاتورة.');}
 }
 
 // ---------------------------------------------------------
@@ -1254,7 +1261,7 @@ function addCreditStockHandler() {
 
   if(!amount || amount <= 0) { alert('أدخل الفئة بشكل صحيح.'); return; }
   if(!qty || qty <= 0) { alert('أدخل كمية صحيحة.'); return; }
-  if(price < 0) { alert('أدخل سعراً صحيحاً.'); return; }
+  if(price <= 0) { alert('أدخل سعراً صحيحاً (أكبر من صفر).'); return; }
 
   const existing = db.creditStock.find(c => !c.is_deleted && c.type === type && c.amount === amount);
   if(existing) {
@@ -1280,6 +1287,7 @@ function addCreditStockHandler() {
   document.getElementById('creditPrice').value = '';
   
   saveDB();
+  renderCreditSaleDropdown(); // تحديث القائمة فوراً
 }
 
 function renderCreditStockList() {
@@ -1358,6 +1366,7 @@ function saveCreditSaleHandler() {
     type: c.type,
     amount: c.amount,
     qty: qty,
+    price: c.price, 
     phone: phone,
     date: formatDate(),
     dateISO: new Date().toISOString(),
@@ -1428,42 +1437,44 @@ function printCreditInvoice(id) {
   const shop = db.settings.shop || {};
   const logoHtml = (shop.logo && validPhotoData(shop.logo)) ? '<img src="'+shop.logo+'" class="brand-logo" alt="logo">' : '';
   
-  const w = window.open('', '_blank');
-  if(!w) { alert('اسمح بالنوافذ المنبثقة لطباعة الفاتورة.'); return; }
-  
-  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة رصيد - '+esc(c.type)+'</title>'+
-    '<style>'+
-    'body{font-family:Tahoma,Arial,sans-serif;padding:0;margin:0;color:#1e293b;background:#f8fafc}'+
-    '.invoice{max-width:500px;margin:20px auto;background:#fff;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.08);border-radius:12px}'+
-    '.header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e3a8a;padding-bottom:16px;margin-bottom:20px}'+
-    '.brand-box{display:flex;align-items:center;gap:12px}'+
-    '.brand-logo{max-height:60px;max-width:120px;object-fit:contain;border-radius:6px}'+
-    '.brand-text h1{margin:0;font-size:20px;color:#1e3a8a}.brand-text p{margin:2px 0;font-size:12px;color:#64748b}'+
-    '.invoice-meta{text-align:left;font-size:12px;color:#64748b;direction:ltr}.invoice-meta b{color:#1e3a8a;font-size:14px}'+
-    '.info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e2e8f0;font-size:13px}'+
-    '.info-row b{color:#64748b}'+
-    '.grand-total{margin-top:20px;padding:16px;background:#f8fafc;border-radius:8px;display:flex;justify-content:space-between;font-size:18px;font-weight:bold;color:#10b981}'+
-    '.footer-note{text-align:center;font-size:11px;color:#94a3b8;margin-top:30px;padding-top:14px;border-top:1px solid #e2e8f0}'+
-    '@media print{body{background:#fff}.invoice{box-shadow:none;margin:0;padding:20px}.no-print{display:none}}'+
-    '</style></head><body>'+
-    '<div class="invoice">'+
-    '<div class="header">'+
-      '<div class="brand-box">'+logoHtml+'<div class="brand-text"><h1>'+esc(shop.name||'Smart Fix AI')+'</h1>'+
-        (shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':'')+
-        '</div></div>'+
-      '<div class="invoice-meta"><b>فاتورة تعبئة رصيد</b><br>رقم: '+esc(c.id.slice(-8).toUpperCase())+'<br>التاريخ: '+esc(c.date)+'</div>'+
-    '</div>'+
-    '<div class="info-row"><b>نوع الخدمة:</b> <span>'+esc(c.type)+' (فئة '+c.amount.toLocaleString('en-US')+')</span></div>'+
-    '<div class="info-row"><b>الكمية:</b> <span>'+ (c.qty || 1) +'</span></div>'+
-    '<div class="info-row"><b>سعر المفرد:</b> <span>'+c.price.toLocaleString('en-US')+' د.ع</span></div>'+
-    (c.phone ? '<div class="info-row"><b>رقم الهاتف / الآيدي:</b> <span>'+esc(c.phone)+'</span></div>' : '')+
-    '<div class="grand-total"><span>الإجمالي:</span> <span>'+(c.price * (c.qty || 1)).toLocaleString('en-US')+' د.ع</span></div>'+
-    '<div class="footer-note">شكراً لتعاملكم معنا · '+esc(shop.name||'Smart Fix AI')+' · '+new Date().toLocaleString('ar-IQ')+'</div>'+
-    '</div>'+
-    '<div class="no-print" style="text-align:center;padding:14px">'+
-    '<button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة الفاتورة</button>'+
-    '</div></body></html>');
-  w.document.close();
+  const html = `
+    <!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>فاتورة رصيد - ${esc(c.type)}</title>
+    <style>
+    body{font-family:Tahoma,Arial,sans-serif;padding:0;margin:0;color:#1e293b;background:#f8fafc}
+    .invoice{max-width:500px;margin:20px auto;background:#fff;padding:32px;box-shadow:0 4px 20px rgba(0,0,0,.08);border-radius:12px}
+    .header{display:flex;justify-content:space-between;align-items:flex-start;border-bottom:3px solid #1e3a8a;padding-bottom:16px;margin-bottom:20px}
+    .brand-box{display:flex;align-items:center;gap:12px}
+    .brand-logo{max-height:60px;max-width:120px;object-fit:contain;border-radius:6px}
+    .brand-text h1{margin:0;font-size:20px;color:#1e3a8a}.brand-text p{margin:2px 0;font-size:12px;color:#64748b}
+    .invoice-meta{text-align:left;font-size:12px;color:#64748b;direction:ltr}.invoice-meta b{color:#1e3a8a;font-size:14px}
+    .info-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px dashed #e2e8f0;font-size:13px}
+    .info-row b{color:#64748b}
+    .grand-total{margin-top:20px;padding:16px;background:#f8fafc;border-radius:8px;display:flex;justify-content:space-between;font-size:18px;font-weight:bold;color:#10b981}
+    .footer-note{text-align:center;font-size:11px;color:#94a3b8;margin-top:30px;padding-top:14px;border-top:1px solid #e2e8f0}
+    @media print{body{background:#fff}.invoice{box-shadow:none;margin:0;padding:20px}.no-print{display:none}}
+    </style></head><body>
+    <div class="invoice">
+    <div class="header">
+      <div class="brand-box">${logoHtml}<div class="brand-text"><h1>${esc(shop.name||'Smart Fix AI')}</h1>
+        ${shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':''}
+        </div></div>
+      <div class="invoice-meta"><b>فاتورة تعبئة رصيد</b><br>رقم: ${esc(c.id.slice(-8).toUpperCase())}<br>التاريخ: ${esc(c.date)}</div>
+    </div>
+    <div class="info-row"><b>نوع الخدمة:</b> <span>${esc(c.type)} (فئة ${c.amount.toLocaleString('en-US')})</span></div>
+    <div class="info-row"><b>الكمية:</b> <span>${c.qty || 1}</span></div>
+    <div class="info-row"><b>سعر المفرد:</b> <span>${c.price.toLocaleString('en-US')} د.ع</span></div>
+    ${c.phone ? '<div class="info-row"><b>رقم الهاتف / الآيدي:</b> <span>'+esc(c.phone)+'</span></div>' : ''}
+    <div class="grand-total"><span>الإجمالي:</span> <span>${(c.price * (c.qty || 1)).toLocaleString('en-US')} د.ع</span></div>
+    <div class="footer-note">شكراً لتعاملكم معنا · ${esc(shop.name||'Smart Fix AI')} · ${new Date().toLocaleString('ar-IQ')}</div>
+    </div>
+    <div class="no-print" style="text-align:center;padding:14px">
+    <button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة الفاتورة</button>
+    </div></body></html>`;
+
+  const blob = new Blob([html], {type: 'text/html'});
+  const url = URL.createObjectURL(blob);
+  const w = window.open(url, '_blank');
+  if(!w) { alert('اسمح بالنوافذ المنبثقة لطباعة الفاتورة.'); }
 }
 
 // ---------------------------------------------------------
@@ -1638,7 +1649,7 @@ function generateReport(){
   const salesTotal = sales.reduce((sum, s) => sum + (s.total || 0), 0);
 
   const credits = db.credits.filter(c => !c.is_deleted && isInRange(c.dateISO, c.date));
-  const creditsTotal = credits.reduce((sum, c) => sum + ((c.amount || 0) * (c.qty || 1)), 0);
+  const creditsTotal = credits.reduce((sum, c) => sum + ((c.price || 0) * (c.qty || 1)), 0);
 
   const grandTotal = repairsTotal + salesTotal + creditsTotal;
 
