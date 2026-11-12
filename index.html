@@ -265,8 +265,8 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
     <div class="formgrid">
       <div><label for="saleCustomer">اسم الزبون (اختياري)</label><input id="saleCustomer" placeholder="زبون نقدي"></div>
       <div><label for="salePart">اختر المادة</label><select id="salePart"></select></div>
-      <div><label for="saleQty">الكمية</label><input id="saleQty" type="number" min="1" value="1"></div>
-      <div><label for="salePrice">سعر البيع (للمفرد)</label><input id="salePrice" type="number" min="0" value="0"></div>
+      <div><label for="saleQty">الكمية</label><input id="saleQty" type="number" min="1" placeholder="الكمية"></div>
+      <div><label for="salePrice">سعر البيع (للمفرد)</label><input id="salePrice" type="number" min="0" placeholder="0"></div>
     </div>
     <button class="primary" id="saveSaleBtn" style="width:100%;margin-top:12px">تسجيل عملية البيع وطباعة الفاتورة</button>
   </div>
@@ -301,7 +301,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
       </div>
       <div>
         <label for="creditStock">الكمية المتوفرة</label>
-        <input id="creditStock" type="number" min="1" value="1">
+        <input id="creditStock" type="number" min="1" placeholder="العدد">
       </div>
       <div>
         <label for="creditPrice">سعر البيع (للمفرد)</label>
@@ -322,7 +322,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
     <div class="formgrid">
       <div><label for="saleCreditCustomer">اسم الزبون (اختياري)</label><input id="saleCreditCustomer" placeholder="زبون نقدي"></div>
       <div><label for="saleCreditItem">اختر الرصيد</label><select id="saleCreditItem"></select></div>
-      <div><label for="saleCreditQty">الكمية</label><input id="saleCreditQty" type="number" min="1" value="1"></div>
+      <div><label for="saleCreditQty">الكمية</label><input id="saleCreditQty" type="number" min="1" placeholder="الكمية"></div>
       <div><label for="saleCreditPhone">رقم الهاتف / آيدي</label><input id="saleCreditPhone" placeholder="07xxxxxxxxx أو ID"></div>
     </div>
     <button class="primary" id="saveCreditSaleBtn" style="width:100%;margin-top:12px; background:var(--green)">تسجيل بيع الرصيد وطباعة الفاتورة</button>
@@ -347,8 +347,8 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <input id="partName" placeholder="مثلاً: شاشة سامسونج A51، شاحن أيفون..." autocomplete="off">
    
    <div class="formgrid">
-     <div><label for="partQty">الكمية</label><input id="partQty" type="number" min="1" value="1"></div>
-     <div><label for="partPrice">السعر المفرد (د.ع)</label><input id="partPrice" type="number" min="0" value="0"></div>
+     <div><label for="partQty">الكمية</label><input id="partQty" type="number" min="1" placeholder="العدد"></div>
+     <div><label for="partPrice">السعر المفرد (د.ع)</label><input id="partPrice" type="number" min="0" placeholder="0"></div>
    </div>
    
    <button class="primary" id="addPartBtn" style="margin-top:12px; width:100%; font-size:16px; padding:14px;">إضافة مستمرة للمخزون</button>
@@ -1003,7 +1003,7 @@ async function renderJobs(){
       ? '<select data-role="part-sel" data-job="'+esc(j.id)+'" aria-label="اختر قطعة">'+
           db.parts.filter(p=>!p.is_deleted).map(p=>'<option value="'+esc(p.id)+'">'+esc(p.name)+' ('+p.qty+')</option>').join('')+
         '</select>'+
-        '<input data-role="part-qty" data-job="'+esc(j.id)+'" type="number" min="1" value="1" style="width:70px" aria-label="الكمية">'+
+        '<input data-role="part-qty" data-job="'+esc(j.id)+'" type="number" min="1" placeholder="الكمية" style="width:70px" aria-label="الكمية">'+
         '<button class="secondary" data-act="add-part" data-job="'+esc(j.id)+'">إضافة قطعة</button>'
       : '<span class="muted">لا قطع.</span>';
     return '<div class="item" data-job-item="'+esc(j.id)+'">'+
@@ -1151,7 +1151,7 @@ function saveSaleHandler() {
   saveDB();
   
   document.getElementById('saleCustomer').value = '';
-  document.getElementById('saleQty').value = '1';
+  document.getElementById('saleQty').value = '';
   renderSaleDropdown();
   
   printSaleInvoice(sale.id);
@@ -1275,8 +1275,8 @@ function addCreditStockHandler() {
   }
   
   document.getElementById('creditAmountInput').value = '';
-  document.getElementById('creditStock').value = '1';
-  document.getElementById('creditPrice').value = '0';
+  document.getElementById('creditStock').value = '';
+  document.getElementById('creditPrice').value = '';
   
   saveDB();
 }
@@ -1367,7 +1367,7 @@ function saveCreditSaleHandler() {
   saveDB();
   
   document.getElementById('saleCreditCustomer').value = '';
-  document.getElementById('saleCreditQty').value = '1';
+  document.getElementById('saleCreditQty').value = '';
   document.getElementById('saleCreditPhone').value = '';
   
   printCreditInvoice(credit.id);
@@ -1482,8 +1482,8 @@ function addPart(){
   saveDB();
   
   nameEl.value='';
-  qtyEl.value='1';
-  priceEl.value='0';
+  qtyEl.value='';
+  priceEl.value='';
   nameEl.focus();
   
   if(statusEl){
@@ -1588,7 +1588,6 @@ function generateReport(){
   const fromVal=document.getElementById('reportFrom').value.trim();
   const toVal=document.getElementById('reportTo').value.trim();
   
-  // دالة مساعدة لتحويل نص التاريخ (سنة-شهر-يوم) إلى كائن Date
   const parseDate = (str, isEnd) => {
     if(!str) return null;
     const parts = str.split('-');
@@ -1609,7 +1608,6 @@ function generateReport(){
 
   const out=document.getElementById('reportOutput');
   
-  // دالة فلترة عامة
   const isInRange = (dateISO, dateStr) => {
     if(!from && !to) return true;
     let d = null;
@@ -1624,7 +1622,6 @@ function generateReport(){
     return true;
   };
 
-  // 1. فلترة الصيانة
   const jobs = db.jobs.filter(j => !j.is_deleted && isInRange(j.dateISO, j.date));
   let labor=0, partsRev=0;
   jobs.forEach(j => {
@@ -1633,11 +1630,9 @@ function generateReport(){
   });
   const repairsTotal = labor + partsRev;
 
-  // 2. فلترة المبيعات المباشرة
   const sales = db.sales.filter(s => !s.is_deleted && isInRange(s.dateISO, s.date));
   const salesTotal = sales.reduce((sum, s) => sum + (s.total || 0), 0);
 
-  // 3. فلترة الأرصدة الرقمية
   const credits = db.credits.filter(c => !c.is_deleted && isInRange(c.dateISO, c.date));
   const creditsTotal = credits.reduce((sum, c) => sum + (c.amount || 0), 0);
 
@@ -1648,7 +1643,6 @@ function generateReport(){
     return;
   }
 
-  // إحصائيات إضافية للصيانة
   const byStatus={};
   jobs.forEach(j=>byStatus[j.status]=(byStatus[j.status]||0)+1);
   
