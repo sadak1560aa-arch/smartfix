@@ -599,6 +599,7 @@ function normalizeCredit(c){
     id: validId(c.id) ? String(c.id) : genId(),
     type: String(c.type ?? 'أخرى').slice(0,50),
     amount: num(c.amount),
+    qty: num(c.qty, 1),
     phone: String(c.phone ?? '').slice(0,50),
     date: String(c.date ?? formatDate()),
     dateISO: String(c.dateISO ?? ''),
@@ -1356,6 +1357,7 @@ function saveCreditSaleHandler() {
     id: genId(),
     type: c.type,
     amount: c.amount,
+    qty: qty,
     phone: phone,
     date: formatDate(),
     dateISO: new Date().toISOString(),
@@ -1405,7 +1407,7 @@ function renderCredits() {
         <strong style="color:var(--navy)">${esc(c.type)} - فئة ${c.amount.toLocaleString('en-US')}</strong>
         <span style="font-weight:bold;color:var(--green)">${c.amount.toLocaleString('en-US')} د.ع</span>
       </div>
-      <p class="muted" style="margin:0">${c.phone ? '📱 ' + esc(c.phone) + ' <br>' : ''} 📅 ${esc(c.date)}</p>
+      <p class="muted" style="margin:0">${c.qty ? 'الكمية: ' + c.qty + ' <br>' : ''} ${c.phone ? '📱 ' + esc(c.phone) + ' <br>' : ''} 📅 ${esc(c.date)}</p>
       <div class="actions" style="margin-top:8px">
         <button class="secondary" data-act="print-credit" data-id="${esc(c.id)}" style="padding:6px 12px;font-size:12px">🧾 الفاتورة</button>
         <button class="danger" data-act="delete-credit" data-id="${esc(c.id)}" style="padding:6px 12px;font-size:12px">حذف</button>
@@ -1452,8 +1454,10 @@ function printCreditInvoice(id) {
       '<div class="invoice-meta"><b>فاتورة تعبئة رصيد</b><br>رقم: '+esc(c.id.slice(-8).toUpperCase())+'<br>التاريخ: '+esc(c.date)+'</div>'+
     '</div>'+
     '<div class="info-row"><b>نوع الخدمة:</b> <span>'+esc(c.type)+' (فئة '+c.amount.toLocaleString('en-US')+')</span></div>'+
+    '<div class="info-row"><b>الكمية:</b> <span>'+ (c.qty || 1) +'</span></div>'+
+    '<div class="info-row"><b>سعر المفرد:</b> <span>'+c.amount.toLocaleString('en-US')+' د.ع</span></div>'+
     (c.phone ? '<div class="info-row"><b>رقم الهاتف / الآيدي:</b> <span>'+esc(c.phone)+'</span></div>' : '')+
-    '<div class="grand-total"><span>المبلغ المدفوع:</span> <span>'+c.amount.toLocaleString('en-US')+' د.ع</span></div>'+
+    '<div class="grand-total"><span>الإجمالي:</span> <span>'+(c.amount * (c.qty || 1)).toLocaleString('en-US')+' د.ع</span></div>'+
     '<div class="footer-note">شكراً لتعاملكم معنا · '+esc(shop.name||'Smart Fix AI')+' · '+new Date().toLocaleString('ar-IQ')+'</div>'+
     '</div>'+
     '<div class="no-print" style="text-align:center;padding:14px">'+
@@ -1634,7 +1638,7 @@ function generateReport(){
   const salesTotal = sales.reduce((sum, s) => sum + (s.total || 0), 0);
 
   const credits = db.credits.filter(c => !c.is_deleted && isInRange(c.dateISO, c.date));
-  const creditsTotal = credits.reduce((sum, c) => sum + (c.amount || 0), 0);
+  const creditsTotal = credits.reduce((sum, c) => sum + ((c.amount || 0) * (c.qty || 1)), 0);
 
   const grandTotal = repairsTotal + salesTotal + creditsTotal;
 
