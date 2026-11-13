@@ -1,5 +1,5 @@
 // Smart Fix AI - Service Worker v1
-const CACHE = 'smartfix-v1';
+const CACHE = 'smartfix-v2';
 const ASSETS = ['./', './index.html'];
 
 self.addEventListener('install', e=>{

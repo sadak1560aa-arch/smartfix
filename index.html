@@ -100,6 +100,31 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
   direction: ltr;
   text-align: right;
 }
+
+/* ---------- شريط التجربة + صندوق رقم الجهاز ---------- */
+.trial-banner{
+  display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;
+  background:#fffbeb;border:1px solid #fde68a;color:#92400e;
+  border-radius:14px;padding:11px 14px;margin-bottom:14px;font-size:13px;
+}
+.trial-banner.danger{background:#fef2f2;border-color:#fecaca;color:#991b1b}
+.trial-banner b{font-weight:800}
+.trial-banner .primary{padding:8px 13px;font-size:13px;border-radius:9px;background:var(--navy)}
+.trial-banner .primary:hover{background:#16306f}
+.device-box{
+  background:#f8fafc;border:1px dashed #94a3b8;border-radius:12px;
+  padding:12px;margin:0 0 12px;text-align:center;
+}
+.device-label{font-size:11.5px;color:var(--muted);margin-bottom:4px}
+.device-id{
+  font-family:Consolas,"Courier New",monospace;font-size:19px;font-weight:800;
+  letter-spacing:1.5px;color:var(--navy);direction:ltr;margin-bottom:8px;word-break:break-all;
+}
+.wa-link{
+  display:block;text-align:center;text-decoration:none;background:#25d366;color:#04220f;
+  border-radius:10px;padding:11px 14px;font-weight:800;font-size:13.5px;margin:-2px 0 14px;
+}
+.wa-link:hover{background:#1ebe5b}
 </style>
 </head>
 <body>
@@ -138,18 +163,30 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 <div id="licenseGate" class="modal-bg hidden">
   <div class="modal-card">
     <h2>🔑 تفعيل البرنامج</h2>
-    <p>انتهت فترة التجربة (١٤ يوم). لتفعيل النسخة الكاملة، أدخل مفتاح الترخيص.</p>
-    <div class="step">
-      <b>لم تستلم مفتاحاً؟</b><br>
-      تواصل مع البائع وأرسل رقم طلبك. المفتاح يصلح لجهاز/محل واحد.
+    <p>انتهت فترة التجربة (١٤ يوم). لتفعيل النسخة الكاملة، أرسل رقم جهازك للبائع وأدخل مفتاح التفعيل.</p>
+
+    <div class="device-box">
+      <div class="device-label">رقم هذا الجهاز (أرسله للبائع)</div>
+      <div class="device-id" id="deviceIdText">SF-0000-0000-0000</div>
+      <button class="secondary" id="copyDeviceBtn" type="button" style="padding:8px 12px;font-size:12.5px">📋 نسخ رقم الجهاز</button>
     </div>
-    <label for="licenseKey">مفتاح الترخيص</label>
-    <input id="licenseKey" placeholder="SF-XXXXX-XXXXX-XXXXX" style="text-transform:uppercase;font-family:monospace;font-size:16px;text-align:center;letter-spacing:2px">
+
+    <div class="step">
+      <b>خطوات التفعيل</b><br>
+      ١. انسخ رقم الجهاز من فوق<br>
+      ٢. أرسله للبائع على واتساب<br>
+      ٣. الصق مفتاح التفعيل (يبدأ بـ SF-) هنا
+    </div>
+
+    <a class="wa-link" id="licenseWaBtn" href="https://wa.me/9647777698560" target="_blank" rel="noopener">💬 إرسال رقم الجهاز على واتساب</a>
+
+    <label for="licenseKey">مفتاح التفعيل</label>
+    <input id="licenseKey" placeholder="SF-XXXX-XXXX-XXXX" style="text-transform:uppercase;font-family:monospace;font-size:16px;text-align:center;letter-spacing:2px">
     <div class="buttons">
       <button class="primary" id="licenseActivateBtn">تفعيل</button>
     </div>
     <p id="licenseErr" class="hidden" style="color:var(--red);text-align:center;font-size:12px;margin:8px 0 0">مفتاح غير صحيح</p>
-    <p style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted)">للنسخ الاحتياطية فقط: بيانات المحل ما زالت في مكانها، التفعيل لا يمسها.</p>
+    <p style="text-align:center;margin-top:14px;font-size:11px;color:var(--muted)">المفتاح يخص هذا الجهاز فقط · بياناتك ومبيعاتك ما تنمس.</p>
   </div>
 </div>
 
@@ -166,9 +203,13 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <header><div class="top">
  <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
- <div class="headnote">الإصدار 6.0 · <span id="netStatus">متصل</span></div>
+ <div class="headnote">الإصدار 6.1 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
+ <div id="trialBanner" class="trial-banner hidden">
+   <span id="trialBannerText"></span>
+   <button class="primary" id="trialActivateBtn" type="button">🔑 فعّل الآن</button>
+ </div>
  <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، سجل المبيعات، وتابع الأرصدة وقطع الغيار من مكان واحد.</p></div>
  <div id="lowStockAlert" class="alert warn hidden"></div>
  <div class="stats">
@@ -447,6 +488,12 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
   </div>
 
   <div class="panel" style="margin-top:12px">
+   <h3 style="margin:0 0 6px;font-size:15px">📲 تثبيت التطبيق</h3>
+   <p class="muted" style="margin:0 0 10px">ثبّته على شاشة الجوال واشتغل عليه مثل أي تطبيق — بدون متصفح.</p>
+   <button class="secondary" id="installBtn">📲 تثبيت على الشاشة الرئيسية</button>
+  </div>
+
+  <div class="panel" style="margin-top:12px">
    <h3 style="margin:0 0 6px;font-size:15px">🔔 الإشعارات</h3>
    <p class="muted" id="notifStatus">جارٍ الفحص...</p>
    <button class="secondary" id="enableNotifBtn">تفعيل الإشعارات</button>
@@ -465,6 +512,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
   <div class="panel" style="margin-top:12px">
    <h3 style="margin:0 0 6px;font-size:15px">🛡️ معلومات الترخيص</h3>
    <p class="muted" id="licenseStatus">جارٍ الفحص...</p>
+   <p class="muted" style="margin:8px 0 0">رقم الجهاز: <b id="licenseDeviceId" style="font-family:Consolas,monospace;direction:ltr;display:inline-block;color:var(--navy)">—</b></p>
    <div class="actions">
      <button class="secondary" id="resetConfigBtn">🔄 تغيير إعدادات Supabase</button>
      <button class="danger" id="clearLicenseBtn" style="display:none">إزالة الترخيص (للتجربة)</button>
@@ -477,7 +525,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 6.0 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix AI · إصدار 6.1 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
@@ -501,37 +549,90 @@ function getConfig(){
   };
 }
 function isConfigured(){ const c = getConfig(); return c.mode === 'local' || (c.url && c.key); }
-function isLicensed(){ return !!getConfig().license; }
-function trialRemainingDays(){
-  const t = getConfig().trial;
-  if (!t) return TRIAL_DAYS;
-  const elapsed = Date.now() - t;
-  const remaining = TRIAL_DAYS * 86400000 - elapsed;
-  return Math.max(0, Math.ceil(remaining / 86400000));
+/* المفتاح المخزّن لازم يطابق هذا الجهاز — وإلا يُعدّ غير مفعّل */
+function isLicensed(){
+  const l = getConfig().license;
+  if (!l) return false;
+  return normalizeLic(l) === normalizeLic(codeForDevice(deviceId()));
 }
+/* ================= الترخيص: تجربة 14 يوم + مفتاح مربوط بالجهاز ================= */
+const CFG_DEVICE_KEY = 'smartfix_device';
+const CFG_MAXSEEN_KEY = 'smartfix_maxseen';
+const TRIAL_MS = TRIAL_DAYS * 86400000;
+
+function fnv(str){
+  let h = 0x811c9dc5;
+  for (let i = 0; i < str.length; i++){ h ^= str.charCodeAt(i); h = Math.imul(h, 0x01000193) >>> 0; }
+  return h >>> 0;
+}
+function hex4(n){ return ('0000' + ((n >>> 0).toString(16).toUpperCase())).slice(-4); }
+function randHex(len){
+  let out = '';
+  if (window.crypto && window.crypto.getRandomValues){
+    const a = new Uint8Array(Math.ceil(len / 2));
+    window.crypto.getRandomValues(a);
+    for (let i = 0; i < a.length; i++) out += ('0' + a[i].toString(16)).slice(-2);
+  } else {
+    for (let i = 0; i < len; i++) out += Math.floor(Math.random() * 16).toString(16);
+  }
+  return out.toUpperCase().slice(0, len);
+}
+
+/* رقم الجهاز — يتولد مرة واحدة ويبقى محفوظ على هذا المتصفح */
+function deviceId(){
+  let d = localStorage.getItem(CFG_DEVICE_KEY);
+  if (!d || !/^SF-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/.test(d)){
+    d = 'SF-' + randHex(4) + '-' + randHex(4) + '-' + randHex(4);
+    localStorage.setItem(CFG_DEVICE_KEY, d);
+  }
+  return d;
+}
+
+function normalizeLic(s){ return String(s || '').toUpperCase().replace(/[^0-9A-Z]/g, ''); }
+
+/* المفتاح = دالة في رقم الجهاز — يشتغل على هذا الجهاز فقط */
+function codeForDevice(dev){
+  const raw = normalizeLic(dev);
+  if (raw.length < 8) return '';
+  const a = fnv('SFK1|' + raw);
+  const b = fnv('SFK2|' + raw + '|smartfix-2026');
+  const hx = hex4(a >>> 16) + hex4(a & 0xffff) + hex4(b >>> 16);
+  return 'SF-' + hx.slice(0, 4) + '-' + hx.slice(4, 8) + '-' + hx.slice(8, 12);
+}
+
+function trialStart(){ return parseInt(localStorage.getItem(CFG_TRIAL_KEY) || '0') || 0; }
+
+/* يمنع الرجوع بساعة الجهاز للخلف */
+function touchMaxSeen(){
+  const now = Date.now();
+  const seen = parseInt(localStorage.getItem(CFG_MAXSEEN_KEY) || '0') || 0;
+  if (now > seen){ localStorage.setItem(CFG_MAXSEEN_KEY, String(now)); return now; }
+  return seen;
+}
+
+function trialRemainingMs(){
+  const start = trialStart();
+  if (!start) return TRIAL_MS;
+  const seen = touchMaxSeen();
+  const elapsed = Math.max(Date.now(), seen) - start;
+  return Math.max(0, TRIAL_MS - Math.max(0, elapsed));
+}
+function trialRemainingDays(){ return Math.ceil(trialRemainingMs() / 86400000); }
+
 function startTrialIfNeeded(){
   const c = getConfig();
   if (!c.trial && !c.license){
     localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
   }
-  localStorage.setItem(CFG_VERSION_KEY, '6.0');
+  touchMaxSeen();
+  deviceId(); /* يُنشأ رقم الجهاز من أول تشغيل حتى يظهر بالإعدادات */
+  localStorage.setItem(CFG_VERSION_KEY, '6.1');
 }
 
-const LIC_CHARSET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-function computeLicenseChecksum(payload){
-  let sum = 0;
-  for(let i=0;i<payload.length;i++){ sum = ((sum * 31) + payload.charCodeAt(i)) >>> 0; }
-  let out = '';
-  let n = sum;
-  for(let i=0;i<5;i++){ out += LIC_CHARSET[n % 36]; n = Math.floor(n / 36); }
-  return out;
-}
 function isValidLicenseKey(k){
-  const key = String(k||'').toUpperCase().trim();
-  const m = key.match(/^SF-([A-Z0-9]{5})-([A-Z0-9]{5})-([A-Z0-9]{5})$/);
-  if(!m) return false;
-  const payload = 'SF-'+m[1]+'-'+m[2];
-  return computeLicenseChecksum(payload) === m[3];
+  const key = normalizeLic(k);
+  const need = normalizeLic(codeForDevice(deviceId()));
+  return !!key && key === need;
 }
 
 const KEY='smartfixai_v6';
@@ -2027,6 +2128,15 @@ function setupPWA(){
   window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredInstallPrompt=e;const btn=document.getElementById('installBtn');if(btn)btn.style.display='inline-block';});
 }
 
+function installClick(){
+  if (!deferredInstallPrompt){
+    alert('المتصفح ما يعرض التثبيت تلقائياً.\nمن قائمة المتصفح (⋮) اختر «إضافة إلى الشاشة الرئيسية» أو «تثبيت التطبيق».');
+    return;
+  }
+  deferredInstallPrompt.prompt();
+  deferredInstallPrompt.userChoice.then(()=>{ deferredInstallPrompt = null; });
+}
+
 function updateNet(){
   const el=document.getElementById('netStatus');if(!el)return;
   el.textContent=navigator.onLine?'متصل':'أوفلاين';
@@ -2049,10 +2159,10 @@ function render(){
 function updateLicenseStatus(){
   const el=document.getElementById('licenseStatus');if(!el)return;
   const c = getConfig();
+  const dev = deviceId();
   if (c.license){
     el.innerHTML = '✅ النسخة الكاملة مفعّلة · المفتاح: <b style="font-family:monospace">'+esc(c.license)+'</b>';
     el.style.color='var(--green)';
-    document.getElementById('clearLicenseBtn').style.display='inline-block';
   } else {
     const days = trialRemainingDays();
     if (days > 0){
@@ -2064,6 +2174,36 @@ function updateLicenseStatus(){
     }
     document.getElementById('clearLicenseBtn').style.display='none';
   }
+  const dv = document.getElementById('licenseDeviceId');
+  if (dv) dv.textContent = dev;
+}
+
+/* ---------- شريط التجربة أعلى الصفحة ---------- */
+function renderTrialBanner(){
+  const el = document.getElementById('trialBanner');
+  if (!el) return;
+  if (isLicensed()){ el.classList.add('hidden'); return; }
+  const days = trialRemainingDays();
+  el.classList.remove('hidden');
+  const txt = document.getElementById('trialBannerText');
+  if (days > 0){
+    el.classList.remove('danger');
+    txt.innerHTML = '⏳ نسخة تجريبية — باقي <b>' + days + '</b> يوم' +
+      (days <= 3 ? ' · لا تفوّت التفعيل' : '');
+  } else {
+    el.classList.add('danger');
+    txt.innerHTML = '❌ انتهت الفترة التجريبية — فعّل النسخة الكاملة للمتابعة';
+  }
+}
+
+function openLicenseGate(){
+  const d = deviceId();
+  const t = document.getElementById('deviceIdText');
+  if (t) t.textContent = d;
+  const wa = document.getElementById('licenseWaBtn');
+  if (wa) wa.href = 'https://wa.me/9647777698560?text=' +
+    encodeURIComponent('السلام عليكم، أريد تفعيل Smart Fix AI.\nرقم جهازي: ' + d);
+  showLicenseGate();
 }
 
 function showSetupWizard(){document.getElementById('setupWizard').classList.remove('hidden');}
@@ -2101,16 +2241,17 @@ function activateLicense(){
   const input = document.getElementById('licenseKey');
   const err = document.getElementById('licenseErr');
   const key = input.value.trim().toUpperCase();
+  if (!key){ err.textContent = 'اكتب مفتاح التفعيل أول.'; err.classList.remove('hidden'); return; }
   if (!isValidLicenseKey(key)){
-    err.textContent = 'المفتاح غير صحيح. تحقق من الصيغة أو تواصل مع البائع.';
+    err.textContent = 'المفتاح غير صحيح أو يخص جهازاً ثانياً. تأكد أنك أرسلت رقم الجهاز الصحيح للبائع.';
     err.classList.remove('hidden');
     return;
   }
-  localStorage.setItem(CFG_LICENSE_KEY, key);
+  localStorage.setItem(CFG_LICENSE_KEY, codeForDevice(deviceId()));
   hideLicenseGate();
-  alert('✅ تم تفعيل النسخة الكاملة. شكراً لك!');
+  alert('✅ تم تفعيل النسخة الكاملة على هذا الجهاز. شكراً لك!');
   updateLicenseStatus();
-  setTimeout(()=>location.reload(), 800);
+  setTimeout(()=>location.reload(), 700);
 }
 
 function resetConfig(){
@@ -2269,6 +2410,26 @@ function init(){
   document.getElementById('licenseActivateBtn').addEventListener('click',activateLicense);
   document.getElementById('licenseKey').addEventListener('keydown',e=>{if(e.key==='Enter')activateLicense();});
 
+  const trialBtn = document.getElementById('trialActivateBtn');
+  if (trialBtn) trialBtn.addEventListener('click', openLicenseGate);
+
+  const copyDev = document.getElementById('copyDeviceBtn');
+  if (copyDev) copyDev.addEventListener('click', ()=>{
+    const d = deviceId();
+    const done = ()=>alert('تم نسخ رقم الجهاز:\n' + d);
+    if (navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(d).then(done).catch(()=>prompt('انسخ رقم الجهاز:', d));
+    } else { prompt('انسخ رقم الجهاز:', d); }
+  });
+
+  /* إذا خلصت التجربة والتطبيق مفتوح — يظهر قفل التفعيل فوراً */
+  document.addEventListener('visibilitychange', ()=>{
+    if (document.visibilityState !== 'visible') return;
+    if (isLicensed()) return;
+    renderTrialBanner();
+    if (trialRemainingDays() <= 0) openLicenseGate();
+  });
+
   document.getElementById('resetConfigBtn').addEventListener('click',resetConfig);
   document.getElementById('clearLicenseBtn').addEventListener('click',clearLicense);
 
@@ -2278,11 +2439,13 @@ function init(){
   startTrialIfNeeded();
   if (!isConfigured()){
     showSetupWizard();
+    renderTrialBanner();
     return;
   }
 
   if (!isLicensed() && trialRemainingDays() <= 0){
-    showLicenseGate();
+    openLicenseGate();
+    updateLicenseStatus();
     return;
   }
 
@@ -2295,6 +2458,7 @@ function init(){
   setupPWA();
   checkLock();
   updateLicenseStatus();
+  renderTrialBanner();
   renderSaleDropdown();
   renderSalesStats();
   renderCreditSaleDropdown();
