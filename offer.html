@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#1e3a8a">
+<title>Smart Fix AI — برنامج إدارة ورشة صيانة الهواتف</title>
+<meta name="description" content="برنامج عربي لإدارة ورشة صيانة الهواتف: طلبات الصيانة، المخزون، البيع، الأرصدة الرقمية، والتقارير. تجربة 14 يوم مجاناً، وتفعيل دائم بدون اشتراك شهري.">
+<style>
+  :root{
+    --navy:#1e3a8a; --navy2:#1e40af; --blue:#2563eb; --gold:#e6b84a;
+    --bg:#f6f8fc; --card:#fff; --text:#16233a; --muted:#61708a; --line:#e2e8f2;
+    --green:#10b981; --wa:#25d366; --red:#ef4444;
+    --shadow:0 10px 30px -12px rgba(30,58,138,.25);
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--text);
+    font-family:"Segoe UI",Tahoma,Arial,sans-serif; line-height:1.75;
+    -webkit-text-size-adjust:100%;
+  }
+  a{color:inherit}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 16px}
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    border:0;border-radius:14px;padding:14px 22px;font:inherit;font-weight:800;
+    font-size:16px;cursor:pointer;text-decoration:none;transition:transform .15s,box-shadow .15s;
+    line-height:1.2;
+  }
+  .btn:active{transform:translateY(1px)}
+  .btn-wa{background:var(--wa);color:#05291a;box-shadow:0 8px 20px -8px rgba(37,211,102,.8)}
+  .btn-ghost{background:#fff;color:var(--navy);border:2px solid var(--line)}
+  .btn-gold{background:linear-gradient(145deg,#f3cd76,#dcae37);color:#3a2a00;box-shadow:0 10px 24px -10px rgba(230,184,74,.9)}
+  .btn-sm{padding:11px 16px;font-size:14px;border-radius:11px}
+
+  /* ---------- Header ---------- */
+  header{
+    background:linear-gradient(125deg,#1e3a8a,#1e40af 70%,#1d4ed8);
+    color:#fff;padding:14px 0 0;
+  }
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:12px;padding-bottom:14px}
+  .brand{display:flex;align-items:center;gap:10px}
+  .logo{
+    width:42px;height:42px;border-radius:13px;background:var(--gold);color:var(--navy);
+    display:grid;place-items:center;font-weight:900;font-size:15px;letter-spacing:.5px;
+  }
+  .brand b{display:block;font-size:17px;line-height:1.2}
+  .brand span{font-size:11.5px;color:#c9d8f2}
+  .bar .call{font-size:13px;color:#dbe6f8;text-decoration:none;font-weight:700;direction:ltr;white-space:nowrap}
+
+  .hero{padding:10px 0 30px;display:grid;grid-template-columns:1.15fr .85fr;gap:26px;align-items:center}
+  .hero h1{margin:0 0 12px;font-size:33px;line-height:1.35;letter-spacing:-.3px}
+  .hero h1 em{font-style:normal;color:var(--gold)}
+  .hero p{margin:0 0 18px;color:#d7e2f6;font-size:15.5px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;padding:0;list-style:none}
+  .chips li{
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+    padding:6px 12px;border-radius:99px;font-size:12.5px;color:#eaf1fb
+  }
+  .cta-row{display:flex;gap:10px;flex-wrap:wrap}
+  .price-tag{
+    background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);
+    border-radius:20px;padding:20px;text-align:center;
+  }
+  .price-tag .old{color:#a9bde0;text-decoration:line-through;font-size:15px}
+  .price-tag .now{font-size:40px;font-weight:900;color:#fff;line-height:1.1;margin:2px 0}
+  .price-tag .now small{font-size:16px;font-weight:700;color:#d7e2f6}
+  .price-tag .note{font-size:12.5px;color:#c9d8f2;margin-top:6px}
+  .price-tag .badge{
+    display:inline-block;background:var(--gold);color:#3a2a00;font-weight:900;font-size:12px;
+    padding:5px 12px;border-radius:99px;margin-bottom:10px
+  }
+
+  /* ---------- Sections ---------- */
+  section{padding:44px 0}
+  .kicker{color:var(--blue);font-weight:800;font-size:13px;letter-spacing:.4px;margin:0 0 6px}
+  h2{font-size:25px;margin:0 0 8px;line-height:1.4}
+  .lead{color:var(--muted);margin:0 0 24px;font-size:15px}
+  .grid{display:grid;gap:14px}
+  .g3{grid-template-columns:repeat(3,1fr)}
+  .g2{grid-template-columns:repeat(2,1fr)}
+  .card{
+    background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px;
+    box-shadow:0 2px 6px rgba(22,35,58,.04)
+  }
+  .card .ico{
+    width:42px;height:42px;border-radius:13px;display:grid;place-items:center;font-size:20px;
+    background:#eef4ff;margin-bottom:10px
+  }
+  .card h3{margin:0 0 6px;font-size:16px}
+  .card p{margin:0;color:var(--muted);font-size:13.5px;line-height:1.7}
+
+  .steps{counter-reset:s}
+  .step{position:relative;padding-right:52px}
+  .step::before{
+    counter-increment:s;content:counter(s);position:absolute;right:0;top:0;
+    width:36px;height:36px;border-radius:12px;background:var(--navy);color:#fff;
+    display:grid;place-items:center;font-weight:900
+  }
+  .step h3{margin:0 0 4px;font-size:15.5px}
+  .step p{margin:0;color:var(--muted);font-size:13.5px}
+
+  /* ---------- Pricing ---------- */
+  .plans{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;align-items:stretch}
+  .plan{
+    background:#fff;border:1px solid var(--line);border-radius:20px;padding:20px;
+    display:flex;flex-direction:column;box-shadow:0 2px 8px rgba(22,35,58,.05)
+  }
+  .plan.hot{border:2px solid var(--gold);box-shadow:var(--shadow);position:relative}
+  .plan.hot::after{
+    content:"الأكثر طلباً";position:absolute;top:-12px;right:18px;background:var(--gold);
+    color:#3a2a00;font-size:11.5px;font-weight:900;padding:4px 12px;border-radius:99px
+  }
+  .plan h3{margin:0 0 4px;font-size:16.5px}
+  .plan .who{color:var(--muted);font-size:12.5px;margin:0 0 12px}
+  .plan .amount{font-size:30px;font-weight:900;color:var(--navy);line-height:1.2}
+  .plan .amount small{font-size:14px;font-weight:700;color:var(--muted)}
+  .plan .was{color:var(--muted);text-decoration:line-through;font-size:13px}
+  .plan ul{margin:12px 0 18px;padding:0;list-style:none}
+  .plan li{font-size:13.5px;padding:5px 0 5px 0;color:#31435f}
+  .plan li::before{content:"✓";color:var(--green);font-weight:900;margin-left:8px}
+  .plan .btn{margin-top:auto;width:100%}
+
+  /* ---------- FAQ ---------- */
+  details{
+    background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px 16px;margin-bottom:10px
+  }
+  details+details{margin-top:0}
+  summary{cursor:pointer;font-weight:800;font-size:14.5px;list-style:none}
+  summary::-webkit-details-marker{display:none}
+  summary::after{content:"+";float:left;color:var(--blue);font-weight:900;font-size:19px;line-height:1}
+  details[open] summary::after{content:"−"}
+  details p{margin:10px 0 0;color:var(--muted);font-size:13.5px}
+
+  .note-box{
+    background:#fffbeb;border:1px solid #fde68a;color:#7c4a03;border-radius:14px;
+    padding:12px 14px;font-size:12.5px;line-height:1.8;margin-top:14px
+  }
+
+  footer{background:#0f1e3d;color:#b9c8e4;padding:26px 0 96px;font-size:13px}
+  footer b{color:#fff}
+  footer a{color:#fff;text-decoration:underline;text-underline-offset:3px}
+  .foot{display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap;align-items:center}
+
+  /* ---------- Sticky mobile bar ---------- */
+  .sticky{
+    position:fixed;bottom:0;right:0;left:0;z-index:50;display:none;
+    background:rgba(255,255,255,.96);border-top:1px solid var(--line);
+    padding:10px 14px;gap:10px;align-items:center;backdrop-filter:blur(8px)
+  }
+  .sticky .p{font-weight:900;color:var(--navy);font-size:17px;line-height:1.2}
+  .sticky .p small{display:block;font-size:11px;color:var(--muted);font-weight:700}
+  .sticky .btn{flex:1}
+
+  @media (max-width:860px){
+    .hero{grid-template-columns:1fr;gap:18px}
+    .hero h1{font-size:27px}
+    .g3,.g2,.plans{grid-template-columns:1fr}
+    h2{font-size:22px}
+    section{padding:34px 0}
+    .sticky{display:flex}
+  }
+  @media (max-width:420px){
+    .hero h1{font-size:24px}
+    .price-tag .now{font-size:34px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <div class="bar">
+      <div class="brand">
+        <div class="logo">SF</div>
+        <div><b>Smart Fix AI</b><span>نظام إدارة ورشة صيانة الهواتف</span></div>
+      </div>
+      <a class="call" href="tel:+9647777698560">0777 769 8560</a>
+    </div>
+
+    <div class="hero">
+      <div>
+        <h1>ورشـتك كلها <em>ببرنامج واحد</em><br>بدل الدفتر والملاحظات</h1>
+        <p>طلبات الصيانة، المخزون، البيع، الأرصدة الرقمية، والتقارير — عربي بالكامل، يشتغل على الجوال والحاسوب، ويشتغل حتى بدون إنترنت.</p>
+        <ul class="chips">
+          <li>✅ تجربة 14 يوم مجاناً</li>
+          <li>✅ تفعيل دائم — بلا اشتراك شهري</li>
+          <li>✅ بياناتك على جهازك</li>
+          <li>✅ دعم واتساب</li>
+        </ul>
+        <div class="cta-row">
+          <a class="btn btn-wa" id="waHero" href="https://wa.me/9647777698560" target="_blank" rel="noopener">💬 اشتري الآن على واتساب</a>
+          <a class="btn btn-ghost" href="https://sadak1560aa-arch.github.io/smartfix/" target="_blank" rel="noopener">🆓 جرّب 14 يوم</a>
+        </div>
+      </div>
+
+      <div class="price-tag">
+        <div class="badge">عرض الإطلاق — أول 10 ورش</div>
+        <div class="old">199,000 د.ع</div>
+        <div class="now">149,000 <small>د.ع</small></div>
+        <div class="note">دفعة واحدة · تفعيل دائم · تحديثات سنة</div>
+        <a class="btn btn-gold btn-sm" href="https://wa.me/9647777698560" target="_blank" rel="noopener" style="margin-top:12px;width:100%">احجز سعر الإطلاق</a>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">شنو ينجز لك</p>
+    <h2>كل شي تحتاجه بالورشة… بمكان واحد</h2>
+    <p class="lead">بدون أوراق تضيع، وبدون «وين ورقة الزبون؟».</p>
+    <div class="grid g3">
+      <div class="card"><div class="ico">📋</div><h3>طلبات الصيانة</h3><p>اسم الزبون، رقمه، نوع الجهاز، وصف العطل، الحالة، وحتى صورة الجهاز عند الاستلام.</p></div>
+      <div class="card"><div class="ico">📦</div><h3>المخزون</h3><p>قطع الغيار والإكسسوارات، مع تنبيه تلقائي لما الكمية تقل.</p></div>
+      <div class="card"><div class="ico">💵</div><h3>البيع المباشر</h3><p>فاتورة للزبون، وربح كل قطعة محسوب لك تلقائياً.</p></div>
+      <div class="card"><div class="ico">📱</div><h3>الأرصدة الرقمية</h3><p>اسيا سيل، كورك، زين، باقات نت، شدات ببجي، فري فاير — بيع وتعبئة وسجل كامل.</p></div>
+      <div class="card"><div class="ico">📊</div><h3>تقارير وأرباح</h3><p>إجمالي المشتريات، المبيعات، وصافي الربح — تعرف وين يذهب ربحك.</p></div>
+      <div class="card"><div class="ico">☁️</div><h3>مزامنة سحابية</h3><p>اربط جوالك وحاسوب الورشة، وتشوف نفس البيانات على الاثنين.</p></div>
+      <div class="card"><div class="ico">🩺</div><h3>تشخيص أولي</h3><p>خطوات فحص مقترحة للأعطال الشائعة قبل ما تفتح الجهاز.</p></div>
+      <div class="card"><div class="ico">🔒</div><h3>حماية ونسخ احتياطي</h3><p>قفل PIN، ونسخة احتياطية بضغطة — وثبّته كتطبيق على الشاشة.</p></div>
+    </div>
+  </div>
+</section>
+
+<section style="background:#fff;border-top:1px solid var(--line);border-bottom:1px solid var(--line)">
+  <div class="wrap">
+    <p class="kicker">شلون تبدأ</p>
+    <h2>ثلاث خطوات… وتصير جاهز</h2>
+    <div class="grid g3 steps">
+      <div class="step"><h3>افتح البرنامج</h3><p>من الرابط، وثبّته على شاشة الجوال مثل أي تطبيق.</p></div>
+      <div class="step"><h3>استخدمه 14 يوم مجاناً</h3><p>كل الميزات مفتوحة، بدون بطاقة ولا التزام.</p></div>
+      <div class="step"><h3>فعّل بكود</h3><p>ترسل رقم جهازك على واتساب، يوصلك كود التفعيل، ويصير البرنامج ملكك.</p></div>
+    </div>
+  </div>
+</section>
+
+<section id="pricing">
+  <div class="wrap">
+    <p class="kicker">الأسعار</p>
+    <h2>اختار العرض المناسب</h2>
+    <p class="lead">الأسعار مرة واحدة — بدون اشتراك شهري.</p>
+
+    <div class="plans">
+      <div class="plan hot">
+        <h3>عرض الإطلاق</h3>
+        <p class="who">لأول 10 ورش فقط</p>
+        <div class="was">199,000 د.ع</div>
+        <div class="amount">149,000 <small>د.ع</small></div>
+        <ul>
+          <li>تفعيل دائم على جهاز واحد</li>
+          <li>كل ميزات البرنامج مفتوحة</li>
+          <li>تحديثات مجانية سنة كاملة</li>
+          <li>دعم واتساب مباشر</li>
+        </ul>
+        <a class="btn btn-wa" href="https://wa.me/9647777698560?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%B9%D8%B1%D8%B6%20%D8%A7%D9%84%D8%A5%D8%B7%D9%84%D8%A7%D9%82%20%D9%84%D8%A8%D8%B1%D9%86%D8%A7%D9%85%D8%AC%20Smart%20Fix%20AI" target="_blank" rel="noopener">اطلبه الآن</a>
+      </div>
+
+      <div class="plan">
+        <h3>السعر العادي</h3>
+        <p class="who">بعد انتهاء عرض الإطلاق</p>
+        <div class="was" style="visibility:hidden">—</div>
+        <div class="amount">199,000 <small>د.ع</small></div>
+        <ul>
+          <li>تفعيل دائم على جهاز واحد</li>
+          <li>كل ميزات البرنامج مفتوحة</li>
+          <li>تحديثات مجانية سنة كاملة</li>
+          <li>دعم واتساب مباشر</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://wa.me/9647777698560" target="_blank" rel="noopener">اسأل عن التفعيل</a>
+      </div>
+
+      <div class="plan">
+        <h3>🎁 الحزمتين</h3>
+        <p class="who">Smart Fix AI + FixMind مع بعض</p>
+        <div class="was">248,000 د.ع</div>
+        <div class="amount">199,000 <small>د.ع</small></div>
+        <ul>
+          <li>برنامجين كاملين</li>
+          <li>توفّر 49,000 د.ع</li>
+          <li>تفعيل دائم لكل واحد</li>
+          <li>دعم واتساب</li>
+        </ul>
+        <a class="btn btn-ghost" href="https://wa.me/9647777698560?text=%D8%A7%D9%84%D8%B3%D9%84%D8%A7%D9%85%20%D8%B9%D9%84%D9%8A%D9%83%D9%85%D8%8C%20%D8%A3%D8%B1%D9%8A%D8%AF%20%D8%A7%D9%84%D8%AD%D8%B2%D9%85%D8%AA%D9%8A%D9%86%20Smart%20Fix%20AI%20%2B%20FixMind" target="_blank" rel="noopener">اريد الحزمتين</a>
+      </div>
+    </div>
+
+    <div class="note-box">
+      ملاحظة: التفعيل يخص جهاز/ورشة واحدة. إذا بدك البرنامج على جهاز ثاني (حاسوب الورشة مثلاً) كلّمنا ونرتب لك تفعيل إضافي بسعر مخفّض.
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <p class="kicker">أسئلة متكررة</p>
+    <h2>قبل ما تشتري</h2>
+
+    <details open><summary>هل يحتاج إنترنت؟</summary><p>لا. البرنامج يشتغل على جهازك بدون إنترنت. المزامنة السحابية اختيارية — تفعّلها فقط إذا تريد نفس البيانات على أكثر من جهاز.</p></details>
+    <details><summary>وين تنحفظ بياناتي؟</summary><p>على جهازك أولاً. وإذا فعّلت المزامنة، تنحفظ كذلك بحساب سحابي خاص فيك (Supabase مجاني) — إنت صاحب البيانات.</p></details>
+    <details><summary>هل أدفع شهرياً؟</summary><p>لا. دفعة واحدة، والتفعيل دائم. عرض الإطلاق يشمل تحديثات سنة كاملة.</p></details>
+    <details><summary>على كم جهاز يشتغل؟</summary><p>التفعيل الواحد لجهاز واحد. إذا تريد على جوال وحاسوب، اطلب تفعيل إضافي بسعر مخفّض.</p></details>
+    <details><summary>إذا غيّرت الجوال أو حصلت مشكلة؟</summary><p>راسلنا على واتساب، وننقل لك التفعيل لجهازك الجديد.</p></details>
+    <details><summary>يشتغل على آيفون؟</summary><p>نعم — من متصفح سفاري، وتقدر تضيفه على الشاشة الرئيسية فيشتغل مثل التطبيق.</p></details>
+    <details><summary>هل يطبع فاتورة للزبون؟</summary><p>نعم، تقدر تطبع فاتورة فيها اسم متجرك وهاتفك وشعارك.</p></details>
+  </div>
+</section>
+
+<section style="padding-top:0">
+  <div class="wrap">
+    <div class="card" style="text-align:center;padding:26px 18px;background:linear-gradient(145deg,#1e3a8a,#1e40af);border:0;color:#fff">
+      <h2 style="color:#fff;margin-bottom:6px">جاهز تبدأ؟</h2>
+      <p style="color:#d7e2f6;margin:0 0 16px;font-size:14px">جرّبه 14 يوم مجاناً — وإذا عجبك، فعّله بكود يوصلك على واتساب.</p>
+      <div class="cta-row" style="justify-content:center">
+        <a class="btn btn-wa" href="https://wa.me/9647777698560" target="_blank" rel="noopener">💬 كلّمنا على واتساب</a>
+        <a class="btn btn-ghost" href="https://sadak1560aa-arch.github.io/smartfix/" target="_blank" rel="noopener">🆓 تجربة 14 يوم</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap foot">
+    <div><b>Smart Fix AI</b> — نظام إدارة ورشة صيانة الهواتف</div>
+    <div>واتساب / اتصال: <a href="tel:+9647777698560" dir="ltr">0777 769 8560</a></div>
+  </div>
+  <div class="wrap" style="margin-top:10px;font-size:11.5px;color:#8ea3c8">
+    نتائج التشخيص إرشادية وليست حكماً نهائياً على العطل. افصل الطاقة قبل فتح الجهاز، ولا تتعامل مع بطارية منتفخة أو مثقوبة.
+  </div>
+</footer>
+
+<div class="sticky">
+  <div class="p">149,000 <small>عرض الإطلاق · أول 10 ورش</small></div>
+  <a class="btn btn-wa" href="https://wa.me/9647777698560" target="_blank" rel="noopener">💬 اشتري</a>
+</div>
+
+</body>
+</html>
