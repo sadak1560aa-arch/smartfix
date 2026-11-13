@@ -1,6 +1,6 @@
-// Smart Fix AI - Service Worker v1
-const CACHE = 'smartfix-v2';
-const ASSETS = ['./', './index.html'];
+// Smart Fix AI - Service Worker v2
+const CACHE = 'smartfix-v3';
+const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
 
 self.addEventListener('install', e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));
