@@ -1940,7 +1940,7 @@ async function syncCall(action,payload){
 async function pushToSheets(){
   if(!confirm('سيتم استبدال البيانات في Google Sheets. متابعة؟'))return;
   const statusEl=document.getElementById('syncStatus');
-  try{const data=await syncCall('push',{jobs:db.jobs.filter(j=>!j.is_deleted),parts:db.parts.filter(p=>!p.is_deleted)});statusEl.textContent='✅ تم رفع '+data.count+' طلب في '+new Date().toLocaleTimeString('ar-IQ');}catch(_){}
+  try{const data=await syncCall('push',{jobs:db.jobs.filter(j=>!j.is_deleted),parts:db.parts.filter(p=>!p.is_deleted)});statusEl.textContent='✅ تم رفع '+(Number(data.count)||0)+' طلب و '+(Number(data.parts)||0)+' قطعة في '+new Date().toLocaleTimeString('ar-IQ');}catch(_){}
 }
 async function pullFromSheets(){
   if(!confirm('سيتم استبدال بيانات هذا الجهاز بالبيانات من Google Sheets. متابعة؟'))return;
