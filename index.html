@@ -467,6 +467,15 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
     </div>
     <div id="syncStatus" class="result hidden"></div>
   </div>
+
+  <div class="panel" style="margin-top:12px">
+    <h3 style="margin:0 0 6px;font-size:15px">☁️ المزامنة السحابية (Supabase)</h3>
+    <p class="muted" style="margin:0 0 10px">تزامن فوري بين أكثر من جهاز + حساب دخول. تحتاج مشروع Supabase مجاني (خطوات الإعداد تظهر عند الضغط على الزر).</p>
+    <div class="actions">
+      <button class="secondary" id="openCloudSetupBtn">فتح إعدادات Supabase</button>
+    </div>
+    <p class="muted" style="margin:8px 0 0;font-size:11.5px">إن كنت تستخدم جهازاً واحداً فقط، اتركه فارغاً — المزامنة غير ضرورية.</p>
+  </div>
  </section>
 
  <section id="backup" class="section">
@@ -2231,8 +2240,9 @@ function saveSetup(){
     alert('رابط Supabase غير صحيح.\nمثال: https://xxxxx.supabase.co');
     return;
   }
-  if (!key || key.length < 30 || !key.startsWith('eyJ')){
-    alert('المفتاح غير صحيح. تأكد أنه يبدأ بـ eyJ');
+  const keyOk = key && key.length >= 20 && (key.startsWith('eyJ') || key.startsWith('sb_publishable_'));
+  if (!keyOk){
+    alert('المفتاح غير صحيح.\nابحث في Supabase عن المفتاح الذي يبدأ بـ eyJ أو sb_publishable_');
     return;
   }
   localStorage.setItem(CFG_URL_KEY, url);
@@ -2241,6 +2251,16 @@ function saveSetup(){
   startTrialIfNeeded();
   alert('✅ تم الحفظ! سيتم إعادة تحميل التطبيق.');
   location.reload();
+}
+
+function openCloudSetup(){
+  const u = localStorage.getItem(CFG_URL_KEY);
+  const k = localStorage.getItem(CFG_KEY_KEY);
+  const ue = document.getElementById('setupUrl');
+  const ke = document.getElementById('setupKey');
+  if (u && ue) ue.value = u;
+  if (k && ke) ke.value = k;
+  showSetupWizard();
 }
 
 function skipSetup(){
@@ -2379,6 +2399,8 @@ function init(){
   document.getElementById('partsCsvBtn').addEventListener('click',exportPartsCSV);
 
   document.getElementById('saveSyncBtn').addEventListener('click',saveSyncSettings);
+  const _ocsBtn = document.getElementById('openCloudSetupBtn');
+  if (_ocsBtn) _ocsBtn.addEventListener('click', openCloudSetup);
   document.getElementById('pushSyncBtn').addEventListener('click',pushToSheets);
   document.getElementById('pullSyncBtn').addEventListener('click',pullFromSheets);
   document.getElementById('clearSyncBtn').addEventListener('click',clearSyncSettings);
