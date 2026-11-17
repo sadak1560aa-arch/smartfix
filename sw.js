@@ -1,6 +1,14 @@
-// Smart Fix AI - Service Worker v3
 const CACHE = 'smartfix-v5';
-const ASSETS = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png'];
+const ASSETS = [
+  './',
+  './index.html',
+  './app.html',
+  './offer.html',
+  './privacy.html',
+  './manifest.json',
+  './icon-192.png',
+  './icon-512.png'
+];
 
 self.addEventListener('install', e=>{
   e.waitUntil(caches.open(CACHE).then(c=>c.addAll(ASSETS)).catch(()=>{}));
@@ -16,8 +24,10 @@ self.addEventListener('activate', e=>{
 
 self.addEventListener('fetch', e=>{
   if(e.request.method!=='GET') return;
-  if(e.request.url.includes('supabase.co')) return;
-  if(e.request.url.includes('script.google.com')) return;
+  const u=e.request.url;
+  if(u.includes('supabase.co')) return;
+  if(u.includes('script.google.com')) return;
+  if(/\.(apk|exe)$/i.test(u)) return;
   e.respondWith(
     caches.match(e.request).then(r=>{
       const net = fetch(e.request).then(res=>{
@@ -36,6 +46,6 @@ self.addEventListener('notificationclick', e=>{
   e.notification.close();
   e.waitUntil(clients.matchAll({type:'window'}).then(list=>{
     if(list.length) return list[0].focus();
-    return clients.openWindow('./');
+    return clients.openWindow('./app.html');
   }));
 });
