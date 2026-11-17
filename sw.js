@@ -1,4 +1,4 @@
-const CACHE = 'smartfix-v5';
+const CACHE = 'smartfix-v6';
 const ASSETS = [
   './',
   './index.html',

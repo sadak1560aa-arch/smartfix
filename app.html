@@ -12,7 +12,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Smart Fix">
-<title>Smart Fix AI | صيانة الهواتف</title>
+<title>Smart Fix | صيانة الهواتف</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <style>
 :root{--navy:#1e3a8a;--navy2:#1e40af;--blue:#2563eb;--gold:#e6b84a;--bg:#f8fafc;--card:#fff;--text:#1e293b;--muted:#64748b;--line:#e2e8f0;--green:#10b981;--red:#ef4444;--amber:#f59e0b}
@@ -138,7 +138,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 <body>
 <script>
   (function() {
-    const allowedDomains = ["sadak1560aa-arch.github.io", "localhost", "127.0.0.1", ""];
+    const allowedDomains = ["sadak1560aa-arch.github.io", "appassets.androidplatform.net", "smartfix.local", "localhost", "127.0.0.1", ""];
     if (!allowedDomains.includes(window.location.hostname)) {
       document.documentElement.innerHTML = '<body style="display:flex; flex-direction:column; justify-content:center; align-items:center; height:100vh; background:#1e3a8a; color:white; font-family:Tahoma; text-align:center; padding:20px; margin:0;"><h1 style="color:#e6b84a; font-size:2rem; margin-bottom:10px;">⚠️ نسخة غير مرخصة</h1><p style="font-size:1.2rem;">هذا البرنامج مرخص للعمل على موقع محدد فقط.</p></body>';
       throw new Error("Unauthorized Domain");
@@ -148,7 +148,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 
 <div id="setupWizard" class="modal-bg hidden">
   <div class="modal-card">
-    <h2>👋 مرحباً بك في Smart Fix AI</h2>
+    <h2>👋 مرحباً بك في Smart Fix</h2>
     <p>خطوة واحدة قبل البدء: أدخل بيانات Supabase (مجاني). هذا يفعّل المزامنة السحابية بين أجهزة محلك.</p>
     <div class="step">
       <b>كيف أحصل على البيانات؟</b><br>
@@ -201,7 +201,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 <div id="lockScreen" class="lock-screen hidden">
   <div class="lock-box">
     <div class="logo" style="margin:0 auto 14px">🔒</div>
-    <h2>Smart Fix AI مقفل</h2>
+    <h2>Smart Fix مقفل</h2>
     <p class="muted" style="margin:0 0 14px">أدخل رمز PIN للدخول</p>
     <input type="password" id="pinInput" class="pin-input" inputmode="numeric" maxlength="8" autocomplete="off" placeholder="••••">
     <button class="primary" id="unlockBtn" style="width:100%;margin-top:12px">دخول</button>
@@ -210,7 +210,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
 </div>
 
 <header><div class="top">
- <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix AI</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
+ <div class="brand"><div class="logo">🔧</div><div><h1>Smart Fix</h1><small>نظام صيانة الهواتف الذكية</small></div></div>
  <div class="headnote">الإصدار 6.1 · <span id="netStatus">متصل</span></div>
 </div></header>
 <main>
@@ -218,7 +218,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <span id="trialBannerText"></span>
    <button class="primary" id="trialActivateBtn" type="button">🔑 فعّل الآن</button>
  </div>
- <div class="hero"><h2>أهلاً بك في مركز Smart Fix AI</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، سجل المبيعات، وتابع الأرصدة وقطع الغيار من مكان واحد.</p></div>
+ <div class="hero"><h2>أهلاً بك في مركز Smart Fix</h2><p>شخّص الأعطال، نظّم طلبات الصيانة، سجل المبيعات، وتابع الأرصدة وقطع الغيار من مكان واحد.</p></div>
  <div id="lowStockAlert" class="alert warn hidden"></div>
  <div class="stats">
   <div class="stat"><b id="jobsCount">0</b><span>طلبات الصيانة</span></div>
@@ -493,7 +493,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
   <div class="panel" style="margin-top:12px">
    <h3 style="margin:0 0 6px;font-size:15px">🏪 معلومات المتجر (للفاتورة)</h3>
    <div class="formgrid">
-     <div><label for="shopName">اسم المتجر</label><input id="shopName" placeholder="Smart Fix AI"></div>
+     <div><label for="shopName">اسم المتجر</label><input id="shopName" placeholder="Smart Fix"></div>
      <div><label for="shopPhone">هاتف المتجر</label><input id="shopPhone" inputmode="tel" placeholder="07xxxxxxxxx"></div>
      <div class="full"><label for="shopAddress">العنوان (اختياري)</label><input id="shopAddress" placeholder="بغداد - الكرادة - شارع ..."></div>
      <div class="full"><label for="shopLogo">شعار المتجر (اختياري)</label><input type="file" id="shopLogo" accept="image/*"><div id="logoPreview"></div></div>
@@ -531,6 +531,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <p class="muted" id="licenseStatus">جارٍ الفحص...</p>
    <p class="muted" style="margin:8px 0 0">رقم الجهاز: <b id="licenseDeviceId" style="font-family:Consolas,monospace;direction:ltr;display:inline-block;color:var(--navy)">—</b></p>
    <div class="actions">
+      <button class="secondary" id="licenseWaBtn2">💬 طلب التفعيل على واتساب</button>
      <button class="secondary" id="resetConfigBtn">🔄 تغيير إعدادات Supabase</button>
      <button class="danger" id="clearLicenseBtn" style="display:none">إزالة الترخيص (للتجربة)</button>
    </div>
@@ -542,7 +543,7 @@ footer{text-align:center;color:var(--muted);font-size:11px;padding:20px}
    <button class="danger" id="clearAllBtn">مسح كل البيانات</button>
   </div>
  </section>
- <footer>Smart Fix AI · إصدار 6.1 · صُمم للاستخدام التعليمي والتنظيمي</footer>
+ <footer>Smart Fix · إصدار 6.1 · صُمم للاستخدام التعليمي والتنظيمي</footer>
 </main>
 
 <script>
@@ -556,13 +557,24 @@ const CFG_LICENSE_KEY = 'smartfix_license';
 const CFG_VERSION_KEY = 'smartfix_version';
 const TRIAL_DAYS = 14;
 
+/* ===== مخزن ثابت (أندرويد SharedPreferences / ملف على الحاسوب) ===== */
+function nativeGet(k){
+  try { if (window.AndroidBridge && typeof window.AndroidBridge.getStore === 'function'){ const v = window.AndroidBridge.getStore(k); if (v) return String(v); } } catch(e){}
+  try { if (window.__sfStore && window.__sfStore[k]) return String(window.__sfStore[k]); } catch(e){}
+  return '';
+}
+function nativeSet(k, v){
+  try { if (window.AndroidBridge && typeof window.AndroidBridge.setStore === 'function'){ window.AndroidBridge.setStore(k, String(v)); return; } } catch(e){}
+  try { if (window.__sfStoreSave) { window.__sfStoreSave(k, String(v)); return; } } catch(e){}
+}
+
 function getConfig(){
   return {
     url: localStorage.getItem(CFG_URL_KEY) || '',
     key: localStorage.getItem(CFG_KEY_KEY) || '',
     mode: localStorage.getItem(CFG_MODE_KEY) || '',
     trial: parseInt(localStorage.getItem(CFG_TRIAL_KEY) || '0') || 0,
-    license: localStorage.getItem(CFG_LICENSE_KEY) || ''
+    license: localStorage.getItem(CFG_LICENSE_KEY) || nativeGet('license') || ''
   };
 }
 function isConfigured(){ const c = getConfig(); return c.mode === 'local' || (c.url && c.key); }
@@ -595,8 +607,25 @@ function randHex(len){
   return out.toUpperCase().slice(0, len);
 }
 
-/* رقم الجهاز — يتولد مرة واحدة ويبقى محفوظ على هذا المتصفح */
+/* رقم الجهاز — مربوط بعتاد الجهاز (Android ID / MachineGuid) ويبقى ثابتاً */
+function hardwareId(){
+  try { if (window.AndroidBridge && typeof window.AndroidBridge.deviceId === 'function'){ const v = window.AndroidBridge.deviceId(); if (v) return String(v); } } catch(e){}
+  try { if (window.__sfHwId) return String(window.__sfHwId); } catch(e){}
+  return '';
+}
+function hex8of(s){ return ('00000000' + (s >>> 0).toString(16).toUpperCase()).slice(-8); }
+function deviceIdFromHardware(hw){
+  const a = hex8of(fnv('SFHW1|' + hw));
+  const b = hex8of(fnv('SFHW2|' + hw));
+  return 'SF-' + a.slice(0,4) + '-' + a.slice(4,8) + '-' + b.slice(0,4);
+}
 function deviceId(){
+  const hw = hardwareId();
+  if (hw){
+    const d = deviceIdFromHardware(hw);
+    try { localStorage.setItem(CFG_DEVICE_KEY, d); } catch(e){}
+    return d;
+  }
   let d = localStorage.getItem(CFG_DEVICE_KEY);
   if (!d || !/^SF-[0-9A-F]{4}-[0-9A-F]{4}-[0-9A-F]{4}$/.test(d)){
     d = 'SF-' + randHex(4) + '-' + randHex(4) + '-' + randHex(4);
@@ -617,7 +646,13 @@ function codeForDevice(dev){
   return 'SF-' + hx.slice(0, 4) + '-' + hx.slice(4, 8) + '-' + hx.slice(8, 12);
 }
 
-function trialStart(){ return parseInt(localStorage.getItem(CFG_TRIAL_KEY) || '0') || 0; }
+/* بداية التجربة = الأقدم بين المخزنين — حتى لو انمسح واحد منهم ما تتمدّد التجربة */
+function trialStart(){
+  const a = parseInt(localStorage.getItem(CFG_TRIAL_KEY) || '0') || 0;
+  const b = parseInt(nativeGet('trialStart') || '0') || 0;
+  if (a && b) return Math.min(a, b);
+  return a || b || 0;
+}
 
 /* يمنع الرجوع بساعة الجهاز للخلف */
 function touchMaxSeen(){
@@ -638,8 +673,10 @@ function trialRemainingDays(){ return Math.ceil(trialRemainingMs() / 86400000); 
 
 function startTrialIfNeeded(){
   const c = getConfig();
-  if (!c.trial && !c.license){
-    localStorage.setItem(CFG_TRIAL_KEY, Date.now().toString());
+  if (!c.trial && !c.license && !trialStart()){
+    const now = Date.now().toString();
+    localStorage.setItem(CFG_TRIAL_KEY, now);
+    nativeSet('trialStart', now);
   }
   touchMaxSeen();
   deviceId(); /* يُنشأ رقم الجهاز من أول تشغيل حتى يظهر بالإعدادات */
@@ -652,8 +689,8 @@ function isValidLicenseKey(k){
   return !!key && key === need;
 }
 
-const KEY='smartfixai_v6';
-const OLD_KEYS=['smartfixai_v5','smartfixai_v4','smartfixai_v3','smartfixai_v2','smartfixai_v1'];
+const KEY='smartfix_v6';
+const OLD_KEYS=['smartfix_v6','smartfix_v5','smartfix_v4','smartfix_v3','smartfix_v2','smartfix_v1'];
 const VALID_STATUSES=['تم الاستلام','قيد الفحص','قيد الإصلاح','جاهز للتسليم','تم التسليم'];
 
 const genId=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -1204,7 +1241,7 @@ async function printJob(id){
     </style></head><body>
     <div class="invoice">
     <div class="header">
-      <div class="brand-box">${logoHtml}<div class="brand-text"><h1>${esc(shop.name||'Smart Fix AI')}</h1>
+      <div class="brand-box">${logoHtml}<div class="brand-text"><h1>${esc(shop.name||'Smart Fix')}</h1>
         ${shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':''}${shop.address?'<p>📍 '+esc(shop.address)+'</p>':''}
         </div></div>
       <div class="invoice-meta"><b>فاتورة صيانة</b><br>رقم: ${esc(j.id.slice(-8).toUpperCase())}<br>التاريخ: ${esc(j.date)}</div>
@@ -1225,7 +1262,7 @@ async function printJob(id){
       <div class="grand"><span>الإجمالي الكلي:</span><span>${total.toLocaleString('en-US')} د.ع</span></div>
     </div>${photoHtml}
     <div class="sign"><div>توقيع الزبون</div><div>توقيع الفني</div></div>
-    <div class="footer-note">شكراً لثقتكم · ${esc(shop.name||'Smart Fix AI')} · ${new Date().toLocaleString('ar-IQ')}</div>
+    <div class="footer-note">شكراً لثقتكم · ${esc(shop.name||'Smart Fix')} · ${new Date().toLocaleString('ar-IQ')}</div>
     </div>
     <div class="no-print" style="text-align:center;padding:14px">
     <button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة / حفظ PDF</button>
@@ -1382,7 +1419,7 @@ function printSaleInvoice(id) {
     </style></head><body>
     <div class="invoice">
     <div class="header">
-      <div class="brand-box">${logoHtml}<div class="brand-text"><h1>${esc(shop.name||'Smart Fix AI')}</h1>
+      <div class="brand-box">${logoHtml}<div class="brand-text"><h1>${esc(shop.name||'Smart Fix')}</h1>
         ${shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':''}
         </div></div>
       <div class="invoice-meta"><b>فاتورة مبيعات</b><br>رقم: ${esc(s.id.slice(-8).toUpperCase())}<br>التاريخ: ${esc(s.date)}</div>
@@ -1392,7 +1429,7 @@ function printSaleInvoice(id) {
     <div class="info-row"><b>الكمية:</b> <span>${s.qty}</span></div>
     <div class="info-row"><b>سعر المفرد:</b> <span>${s.price.toLocaleString('en-US')} د.ع</span></div>
     <div class="grand-total"><span>الإجمالي:</span> <span>${s.total.toLocaleString('en-US')} د.ع</span></div>
-    <div class="footer-note">شكراً لتعاملكم معنا · ${esc(shop.name||'Smart Fix AI')} · ${new Date().toLocaleString('ar-IQ')}</div>
+    <div class="footer-note">شكراً لتعاملكم معنا · ${esc(shop.name||'Smart Fix')} · ${new Date().toLocaleString('ar-IQ')}</div>
     </div>
     <div class="no-print" style="text-align:center;padding:14px">
     <button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة الفاتورة</button>
@@ -1622,7 +1659,7 @@ function printCreditInvoice(id) {
     </style></head><body>
     <div class="invoice">
     <div class="header">
-      <div class="brand-box">${logoHtml}<div class="brand-text"><h1>${esc(shop.name||'Smart Fix AI')}</h1>
+      <div class="brand-box">${logoHtml}<div class="brand-text"><h1>${esc(shop.name||'Smart Fix')}</h1>
         ${shop.phone?'<p>📞 '+esc(shop.phone)+'</p>':''}
         </div></div>
       <div class="invoice-meta"><b>فاتورة تعبئة رصيد</b><br>رقم: ${esc(c.id.slice(-8).toUpperCase())}<br>التاريخ: ${esc(c.date)}</div>
@@ -1633,7 +1670,7 @@ function printCreditInvoice(id) {
     ${c.phone ? '<div class="info-row"><b>رقم الهاتف / الآيدي:</b> <span>'+esc(c.phone)+'</span></div>' : ''}
     <div class="grand-total"><span>الإجمالي:</span> <span>${(c.price * (c.qty || 1)).toLocaleString('en-US')} د.ع</span></div>
     <div class="profit-box no-print"><span>الربح الصافي:</span> <span>${totalProfit.toLocaleString('en-US')} د.ع</span></div>
-    <div class="footer-note">شكراً لتعاملكم معنا · ${esc(shop.name||'Smart Fix AI')} · ${new Date().toLocaleString('ar-IQ')}</div>
+    <div class="footer-note">شكراً لتعاملكم معنا · ${esc(shop.name||'Smart Fix')} · ${new Date().toLocaleString('ar-IQ')}</div>
     </div>
     <div class="no-print" style="text-align:center;padding:14px">
     <button onclick="window.print()" style="background:#2563eb;color:#fff;border:0;padding:12px 24px;border-radius:8px;cursor:pointer;font-family:inherit;font-size:14px;font-weight:bold">🖨️ طباعة الفاتورة</button>
@@ -1883,7 +1920,7 @@ function printReport(){
   const out=document.getElementById('reportOutput');
   if(!out.innerHTML||out.querySelector('.empty')){alert('اعرض التقرير أولاً.');return;}
   const w=window.open('','_blank');if(!w){alert('اسمح بالنوافذ.');return;}
-  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>تقرير</title><style>body{font-family:Tahoma;padding:30px;max-width:800px;margin:auto}h2,h3{color:#1e3a8a;border-bottom:2px solid #e6b84a;padding-bottom:8px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}td,th{padding:7px;border-bottom:1px solid #e2e8f0;font-size:13px;text-align:right}th{background:#f8fafc}.grand{color:#10b981;font-weight:bold}h4{color:#1e40af;margin-top:16px}</style></head><body><h2>تقرير Smart Fix AI</h2>'+out.innerHTML+'<p style="margin-top:30px;font-size:11px;color:#888;text-align:center">'+new Date().toLocaleString('ar-IQ')+'</p></body></html>');
+  w.document.write('<!DOCTYPE html><html lang="ar" dir="rtl"><head><meta charset="utf-8"><title>تقرير</title><style>body{font-family:Tahoma;padding:30px;max-width:800px;margin:auto}h2,h3{color:#1e3a8a;border-bottom:2px solid #e6b84a;padding-bottom:8px}table{width:100%;border-collapse:collapse;margin:10px 0 16px}td,th{padding:7px;border-bottom:1px solid #e2e8f0;font-size:13px;text-align:right}th{background:#f8fafc}.grand{color:#10b981;font-weight:bold}h4{color:#1e40af;margin-top:16px}</style></head><body><h2>تقرير Smart Fix</h2>'+out.innerHTML+'<p style="margin-top:30px;font-size:11px;color:#888;text-align:center">'+new Date().toLocaleString('ar-IQ')+'</p></body></html>');
   w.document.close();w.onload=()=>w.print();
 }
 function downloadCSV(rows,filename){
@@ -1940,7 +1977,11 @@ async function syncCall(action,payload){
 async function pushToSheets(){
   if(!confirm('سيتم استبدال البيانات في Google Sheets. متابعة؟'))return;
   const statusEl=document.getElementById('syncStatus');
-  try{const data=await syncCall('push',{jobs:db.jobs.filter(j=>!j.is_deleted),parts:db.parts.filter(p=>!p.is_deleted)});statusEl.textContent='✅ تم رفع '+(Number(data.count)||0)+' طلب و '+(Number(data.parts)||0)+' قطعة في '+new Date().toLocaleTimeString('ar-IQ');}catch(_){}
+  try{
+    const data=await syncCall('push',{jobs:db.jobs.filter(j=>!j.is_deleted),parts:db.parts.filter(p=>!p.is_deleted)});
+    const nj=Number(data.count)||0, np=Number(data.parts)||0;
+    statusEl.textContent='✅ تم رفع '+nj+' طلب و '+np+' قطعة في '+new Date().toLocaleTimeString('ar-IQ');
+  }catch(_){}
 }
 async function pullFromSheets(){
   if(!confirm('سيتم استبدال بيانات هذا الجهاز بالبيانات من Google Sheets. متابعة؟'))return;
@@ -1957,7 +1998,7 @@ async function pullFromSheets(){
 function exportData(){
   const blob=new Blob([JSON.stringify(db,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='SmartFixAI-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  a.download='SmartFix-backup-'+new Date().toISOString().slice(0,10)+'.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
 }
 async function exportWithPhotos(){
@@ -1973,7 +2014,7 @@ async function exportWithPhotos(){
   const full={version:6,exportedAt:new Date().toISOString(),db:db,photos:photos};
   const blob=new Blob([JSON.stringify(full,null,2)],{type:'application/json'});
   const a=document.createElement('a');a.href=URL.createObjectURL(blob);
-  a.download='SmartFixAI-full-'+new Date().toISOString().slice(0,10)+'.json';a.click();
+  a.download='SmartFix-full-'+new Date().toISOString().slice(0,10)+'.json';a.click();
   setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   alert('تم تصدير '+Object.keys(photos).length+' صورة مع البيانات.');
 }
@@ -2198,6 +2239,8 @@ function updateLicenseStatus(){
   }
   const dv = document.getElementById('licenseDeviceId');
   if (dv) dv.textContent = dev;
+  const wa2 = document.getElementById('licenseWaBtn2');
+  if (wa2) wa2.style.display = c.license ? 'none' : '';
 }
 
 /* ---------- شريط التجربة أعلى الصفحة ---------- */
@@ -2218,13 +2261,17 @@ function renderTrialBanner(){
   }
 }
 
+function waHref(d){
+  d = d || deviceId();
+  return 'https://wa.me/9647777698560?text=' +
+    encodeURIComponent('السلام عليكم، أريد تفعيل Smart Fix.\nرقم جهازي: ' + d);
+}
 function openLicenseGate(){
   const d = deviceId();
   const t = document.getElementById('deviceIdText');
   if (t) t.textContent = d;
   const wa = document.getElementById('licenseWaBtn');
-  if (wa) wa.href = 'https://wa.me/9647777698560?text=' +
-    encodeURIComponent('السلام عليكم، أريد تفعيل Smart Fix AI.\nرقم جهازي: ' + d);
+  if (wa) wa.href = waHref(d);
   showLicenseGate();
 }
 
@@ -2281,6 +2328,7 @@ function activateLicense(){
     return;
   }
   localStorage.setItem(CFG_LICENSE_KEY, codeForDevice(deviceId()));
+  nativeSet('license', codeForDevice(deviceId()));
   hideLicenseGate();
   alert('✅ تم تفعيل النسخة الكاملة على هذا الجهاز. شكراً لك!');
   updateLicenseStatus();
@@ -2298,6 +2346,7 @@ function resetConfig(){
 function clearLicense(){
   if (!confirm('سيتم إزالة الترخيص (للتجربة فقط). متابعة؟')) return;
   localStorage.removeItem(CFG_LICENSE_KEY);
+  nativeSet('license', '');
   updateLicenseStatus();
 }
 
@@ -2429,7 +2478,7 @@ function init(){
   document.getElementById('enableNotifBtn').addEventListener('click',requestNotif);
   document.getElementById('testNotifBtn').addEventListener('click',()=>{
     if(!('Notification' in window) || Notification.permission!=='granted'){alert('فعّل الإشعارات أولاً.');return;}
-    showNotif('🔔 اختبار','هذا إشعار تجريبي من Smart Fix AI.','test-'+Date.now());
+    showNotif('🔔 اختبار','هذا إشعار تجريبي من Smart Fix.','test-'+Date.now());
   });
 
   document.getElementById('enablePinBtn').addEventListener('click',enablePin);
@@ -2455,6 +2504,11 @@ function init(){
     if (navigator.clipboard && navigator.clipboard.writeText){
       navigator.clipboard.writeText(d).then(done).catch(()=>prompt('انسخ رقم الجهاز:', d));
     } else { prompt('انسخ رقم الجهاز:', d); }
+  });
+
+  const wa2btn = document.getElementById('licenseWaBtn2');
+  if (wa2btn) wa2btn.addEventListener('click', ()=>{
+    try { window.open(waHref(), '_blank', 'noopener'); } catch(e){}
   });
 
   /* إذا خلصت التجربة والتطبيق مفتوح — يظهر قفل التفعيل فوراً */
@@ -2859,5 +2913,101 @@ if (document.readyState === 'loading') document.addEventListener('DOMContentLoad
 else tryStart();
 })();
 </script>
+<script>
+/* ===== Smart Fix — Android bridge (APK only) ===== */
+(function () {
+  if (!window.AndroidBridge) return;
+
+  // 1) window.open('') is used for printing: collect the HTML and send it to the native print service
+  var nativeOpen = window.open;
+  window.open = function (url) {
+    if (url) {
+      try { return nativeOpen ? nativeOpen.apply(window, arguments) : null; } catch (e) { return null; }
+    }
+    var html = '';
+    var done = false;
+    var fake = {
+      document: {
+        write: function (s) { html += s; },
+        writeln: function (s) { html += s + '\n'; },
+        open: function () { return this; },
+        close: function () {
+          setTimeout(function () {
+            if (typeof fake.onload === 'function') { try { fake.onload(); } catch (e) {} }
+            else { fake.print(); }
+          }, 80);
+        },
+        body: { appendChild: function () {}, innerHTML: '' }
+      },
+      print: function () {
+        if (done) return;
+        done = true;
+        try { window.AndroidBridge.printHtml(html); } catch (e) {}
+      },
+      focus: function () {},
+      close: function () {},
+      alert: function () {}
+    };
+    return fake;
+  };
+
+  // 2) حفظ ملفات التصدير (JSON / CSV) في مجلد Downloads/SmartFix
+  var origCreate = URL.createObjectURL;
+  URL.createObjectURL = function (obj) {
+    var u = origCreate.call(URL, obj);
+    if (obj instanceof Blob) {
+      window.__sfBlobs = window.__sfBlobs || {};
+      window.__sfBlobs[u] = obj;
+    }
+    return u;
+  };
+
+  document.addEventListener('click', function (ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest('a[download]') : null;
+    if (!a || !a.href) return;
+    if (a.href.indexOf('blob:') !== 0) return;    var blob = window.__sfBlobs && window.__sfBlobs[a.href];
+    if (!blob && a.href.indexOf('blob:') === 0) {
+      ev.preventDefault();
+      var name = a.getAttribute('download') || ('SmartFix-' + Date.now());
+      fetch(a.href).then(function (r) { return r.blob(); }).then(function (b) {
+        var fr = new FileReader();
+        fr.onload = function () {
+          window.AndroidBridge.saveFile(name, b.type || 'application/octet-stream', String(fr.result));
+        };
+        fr.readAsDataURL(b);
+      }).catch(function () { window.AndroidBridge.toast('تعذر حفظ الملف'); });
+      return;
+    }
+    if (blob) {
+      ev.preventDefault();
+      var nm = a.getAttribute('download') || ('SmartFix-' + Date.now());
+      var r2 = new FileReader();
+      r2.onload = function () {
+        window.AndroidBridge.saveFile(nm, blob.type || 'application/octet-stream', String(r2.result));
+      };
+      r2.readAsDataURL(blob);
+    }
+  }, true);
+
+  // 3) anchors created in memory (a.click()) never bubble to document — patch the prototype
+  var origClick = HTMLAnchorElement.prototype.click;
+  HTMLAnchorElement.prototype.click = function () {
+    var name = this.getAttribute('download');
+    var href = this.getAttribute('href') || this.href;
+    if (name && href && href.indexOf('blob:') === 0) {
+      fetch(href).then(function (r) { return r.blob(); }).then(function (b) {
+        var fr = new FileReader();
+        fr.onload = function () {
+          window.AndroidBridge.saveFile(name, b.type || 'application/octet-stream', String(fr.result));
+        };
+        fr.readAsDataURL(b);
+      }).catch(function () { try { origClick.call(this); } catch (e) {} });
+      return;
+    }
+    return origClick.call(this);
+  };
+})();
+</script>
 </body>
+
 </html>
